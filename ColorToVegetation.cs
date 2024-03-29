@@ -5,7 +5,7 @@ using UnityEngine;
 
 [System.Serializable]
 public class ColorToVegetation {
-    public Color color; // Color in the vegetation map
+    public Color color = new Color(); // Color in the vegetation map
     public GameObject vegetationPrefab; // Prefab of the vegetation
     
     [Range(0f, 1f)]
@@ -25,16 +25,7 @@ public class ColorToVegetation {
     }
 
     public bool Contains(Color c) {
-
-        bool res = false;
-        foreach (Color mapped_color in mapped_colors) {
-            if (c == mapped_color) {
-                res = true;
-                break;
-            }
-        }
-
-        return res;
+        return mapped_colors.Contains(c);
     }
 
     public void AddToMappedColors(Color c) {

@@ -14,8 +14,6 @@ public class ColorVegetationMapper {
 
     public void MapToTargetColors(List<ColorToVegetation> target_mappings, Texture2D vegetation_map) {
     
-        //HashSet<Color> aux_targets = new HashSet<Color>();
-
         colorVegetationMappings = target_mappings;
         for (int x = 0; x < 20 /*vegetation_map.width*/; x++) {
             for (int y = 0; y < 20 /*vegetation_map.height*/; y++) {
@@ -24,7 +22,6 @@ public class ColorVegetationMapper {
                 ColorToVegetation closest_target = FindClosestMapping(pixel_color); // Find the closest target color to the pixel
 
                 closest_target.AddToMappedColors(pixel_color);
-                //if (!aux_targets.Contains(pixel_color)) aux_targets.Add(pixel_color);
 
             }
         }
@@ -32,13 +29,12 @@ public class ColorVegetationMapper {
         foreach (ColorToVegetation mapping in colorVegetationMappings) 
            if (mapping.MappedColors().Count > 1) Debug.Log(mapping + " HAS " + mapping.MappedColors().Count + " || Mapping " + mapping.color);
 
-        //foreach (Color aux in aux_targets) Debug.Log(aux);
     }
 
     private ColorToVegetation FindClosestMapping(Color color) {
 
-        ColorToVegetation closest_mapping = colorVegetationMappings[0];
-        float closest_distance = ColorDistance(color, closest_mapping.color);
+        ColorToVegetation closest_mapping = new ColorToVegetation();
+        float closest_distance = float.MaxValue;
 
         foreach (ColorToVegetation target in colorVegetationMappings) {
 

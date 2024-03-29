@@ -23,7 +23,7 @@ public class MapPreprocessing : MonoBehaviour {
     public void CalculateColorMappings() {
 
         colorVegetationMappings.Clear();
-        ObtainColorsFromJSON("Assets/Resources/JSON/unique_colors.json");
+        ObtainColorsFromJSON("Assets/Resources/JSON/unique_colors.json"); // Stores the colors into the colorVegetationMappings
 
         // Create a new texture with the same dimensions, but uncompressed
         /*
