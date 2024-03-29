@@ -40,13 +40,12 @@ public class MapPreprocessing : MonoBehaviour {
 
         Texture2D new_map = new Texture2D(vegetationMap.width, vegetationMap.height); // Create a new Texture2D to store the new Texture2D with the mapped colors
 
-        for (int i = 0; i < 20 /*vegetationMap.width*/; i++) {
-            for (int j = 0; j < 20 /*vegetationMap.height*/; j++) {
+        for (int i = 0; i < vegetationMap.width; i++) {
+            for (int j = 0; j < vegetationMap.height; j++) {
 
                 Color original_color = vegetationMap.GetPixel(i, j);
                 foreach (ColorToVegetation mapping in colorVegetationMappings) {
                     if (mapping.Contains(original_color)) {
-                        //Debug.Log("Original color: " + original_color + "\n" + "Mapped color: " + original_color);
                         new_map.SetPixel(i, j, mapping.color); // Replace the original color with the mapped color
                         break; // Exit the foreach loop once a mapping is found
                     }
@@ -71,7 +70,8 @@ public class MapPreprocessing : MonoBehaviour {
 
             foreach (int[] rgb_c in colors) {
                 
-                Color new_color = new Color(rgb_c[0], rgb_c[1], rgb_c[2]);
+                // Divide by 255 as the Texture2D color format in unity is between 0 and 1 and not between 0 and 255
+                Color new_color = new Color(rgb_c[0] / 255, rgb_c[1] / 255, rgb_c[2] / 255); 
                 ColorToVegetation aux = new ColorToVegetation() {color = new_color};
                 aux.AddToMappedColors(new_color);
 

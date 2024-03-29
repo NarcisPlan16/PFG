@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ColorVegetationMapper {
 
-    public List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>();
+    private List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>();
     public float colorThreshold = 1.0f;
 
     public List<ColorToVegetation> ObtainMappings() {
@@ -15,8 +15,8 @@ public class ColorVegetationMapper {
     public void MapToTargetColors(List<ColorToVegetation> target_mappings, Texture2D vegetation_map) {
     
         colorVegetationMappings = target_mappings;
-        for (int x = 0; x < 20 /*vegetation_map.width*/; x++) {
-            for (int y = 0; y < 20 /*vegetation_map.height*/; y++) {
+        for (int x = 0; x < vegetation_map.width; x++) {
+            for (int y = 0; y < vegetation_map.height; y++) {
 
                 Color pixel_color = vegetation_map.GetPixel(x, y);
                 ColorToVegetation closest_target = FindClosestMapping(pixel_color); // Find the closest target color to the pixel
@@ -25,23 +25,19 @@ public class ColorVegetationMapper {
 
             }
         }
-
-        foreach (ColorToVegetation mapping in colorVegetationMappings) 
-           if (mapping.MappedColors().Count > 1) Debug.Log(mapping + " HAS " + mapping.MappedColors().Count + " || Mapping " + mapping.color);
-
+        
     }
 
     private ColorToVegetation FindClosestMapping(Color color) {
 
-        ColorToVegetation closest_mapping = new ColorToVegetation();
-        float closest_distance = float.MaxValue;
+        ColorToVegetation closest_mapping = colorVegetationMappings[0];
+        float last_distance = ColorDistance(color, closest_mapping.color);;
 
         foreach (ColorToVegetation target in colorVegetationMappings) {
 
             float distance = ColorDistance(color, target.color);
-            //Debug.Log("Color: " + color + "Target Color: "+ target.color);
-            if (distance < closest_distance) {      
-                closest_distance = distance;
+            if (distance < last_distance) {      
+                last_distance = distance;
                 closest_mapping = target;
             } 
 
