@@ -10,10 +10,12 @@ using UnityEditor;
 public class MapPreprocessing : MonoBehaviour {
 
     private ColorVegetationMapper colorVegMapper = new ColorVegetationMapper();
+    private Texture2D work_map;
     public List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>();
 
     public float threshold = 0.297f;
     public Texture2D vegetationMap; 
+
 
 
     void Start() {
@@ -24,17 +26,6 @@ public class MapPreprocessing : MonoBehaviour {
 
         colorVegetationMappings.Clear();
         ObtainColorsFromJSON("Assets/Resources/JSON/unique_colors.json"); // Stores the colors into the colorVegetationMappings
-
-        // Create a new texture with the same dimensions, but uncompressed
-        /*
-        Texture2D uncompressedTexture = new Texture2D(vegetationMap.width, vegetationMap.height, TextureFormat.RGBA32, false);
-        uncompressedTexture.SetPixels(vegetationMap.GetPixels());
-        uncompressedTexture.Apply();
-
-        byte[] fileData = uncompressedTexture.EncodeToJPG(100);
-        System.IO.File.WriteAllBytes(Application.dataPath + "/read_map.jpg", fileData);
-        */
-
         colorVegMapper.MapToTargetColors(colorVegetationMappings, vegetationMap);
         colorVegetationMappings = colorVegMapper.ObtainMappings();
 
@@ -55,10 +46,32 @@ public class MapPreprocessing : MonoBehaviour {
             }
         }
 
+        work_map = new_map;
+        
+        // Uncomment to see the readen file texture to check that the texture is stored correctly
+        /*
         new_map.Apply(); // Apply changes to the mapped texture
         byte[] fileData = new_map.EncodeToJPG(100);
         System.IO.File.WriteAllBytes(Application.dataPath + "/new_map.jpg", fileData);
-        
+        */
+
+        // Uncomment to generate a jog file with the readen color mappings (original colors) of the map
+        /*
+        Texture2D aux_map = new Texture2D(370, 30);
+        int i_aux = 0;
+        foreach (ColorToVegetation mapping in colorVegetationMappings) {
+            for (int j = i_aux*10; j < i_aux*10 + 10; j++) {
+                for (int k = 0; k < 30; k++) {
+                    aux_map.SetPixel(j, k, mapping.color);
+                }
+            }
+            i_aux++;
+        }
+
+        aux_map.Apply(); // Apply changes to the mapped texture
+        byte[] file_data = aux_map.EncodeToJPG(100);
+        System.IO.File.WriteAllBytes(Application.dataPath + "/aux_map.jpg", file_data);
+        */
     }
 
     private void ObtainColorsFromJSON(string file_path) {
@@ -66,12 +79,12 @@ public class MapPreprocessing : MonoBehaviour {
         if (File.Exists(file_path)) {
 
             string jsonContent = File.ReadAllText(file_path);
-            int[][] colors = ParseArrayString(jsonContent);
+            float[][] colors = ParseArrayString(jsonContent);
 
-            foreach (int[] rgb_c in colors) {
+            foreach (float[] rgb_c in colors) {
                 
                 // Divide by 255 as the Texture2D color format in unity is between 0 and 1 and not between 0 and 255
-                Color new_color = new Color(rgb_c[0] / 255, rgb_c[1] / 255, rgb_c[2] / 255); 
+                Color new_color = new Color(rgb_c[0] / 255.0f, rgb_c[1] / 255.0f, rgb_c[2] / 255.0f); 
                 ColorToVegetation aux = new ColorToVegetation() {color = new_color};
                 aux.AddToMappedColors(new_color);
 
@@ -82,19 +95,19 @@ public class MapPreprocessing : MonoBehaviour {
 
     }
 
-    static int[][] ParseArrayString(string arrayString) {
+    static float[][] ParseArrayString(string arrayString) {
 
         // Remove outer square brackets and split by "], ["
         string[] rows = arrayString.Trim('[', ']').Split(new[] { "], [" }, StringSplitOptions.None);
         
-        int[][] result = new int[rows.Length][];
+        float[][] result = new float[rows.Length][];
         for (int i = 0; i < rows.Length; i++) {
 
             string[] elements = rows[i].Split(new[] { ", " }, StringSplitOptions.None); // Split each row by ", "
-            result[i] = new int[elements.Length];
+            result[i] = new float[elements.Length];
 
             for (int j = 0; j < elements.Length; j++) {
-                result[i][j] = int.Parse(elements[j]); // Parse each element to an integer
+                result[i][j] = float.Parse(elements[j]); // Parse each element to an integer
             }
         }
 
