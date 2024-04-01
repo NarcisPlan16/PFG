@@ -5,21 +5,17 @@ using System.IO;
 using BitMiracle.LibTiff.Classic;
 
 using UnityEngine;
-using UnityEditor;
 
-public class MapPreprocessing : MonoBehaviour {
+public class MapPreprocessing {
 
     private ColorVegetationMapper colorVegMapper = new ColorVegetationMapper();
     private Texture2D work_map;
-    public List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>();
+    private List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>();
+    private Texture2D vegetationMap; 
 
-    public float threshold = 0.297f;
-    public Texture2D vegetationMap; 
-
-
-
-    void Start() {
-        colorVegMapper = new ColorVegetationMapper() {colorThreshold = threshold};
+    public void Start(Texture2D input_map) {
+        colorVegMapper = new ColorVegetationMapper();
+        vegetationMap = input_map;
     }
 
     public void CalculateColorMappings() {
@@ -47,7 +43,7 @@ public class MapPreprocessing : MonoBehaviour {
         }
 
         work_map = new_map;
-        
+
         // Uncomment to see the readen file texture to check that the texture is stored correctly
         /*
         new_map.Apply(); // Apply changes to the mapped texture
@@ -74,6 +70,29 @@ public class MapPreprocessing : MonoBehaviour {
         */
     }
 
+    // Method to convert a list of lists to a string
+    private string ListOfListsToString<T>(List<List<T>> listOfLists) {
+        string result = "";
+        foreach (List<T> innerList in listOfLists) {
+            result += "[";
+
+            // Convert each inner list to a string
+            foreach (T item in innerList)
+            {
+                result += item.ToString() + ", ";
+            }
+
+            // Remove the trailing comma and space
+            if (innerList.Count > 0)
+            {
+                result = result.Remove(result.Length - 2);
+            }
+
+            result += "]\n";
+        }
+        return result;
+    }
+
     private void ObtainColorsFromJSON(string file_path) {
         
         if (File.Exists(file_path)) {
@@ -95,7 +114,7 @@ public class MapPreprocessing : MonoBehaviour {
 
     }
 
-    static float[][] ParseArrayString(string arrayString) {
+    private static float[][] ParseArrayString(string arrayString) {
 
         // Remove outer square brackets and split by "], ["
         string[] rows = arrayString.Trim('[', ']').Split(new[] { "], [" }, StringSplitOptions.None);
@@ -114,17 +133,27 @@ public class MapPreprocessing : MonoBehaviour {
         return result;
     }
 
+    public Texture2D ObtainProcessedMap() {
+        return work_map;
+    }
+
+    public List<ColorToVegetation> ObtainMappings() {
+        return colorVegetationMappings;
+    }
+
 }
 
-[CustomEditor(typeof(MapPreprocessing))]
-public class MapPreprocessingEditor : Editor {
-    public override void OnInspectorGUI() {
-        DrawDefaultInspector();
+// Helper class to make 2D float array serializable
+[System.Serializable]
+public class SerializableMapData {
 
-        MapPreprocessing myScript = (MapPreprocessing)target;
+    public string pixels;
+    public int width;
+    public int height;
 
-        if (GUILayout.Button("Calculate Color Mappings")) {
-            myScript.CalculateColorMappings();
-        }
+    public SerializableMapData(string Pixels, int Width, int Height) {
+        pixels = Pixels;
+        width = Width;
+        height = Height;
     }
 }
