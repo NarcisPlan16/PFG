@@ -39,4 +39,8 @@ public class MapManager {
         map.SetPixel(x, y, c);
     }
 
+    public void StoreMappings(List<ColorToVegetation> new_mappings) {
+        mappings = new_mappings;
+    }
+    
 }

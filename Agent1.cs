@@ -17,7 +17,8 @@ public class Agent1 : Agent {
 
     void Start() {
 
-        Debug.Log(map_manager.GetPixel(5, 60));
+        map_manager.Preprocessing(input_vegetation_map);
+        map_manager.StoreMappings(mappings);
 
     }
 
@@ -52,6 +53,7 @@ public class Agent1 : Agent {
     }
 
     public void CalculateColorMappings() {
+
         map_manager.Preprocessing(input_vegetation_map);
         mappings = map_manager.GetMappings();
     }
