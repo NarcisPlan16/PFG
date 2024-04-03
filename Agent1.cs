@@ -12,13 +12,24 @@ public class Agent1 : Agent {
 
     private MapManager map_manager = new MapManager();
 
+    public GameObject plane; // Reference to the terrain object
     public List<ColorToVegetation> mappings;
     public Texture2D input_vegetation_map;
 
     void Start() {
 
+        Debug.Log("[DEBUG]: Map preprocessing started");
         map_manager.Preprocessing(input_vegetation_map);
+        Debug.Log("[DEBUG]: Map preprocessing done");
         map_manager.StoreMappings(mappings);
+
+        Debug.Log("[DEBUG]: Initialize enviroment");
+
+        // Create a new material using the Unlit/Texture shader
+        Material material = new Material(Shader.Find("Unlit/Texture"));
+        material.mainTexture = map_manager.GetMap();
+
+        plane.GetComponent<Renderer>().material = material;
 
     }
 
@@ -30,7 +41,7 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        //Debug.Log(actions.DiscreteActions[0]);
+        Debug.Log(actions.DiscreteActions[0]);
 
     }
 
