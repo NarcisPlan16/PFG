@@ -18,18 +18,25 @@ public class Agent1 : Agent {
 
     void Start() {
 
-        Debug.Log("[DEBUG]: Map preprocessing started");
         map_manager.Preprocessing(input_vegetation_map);
-        Debug.Log("[DEBUG]: Map preprocessing done");
         map_manager.StoreMappings(mappings);
 
-        Debug.Log("[DEBUG]: Initialize enviroment");
+        Renderer plane_renderer = plane.GetComponent<Renderer>();
+        Material new_material = new Material(plane_renderer.material);
 
-        // Create a new material using the Unlit/Texture shader
-        Material material = new Material(Shader.Find("Unlit/Texture"));
-        material.mainTexture = map_manager.GetMap();
+        Texture2D map = map_manager.GetMap();
 
-        plane.GetComponent<Renderer>().material = material;
+        //-----I dont know why but if you remove this, the plane does not display the texture...-----//
+        Color[] pixels = map.GetPixels();
+        map.SetPixels(pixels);
+        map.Apply();
+        //-------------------------------------------------------------------------------------------//
+
+        Texture new_texture = new Texture2D(map.width, map.height);
+        Graphics.CopyTexture(map, new_texture);
+
+        new_material.mainTexture = new_texture;
+        plane_renderer.material = new_material;
 
     }
 
@@ -50,21 +57,19 @@ public class Agent1 : Agent {
         
     }
 
-    // Called when the Agent resets
+    // Called when the Agent resets. Here is where we reset after the reward is given
     public override void OnEpisodeBegin() {
         
     }
 
-    // Called when heuristic method is requested. Also known as "Policy"
+    // Called when heuristic method is requested (Behaviour=Heuristic). Also known as "Policy"
     public override void Heuristic(in ActionBuffers actions_out) {
 
-        var discrete_actions_out = actions_out.DiscreteActions; // Create a placeholder for continuous actions
 
-        discrete_actions_out[0] = Random.Range(0, 4);
+
     }
 
     public void CalculateColorMappings() {
-
         map_manager.Preprocessing(input_vegetation_map);
         mappings = map_manager.GetMappings();
     }
