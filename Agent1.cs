@@ -18,25 +18,25 @@ public class Agent1 : Agent {
 
     void Start() {
 
-        map_manager.Preprocessing(input_vegetation_map);
-        map_manager.StoreMappings(mappings);
+        //map_manager.Preprocessing(input_vegetation_map);
+        //map_manager.StoreMappings(mappings);
 
-        Renderer plane_renderer = plane.GetComponent<Renderer>();
-        Material new_material = new Material(plane_renderer.material);
+        //Renderer plane_renderer = plane.GetComponent<Renderer>();
+        //Material new_material = new Material(plane_renderer.material);
 
-        Texture2D map = map_manager.GetMap();
+        //Texture2D map = map_manager.GetMap();
 
         //-----I dont know why but if you remove this, the plane does not display the texture...-----//
-        Color[] pixels = map.GetPixels();
-        map.SetPixels(pixels);
-        map.Apply();
+        //Color[] pixels = map.GetPixels();
+        //map.SetPixels(pixels);
+        //map.Apply();
         //-------------------------------------------------------------------------------------------//
 
-        Texture new_texture = new Texture2D(map.width, map.height);
-        Graphics.CopyTexture(map, new_texture);
+        //Texture new_texture = new Texture2D(map.width, map.height);
+        //Graphics.CopyTexture(map, new_texture);
 
-        new_material.mainTexture = new_texture;
-        plane_renderer.material = new_material;
+        //new_material.mainTexture = new_texture;
+        //plane_renderer.material = new_material;
 
     }
 
@@ -63,11 +63,7 @@ public class Agent1 : Agent {
     }
 
     // Called when heuristic method is requested (Behaviour=Heuristic). Also known as "Policy"
-    public override void Heuristic(in ActionBuffers actions_out) {
-
-
-
-    }
+    //public override void Heuristic(in ActionBuffers actions_out) {}
 
     public void CalculateColorMappings() {
         map_manager.Preprocessing(input_vegetation_map);
