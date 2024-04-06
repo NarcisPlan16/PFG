@@ -8,6 +8,7 @@ public class MapManager {
 
     private MapPreprocessing map_preprocessing = new MapPreprocessing();
     private Texture2D map;
+    private Texture2D original_map;
     private List<ColorToVegetation> mappings = new List<ColorToVegetation>();
 
     void Start() {
@@ -20,6 +21,7 @@ public class MapManager {
         map_preprocessing.CalculateColorMappings();
 
         map = map_preprocessing.ObtainProcessedMap();
+        original_map = map; // Save the original so we can restore the map
         mappings = map_preprocessing.ObtainMappings();
     }
 
@@ -41,6 +43,10 @@ public class MapManager {
 
     public void StoreMappings(List<ColorToVegetation> new_mappings) {
         mappings = new_mappings;
+    }
+
+    public void ResetMap() {
+        map = original_map;
     }
     
 }

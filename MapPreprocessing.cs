@@ -70,29 +70,6 @@ public class MapPreprocessing {
         */
     }
 
-    // Method to convert a list of lists to a string
-    private string ListOfListsToString<T>(List<List<T>> listOfLists) {
-        string result = "";
-        foreach (List<T> innerList in listOfLists) {
-            result += "[";
-
-            // Convert each inner list to a string
-            foreach (T item in innerList)
-            {
-                result += item.ToString() + ", ";
-            }
-
-            // Remove the trailing comma and space
-            if (innerList.Count > 0)
-            {
-                result = result.Remove(result.Length - 2);
-            }
-
-            result += "]\n";
-        }
-        return result;
-    }
-
     private void ObtainColorsFromJSON(string file_path) {
         
         if (File.Exists(file_path)) {
