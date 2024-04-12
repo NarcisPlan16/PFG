@@ -10,18 +10,17 @@ public class MapManager {
     private Texture2D map;
     private Texture2D original_map;
     private List<ColorToVegetation> mappings = new List<ColorToVegetation>();
+    public GameObject plane;
 
-    void Start() {
-
-    }
-
-    public void Preprocessing(Texture2D input_map) {
+    public void Preprocessing(Texture2D input_map, Material mat) {
 
         map_preprocessing.Start(input_map);
         map_preprocessing.CalculateColorMappings();
 
         map = map_preprocessing.ObtainProcessedMap();
+        //Debug.Log(map);
         original_map = map; // Save the original so we can restore the map
+        mat.mainTexture = map;
         mappings = map_preprocessing.ObtainMappings();
     }
 
@@ -37,8 +36,12 @@ public class MapManager {
         return map.GetPixel(x, y);
     }
 
-    public void SetPixel(int x, int y, Color c) {
-        map.SetPixel(x, y, c);
+    public void SetPixel(int x, int y, Color c, Texture2D mapa, Material mat) {
+        //Debug.Log(mapa);
+        mapa.SetPixel(x, y, c);
+        mapa.Apply();
+        Debug.Log(mat);
+        mat.mainTexture = mapa;
     }
 
     public void StoreMappings(List<ColorToVegetation> new_mappings) {
@@ -47,6 +50,11 @@ public class MapManager {
 
     public void ResetMap() {
         map = original_map;
+        //map_material.mainTexture = original_map;
+    }
+
+    public void UpdateMap(Material mat) {
+        //map_material = mat;
     }
     
 }
