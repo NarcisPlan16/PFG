@@ -18,7 +18,7 @@ public class MapManager {
         map_preprocessing.CalculateColorMappings();
 
         map = map_preprocessing.ObtainProcessedMap();
-        //Debug.Log(map);
+
         original_map = map; // Save the original so we can restore the map
         mat.mainTexture = map;
         mappings = map_preprocessing.ObtainMappings();
@@ -37,10 +37,8 @@ public class MapManager {
     }
 
     public void SetPixel(int x, int y, Color c, Texture2D mapa, Material mat) {
-        //Debug.Log(mapa);
         mapa.SetPixel(x, y, c);
         mapa.Apply();
-        Debug.Log(mat);
         mat.mainTexture = mapa;
     }
 
