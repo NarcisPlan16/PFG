@@ -61,8 +61,8 @@ public class VegetationGenerator : MonoBehaviour {
                     float y = terrain.terrainData.GetHeight(x / 2, z / 2); // Divide by 2 as the size of the vegetation map is 2048x2048 and the size pof the terrain is 1024x1024
                     Vector3 position = new Vector3(x / (float)width * terrain.terrainData.size.x, y, z / (float)height * terrain.terrainData.size.z);
 
-                    float randomValue = Random.Range(0f, 1f);
-                    if (randomValue < mapping.spawnChance && NoNearbyEntity(x, z)) {
+                    //float randomValue = Random.Range(0f, 1f);
+                    if (/*randomValue < mapping.spawnChance &&*/ NoNearbyEntity(x, z)) {
                         GameObject vegetation = Instantiate(mapping.vegetationPrefab, position, Quaternion.identity);
                         vegetation.transform.parent = terrain.transform;
                         entityPositions[x][z] = true;

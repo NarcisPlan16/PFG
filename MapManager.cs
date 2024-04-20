@@ -12,7 +12,7 @@ public class MapManager {
     private List<ColorToVegetation> mappings = new List<ColorToVegetation>();
     public GameObject plane;
 
-    public void Preprocessing(Texture2D input_map, Material mat) {
+    public List<ColorToVegetation> Preprocessing(Texture2D input_map, Material mat) {
 
         map_preprocessing.Start(input_map);
         map_preprocessing.CalculateColorMappings();
@@ -22,6 +22,8 @@ public class MapManager {
         original_map = map; // Save the original so we can restore the map
         mat.mainTexture = map;
         mappings = map_preprocessing.ObtainMappings();
+        
+        return mappings;
     }
 
     public List<ColorToVegetation> GetMappings() {

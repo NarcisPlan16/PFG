@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class FireSimulator {
 
-    //private Texture2D map;
-    //private Material map_material;
-    //private MapManager map_manager;
+    private List<ColorToVegetation> color_mappings;
     private Dictionary<(int, int), List<(int, int)>> pixels_burning;
 
-    public FireSimulator() {
-        //map = mapa;
-        //map_manager = manager;
-        //map_material = map_mat;
+    public FireSimulator(List<ColorToVegetation> mappings) {
+        color_mappings = mappings;         
         pixels_burning = new Dictionary<(int, int), List<(int, int)>>();
     }
 

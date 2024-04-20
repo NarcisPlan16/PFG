@@ -7,9 +7,11 @@ using UnityEngine;
 public class ColorToVegetation {
     public Color color = new Color(); // Color in the vegetation map
     public GameObject vegetationPrefab; // Prefab of the vegetation
+    public float expandCoefficient = 1f;
     
-    [Range(0f, 1f)]
-    public float spawnChance = 1f; // Probability of spawning this vegetation at a given location
+    //[Range(0f, 1f)]
+    //public float spawnChance = 1f; // Probability of spawning this vegetation at a given location
+
     private HashSet<Color> mapped_colors = new HashSet<Color>(); // Colors mapped to this color 
 
     public int CompareToColor(Color c) {

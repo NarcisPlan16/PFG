@@ -29,7 +29,7 @@ public class Agent1 : Agent {
         map = map_manager.GetMap();
         map_manager.StoreMappings(mappings);
 
-        fire_simulation = new FireSimulator();
+        fire_simulation = new FireSimulator(mappings);
         fire_simulation.InitRandomFire(map_manager, map, map_material);
 
     }
@@ -59,8 +59,11 @@ public class Agent1 : Agent {
     //public override void Heuristic(in ActionBuffers actions_out) {}
 
     public void CalculateColorMappings() {
-        map_manager.Preprocessing(input_vegetation_map, map_material);
-        mappings = map_manager.GetMappings();
+
+        mappings = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+        map = map_manager.GetMap();
+        map_manager.StoreMappings(mappings);
+
     }
     
 }
