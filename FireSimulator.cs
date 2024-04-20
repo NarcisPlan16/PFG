@@ -55,7 +55,7 @@ public class FireSimulator {
     public void ExpandFire(MapManager map_manager, Texture2D map, Material map_material) {
 
         map = map_manager.GetMap();
-        int rand_expand_pixels = Random.Range(0, pixels_burning.Count + 1); // number of pixels tu expand 
+        int rand_expand_pixels = Random.Range(0, 10); // number of pixels tu expand this iteration. pixels_burning.Count + 1
         for (int i = 0; i < rand_expand_pixels; i++) {
 
             int rand_pixel = Random.Range(0, pixels_burning.Keys.Count);
@@ -65,7 +65,6 @@ public class FireSimulator {
 
             // expand the fire to its neighbors (to all or to only some of them)
             if (neighbors.Count > 0) {
-
                 foreach ((int, int) neigh in neighbors) {
 
                     int expand_prob = Random.Range(0, 100); // if >=5, expand the fire
@@ -80,29 +79,6 @@ public class FireSimulator {
                     }
 
                 }
-
-                /*
-                int n_rand_neigh = Random.Range(0, neighbors.Count); // number of neighbors to expand the fire to
-                List<(int, int)> neighbors_to_remove = new List<(int, int)>();
-                for (int n_neigh = 0; n_neigh < n_rand_neigh; n_neigh++) {
-
-                    (int, int) neigh = neighbors[n_neigh]; // TODO: Dont know why but here halts an error
-
-                    map_manager.SetPixel(neigh.Item1, neigh.Item2, new Color(0.0f, 0.0f, 0.0f), map, map_material);
-                    neighbors = ObtainNeighborsUnburned(neigh.Item1, neigh.Item2, map, map_manager);
-
-                    if (pixels_burning.ContainsKey((neigh.Item1, neigh.Item2))) pixels_burning.Remove((neigh.Item1, neigh.Item2));
-                    pixels_burning.Add((neigh.Item1, neigh.Item2), neighbors);
-
-                    neighbors_to_remove.Add(neigh);
-                    //Debug.Log("Expanded to -- X: " + neigh.Item1 + " Y: " + neigh.Item2);
-
-                }
-
-                foreach ((int, int) neigh in neighbors_to_remove) neighbors.Remove(neigh);
-                */
-
-
             }
 
             pixels_burning.Remove(key);
