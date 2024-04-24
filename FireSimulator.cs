@@ -83,7 +83,7 @@ public class FireSimulator {
 
     }
 
-    private int Probability(bool veg_coeff_on, bool height_on, bool wind_on) {
+    private int ExpandProbability(bool veg_coeff_on, bool height_on, bool wind_on) {
 
         int probability = 50;
 
