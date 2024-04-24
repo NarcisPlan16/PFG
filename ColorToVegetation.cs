@@ -7,7 +7,8 @@ using UnityEngine;
 public class ColorToVegetation {
     public Color color = new Color(); // Color in the vegetation map
     public GameObject vegetationPrefab; // Prefab of the vegetation
-    public float expandCoefficient = 1f;
+    public float expandCoefficient = 1f; // Coefficient of "velocity" for the fire to expand to this zone
+    public int burnPriority = 0; // How rellevant is that this zone is burned. The higher the more important it is to stay unburned.
     
     //[Range(0f, 1f)]
     //public float spawnChance = 1f; // Probability of spawning this vegetation at a given location

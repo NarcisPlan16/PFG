@@ -52,9 +52,5 @@ public class MapManager {
         map = original_map;
         //map_material.mainTexture = original_map;
     }
-
-    public void UpdateMap(Material mat) {
-        //map_material = mat;
-    }
     
 }
