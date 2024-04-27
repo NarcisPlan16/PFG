@@ -17,6 +17,7 @@ public class Agent1 : Agent {
     public Material plane_material;
     public List<ColorToVegetation> mappings;
     public Texture2D input_vegetation_map;
+    public Texture2D height_map;
 
     private Material map_material;
 
@@ -43,7 +44,7 @@ public class Agent1 : Agent {
         //Debug.Log(actions.DiscreteActions[0]);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
-        fire_simulation.ExpandFireRandom(map_manager, map, map_material);
+        fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
 
     }
 
