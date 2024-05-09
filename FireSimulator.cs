@@ -7,7 +7,9 @@ public class FireSimulator {
     private Dictionary<Color, ColorToVegetation> color_mappings;
     private HashSet<(int, int)> pixels_burning;
 
-    public FireSimulator(List<ColorToVegetation> mappings) {
+    private Vector3 wind_direction;
+
+    public FireSimulator(List<ColorToVegetation> mappings, Vector3 wind) {
 
         color_mappings = new Dictionary<Color, ColorToVegetation>();
         foreach (ColorToVegetation mapping in mappings) {
@@ -15,6 +17,7 @@ public class FireSimulator {
         }
 
         pixels_burning = new HashSet<(int, int)>(); // TODO: Carregar-me els veïns i buscar-los a cada iteració (ObtainNeighborsUnburned a cada iteració)
+        wind_direction = wind;
     }
 
     public List<int> InitRandomFire(MapManager map_manager, Texture2D map, Material map_material) {
@@ -61,37 +64,42 @@ public class FireSimulator {
 
     public void ExpandFireRandom(Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { // TODO: Expandir-me només en 4 direccions (n,s,e,w)
 
-        map = map_manager.GetMap();
-        int rand_expand_pixels = Random.Range(0, 10); // number of pixels tu expand this iteration.
-        for (int i = 0; i < rand_expand_pixels; i++) {
+        if (pixels_burning.Count > 0) {
 
-            int rand_pixel = Random.Range(0, pixels_burning.Count);
+            map = map_manager.GetMap();
+            int rand_expand_pixels = Random.Range(0, 10); // number of pixels tu expand this iteration.
+            for (int i = 0; i < rand_expand_pixels; i++) {
 
-            Debug.Log("Pixels Burning Count: " + pixels_burning.Count);
+                int rand_pixel = Random.Range(0, pixels_burning.Count);
+                List<(int, int)> pixels_burning_list = new List<(int, int)>(pixels_burning);
 
-            List<(int, int)> pixels_burning_list = new List<(int, int)>(pixels_burning);
-            (int, int) key = pixels_burning_list[rand_pixel];
-            List<(int, int)> neighbors =  ObtainNeighborsUnburned(key.Item1, key.Item2, map, map_manager);
-            Debug.Log("Neighbors count: " + neighbors.Count);
+                (int, int) key = pixels_burning_list[rand_pixel];
+                List<(int, int)> neighbors =  ObtainNeighborsUnburned(key.Item1, key.Item2, map, map_manager);
 
-            // expand the fire to its neighbors (to all or to only some of them)
-            if (neighbors.Count > 0) {
-                foreach ((int, int) neigh in neighbors) {
+                // expand the fire to its neighbors (to all or to only some of them)
+                if (neighbors.Count > 0) {
+                    foreach ((int, int) neigh in neighbors) {
 
-                    double expand_prob = Random.Range(0.0f, 1.0f); // Random value between 0 and 1
-                    if (expand_prob >= 0.0f /*ExpandProbability(key, neigh, true, false, false, heightmap, map, map_manager)*/) { 
+                        double expand_prob = ExpandProbability(key, neigh, true, true, true, heightmap, map, map_manager);
+                        if (expand_prob >= 0.3) { 
 
-                        map_manager.SetPixel(neigh.Item1, neigh.Item2, new Color(0.0f, 0.0f, 0.0f), map, map_material);
+                            map_manager.SetPixel(neigh.Item1, neigh.Item2, new Color(0.0f, 0.0f, 0.0f), map, map_material);
+                            pixels_burning.Add((neigh.Item1, neigh.Item2));
+
+                        }
 
                     }
-
                 }
+
+                pixels_burning.Remove(key);
+                if (pixels_burning.Count == 0) break; // Break the for loop
+                
+
             }
 
-            pixels_burning.Remove(key);
-            
-
         }
+        else Debug.Log("The fire has ended");
+
     }
 
     private double ExpandProbability((int, int) origin_pixel, (int, int) target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, 
@@ -104,31 +112,34 @@ public class FireSimulator {
         Color pixel_color = map.GetPixel(target_pixel.Item1, target_pixel.Item2);
         if (pixel_color != new Color(0, 0, 0)) { // if not burned
 
+            // Store enable bits to multiply the coefficients (1 if true, 0 if false)
             int veg_enable = veg_coeff_on? 1 : 0;
             int height_enable = height_on? 1 : 0;
             int wind_enable = wind_on? 1 : 0;
 
-            double alfa_weight = 0.45*veg_enable;
-            double h_weight = 0.15*height_enable;
-            double w_weight = 0.3*wind_enable;
-            double r_weight = 0.1;
+            double alfa_weight = 0.50*veg_enable; // Weight or the expand_coefficient
+            double h_weight = 0.25*height_enable; // Weight for the height coefficient
+            double w_weight = 0.1*wind_enable; // Wheight for the winf coefficient
+            double r_weight = 0.15; // Wheight for the random Coefficient
             double max_probability = alfa_weight + h_weight + w_weight + r_weight; 
             // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
             // P.E: 0.45+0.3 = 0.75. Thus we could only have values between 0 and 0.75 because the other coefficients are
             //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
 
             ColorToVegetation mapping = color_mappings[pixel_color];
+            Debug.Log("Expand Coefficient: " + mapping.expandCoefficient);
 
             double alfa = mapping.expandCoefficient;
-            double w = CalcWindProbability(origin_pixel, target_pixel); // TODO
+            double w = CalcWindProbability(origin_pixel, target_pixel, heightmap); // TODO
             double h = CalcHeightProbability(origin_pixel, target_pixel, heightmap); // TODO
             double r = Random.Range(0.0f, 1.0f);
 
             probability = alfa*alfa_weight + h*h_weight + w*w_weight + r*r_weight;
             probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
 
-            //Debug.Log("h: " + h);
-            //Debug.Log("Probability: " + probability);
+            //Debug.Log("w: " + w);
+            Debug.Log("h: " + h);
+            //Debug.Log("Expand Probability: " + probability);
             //Debug.Log("Max probabiliy: " + max_probability);
 
         }
@@ -136,9 +147,14 @@ public class FireSimulator {
         return probability;
     }
 
-    private double CalcWindProbability((int, int) origin_pixel, (int, int) target_pixel) {
+    private double CalcWindProbability((int, int) origin_pixel, (int, int) target_pixel, Texture2D heightmap) {
 
-        double res = 0.0;
+        Vector3 pointA = Get3DPointAt(origin_pixel, heightmap);
+        Vector3 pointB = Get3DPointAt(target_pixel, heightmap);
+        Vector3 vec_displacement_norm = (pointB - pointA).normalized; // Vector fo displacement, normalized (-1 to 1);
+
+        float scalar_prod = Vector3.Dot(wind_direction.normalized, vec_displacement_norm); // Scalar product
+        double res = scalar_prod / (vec_displacement_norm.magnitude * wind_direction.normalized.magnitude);
         
         return res;
     }
@@ -149,12 +165,17 @@ public class FireSimulator {
         Vector3 pointA = Get3DPointAt(origin_pixel, heightmap);
         Vector3 pointB = Get3DPointAt(target_pixel, heightmap);
 
-        Vector3 vec_displacement = pointB - pointA;
-        double dist = vec_displacement.magnitude;
+        Vector3 vec_displacement_norm = (pointB - pointA).normalized; // Vector fo displacement, normalized (-1 to 1);
+        Vector3 x_plane = new Vector3(1, 0, 0);
 
-        double cos_aplha = (pointB.z - pointA.z) / dist;  
+        float scalar_prod = Vector3.Dot(vec_displacement_norm, x_plane.normalized);
+        float cos_alpha = scalar_prod / (vec_displacement_norm.magnitude * x_plane.magnitude);
 
-        return cos_aplha;
+        Debug.Log("B.y - A.y: " + (pointB.y - pointA.y));
+        Debug.Log("Displacement: " +  vec_displacement_norm);
+        Debug.Log("Modul: " + vec_displacement_norm.magnitude);
+
+        return cos_alpha;
     }
 
     private Vector3 Get3DPointAt((int, int) point, Texture2D heightmap) {

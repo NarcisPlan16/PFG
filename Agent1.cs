@@ -15,6 +15,7 @@ public class Agent1 : Agent {
     private Texture2D map;
     public GameObject plane; // Reference to the terrain object
     public Material plane_material;
+    public Vector3 wind_direction;
     public List<ColorToVegetation> mappings;
     public Texture2D input_vegetation_map;
     public Texture2D height_map;
@@ -24,13 +25,13 @@ public class Agent1 : Agent {
     void Start() {
 
         map_material = plane.GetComponent<MeshRenderer>().material;
-
         map_manager.plane = plane;
         map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+
         map = map_manager.GetMap();
         map_manager.StoreMappings(mappings);
 
-        fire_simulation = new FireSimulator(mappings);
+        fire_simulation = new FireSimulator(mappings, wind_direction);
         fire_simulation.InitRandomFire(map_manager, map, map_material);
 
     }
@@ -61,7 +62,10 @@ public class Agent1 : Agent {
 
     public void CalculateColorMappings() {
 
+        map_material = plane.GetComponent<MeshRenderer>().sharedMaterial;
+        map_manager.plane = plane;
         mappings = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+
         map = map_manager.GetMap();
         map_manager.StoreMappings(mappings);
 
