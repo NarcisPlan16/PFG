@@ -81,7 +81,7 @@ public class FireSimulator {
                     foreach ((int, int) neigh in neighbors) {
 
                         double expand_prob = ExpandProbability(key, neigh, true, true, true, heightmap, map, map_manager);
-                        if (expand_prob >= 0.3) { 
+                        if (expand_prob >= 0.2) { 
 
                             map_manager.SetPixel(neigh.Item1, neigh.Item2, new Color(0.0f, 0.0f, 0.0f), map, map_material);
                             pixels_burning.Add((neigh.Item1, neigh.Item2));
@@ -117,17 +117,17 @@ public class FireSimulator {
             int height_enable = height_on? 1 : 0;
             int wind_enable = wind_on? 1 : 0;
 
-            double alfa_weight = 0.50*veg_enable; // Weight or the expand_coefficient
-            double h_weight = 0.25*height_enable; // Weight for the height coefficient
-            double w_weight = 0.1*wind_enable; // Wheight for the winf coefficient
-            double r_weight = 0.15; // Wheight for the random Coefficient
+            double alfa_weight = 0.51*veg_enable; // Weight or the expand_coefficient
+            double h_weight = 0.32*height_enable; // Weight for the height coefficient
+            double w_weight = 0.07*wind_enable; // Wheight for the winf coefficient
+            double r_weight = 0.1; // Wheight for the random Coefficient
             double max_probability = alfa_weight + h_weight + w_weight + r_weight; 
             // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
             // P.E: 0.45+0.3 = 0.75. Thus we could only have values between 0 and 0.75 because the other coefficients are
             //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
 
             ColorToVegetation mapping = color_mappings[pixel_color];
-            Debug.Log("Expand Coefficient: " + mapping.expandCoefficient);
+            //Debug.Log("Expand Coefficient: " + mapping.expandCoefficient);
 
             double alfa = mapping.expandCoefficient;
             double w = CalcWindProbability(origin_pixel, target_pixel, heightmap); // TODO
@@ -138,7 +138,7 @@ public class FireSimulator {
             probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
 
             //Debug.Log("w: " + w);
-            Debug.Log("h: " + h);
+            //Debug.Log("h: " + h);
             //Debug.Log("Expand Probability: " + probability);
             //Debug.Log("Max probabiliy: " + max_probability);
 
@@ -154,9 +154,19 @@ public class FireSimulator {
         Vector3 vec_displacement_norm = (pointB - pointA).normalized; // Vector fo displacement, normalized (-1 to 1);
 
         float scalar_prod = Vector3.Dot(wind_direction.normalized, vec_displacement_norm); // Scalar product
-        double res = scalar_prod / (vec_displacement_norm.magnitude * wind_direction.normalized.magnitude);
+        //double res = scalar_prod / (vec_displacement_norm * wind_direction.normalized);
+
+        //Debug.Log("Scalar prod: " + scalar_prod);
         
-        return res;
+        float modul = wind_direction.magnitude;
+        if (modul < 3) scalar_prod *= 0.05f;
+        else if (modul < 10) scalar_prod *= 0.1f;
+        else if (modul < 15) scalar_prod *= 0.2f;
+        else if (modul < 30) scalar_prod *= 0.3f;
+        else if (modul < 50) scalar_prod *= 0.4f;
+        else if (modul > 50) scalar_prod *= 0.5f;
+
+        return scalar_prod;
     }
 
     private double CalcHeightProbability((int, int) origin_pixel, (int, int) target_pixel, Texture2D heightmap) {
@@ -165,15 +175,13 @@ public class FireSimulator {
         Vector3 pointA = Get3DPointAt(origin_pixel, heightmap);
         Vector3 pointB = Get3DPointAt(target_pixel, heightmap);
 
-        Vector3 vec_displacement_norm = (pointB - pointA).normalized; // Vector fo displacement, normalized (-1 to 1);
-        Vector3 x_plane = new Vector3(1, 0, 0);
+        Vector3 vec_displacement = pointB - pointA; // Vector fo displacement, normalized (-1 to 1);
+        Vector3 y_plane = new Vector3(0, 1, 0);
 
-        float scalar_prod = Vector3.Dot(vec_displacement_norm, x_plane.normalized);
-        float cos_alpha = scalar_prod / (vec_displacement_norm.magnitude * x_plane.magnitude);
+        float cos_alpha = Vector3.Dot(vec_displacement.normalized, y_plane.normalized); // Com que ens desplaçem només en N,S,E,W sí que és només el cosinus de l'algle. Sinó és el cosinus * un escalar
 
-        Debug.Log("B.y - A.y: " + (pointB.y - pointA.y));
-        Debug.Log("Displacement: " +  vec_displacement_norm);
-        Debug.Log("Modul: " + vec_displacement_norm.magnitude);
+        //Debug.Log("Displacement: " +  vec_displacement);
+        //Debug.Log("Cos alpha: " + cos_alpha);
 
         return cos_alpha;
     }
@@ -181,23 +189,23 @@ public class FireSimulator {
     private Vector3 Get3DPointAt((int, int) point, Texture2D heightmap) {
 
         float terrain_width = Terrain.activeTerrain.terrainData.size.x;
-        float terrain_height = Terrain.activeTerrain.terrainData.size.z;
+        float terrain_depth = Terrain.activeTerrain.terrainData.size.z;
         float heightmap_texture_width = heightmap.width;
         float heightmap_texture_height = heightmap.height;
 
         float width_ratio = terrain_width / heightmap_texture_width;
-        float height_ratio = terrain_height / heightmap_texture_height;
+        float height_ratio = terrain_depth / heightmap_texture_height;
 
         // Transform pixel coordinates into Terrain X and Y
         Vector2 terrain_coords_2D = new Vector2(point.Item1 * width_ratio, point.Item2 * height_ratio);
 
         Vector3 point_3D = new Vector3();
         point_3D.x = terrain_coords_2D.x;
-        point_3D.y = terrain_coords_2D.y;
-        point_3D.z = 0;
+        point_3D.y = 0;
+        point_3D.z = terrain_coords_2D.y;
 
         // Get z coordinate (height) of the terrain on that point
-        point_3D.z = Terrain.activeTerrain.SampleHeight(point_3D); 
+        point_3D.y = Terrain.activeTerrain.SampleHeight(point_3D); 
 
         return point_3D;
     }
