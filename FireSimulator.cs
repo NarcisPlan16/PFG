@@ -43,6 +43,11 @@ public class FireSimulator {
         int random_x = Random.Range(0, map.width);
         int random_y =  Random.Range(0, map.height);
         
+        //----------Debug only------
+        random_x = 206;
+        random_y = 206;
+        //--------------------------
+
         res.Add(random_x);
         res.Add(random_y);
 
@@ -90,7 +95,7 @@ public class FireSimulator {
         if (pixels_burning.Count > 0) {
 
             map = map_manager.GetMap();
-            int rand_expand_pixels = Random.Range(0, 10); // number of pixels tu expand this iteration.
+            int rand_expand_pixels = Random.Range(0, 10); // number of pixels tu expand this iteration. Maximum of 10
             for (int i = 0; i < rand_expand_pixels; i++) {
 
                 int rand_pixel = Random.Range(0, pixels_burning.Count);
@@ -106,7 +111,7 @@ public class FireSimulator {
                     foreach (Cell neigh in neighbors) {
 
                         double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, heightmap, map, map_manager);
-                        if (expand_prob >= 0.2) { 
+                        if (expand_prob >= 0.2) { // 0.2
 
                             map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
                             pixels_burning.Add(neigh);
@@ -146,9 +151,9 @@ public class FireSimulator {
             int height_enable = height_on? 1 : 0;
             int wind_enable = wind_on? 1 : 0;
 
-            double alfa_weight = 0.51*veg_enable; // Weight or the expand_coefficient
-            double h_weight = 0.32*height_enable; // Weight for the height coefficient
-            double w_weight = 0.07*wind_enable; // Wheight for the winf coefficient
+            double alfa_weight = 0.37*veg_enable; // Weight or the expand_coefficient
+            double h_weight = 0.25*height_enable; // Weight for the height coefficient
+            double w_weight = 0.28*wind_enable; // Wheight for the winf coefficient
             double r_weight = 0.1; // Wheight for the random Coefficient
             double max_probability = alfa_weight + h_weight + w_weight + r_weight; 
             // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 

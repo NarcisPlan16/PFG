@@ -52,5 +52,20 @@ public class MapManager {
         map = original_map;
         //map_material.mainTexture = original_map;
     }
+
+    public void SaveMappings(string file_path) {
+
+        string json_content = JsonUtility.ToJson(mappings);
+        File.WriteAllText(file_path, json_content);
+
+    }
+
+    public void ReadMappings(string file_path) {
+
+        string json_content = File.ReadAllText(file_path);
+        List<ColorToVegetation> data = JsonUtility.FromJson<List<ColorToVegetation>>(json_content);
+
+        mappings = data;
+    }
    
 }

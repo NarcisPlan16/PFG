@@ -30,6 +30,7 @@ public class Agent1 : Agent {
 
         map = map_manager.GetMap();
         map_manager.StoreMappings(mappings);
+        map_manager.SaveMappings("Assets/Resources/JSON/VegMappings.json");
 
         fire_simulation = new FireSimulator(mappings, wind_direction);
         fire_simulation.InitRandomFire(map_manager, map, map_material);
