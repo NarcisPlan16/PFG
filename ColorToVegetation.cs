@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;  
+using System;
 
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class ColorToVegetation {
     //[Range(0f, 1f)]
     //public float spawnChance = 1f; // Probability of spawning this vegetation at a given location
 
+    [SerializeField]
     private HashSet<Color> mapped_colors = new HashSet<Color>(); // Colors mapped to this color 
 
     public int CompareToColor(Color c) {
@@ -39,4 +41,13 @@ public class ColorToVegetation {
         return mapped_colors;
     }
 
-}    
+} 
+
+[System.Serializable]
+public class ColorToVegetationListWrapper {
+    public List<ColorToVegetation> list = new List<ColorToVegetation>();
+
+    public ColorToVegetationListWrapper(List<ColorToVegetation> new_list) {
+        list = new_list;
+    }
+}

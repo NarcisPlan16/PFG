@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 using UnityEngine;
 using UnityEditor;
@@ -17,10 +18,12 @@ public class Agent1 : Agent {
     public Material plane_material;
     public Vector3 wind_direction;
     public List<ColorToVegetation> mappings;
+    public string mappings_filename;
     public Texture2D input_vegetation_map;
     public Texture2D height_map;
 
     private Material map_material;
+    private const string JSON_Dir = "";
 
     void Start() {
 
@@ -29,8 +32,6 @@ public class Agent1 : Agent {
         map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
 
         map = map_manager.GetMap();
-        map_manager.StoreMappings(mappings);
-        map_manager.SaveMappings("Assets/Resources/JSON/VegMappings.json");
 
         fire_simulation = new FireSimulator(mappings, wind_direction);
         fire_simulation.InitRandomFire(map_manager, map, map_material);
@@ -68,8 +69,16 @@ public class Agent1 : Agent {
         mappings = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
 
         map = map_manager.GetMap();
-        map_manager.StoreMappings(mappings);
 
+    }
+
+    public void StoreMappings() {
+        map_manager.StoreMappings(JSON_Dir + mappings_filename);
+    }
+
+    public void LoadMappings() {
+        map_manager.LoadMappings(JSON_Dir + mappings_filename);
+        mappings = map_manager.GetMappings();
     }
     
 }
@@ -83,5 +92,12 @@ public class Agent1Editor : Editor {
         if (GUILayout.Button("Calculate Color Mappings")) {
             myScript.CalculateColorMappings();
         }
+        if (GUILayout.Button("Save mappings")) {
+            myScript.StoreMappings();
+        }
+        if (GUILayout.Button("Load mappings")) {
+            myScript.LoadMappings();
+        }
     }
+
 }
