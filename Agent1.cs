@@ -23,11 +23,14 @@ public class Agent1 : Agent {
     public Texture2D height_map;
 
     private Material map_material;
+    private Material original_map_material;
     private const string JSON_Dir = "";
 
     void Start() {
 
         map_material = plane.GetComponent<MeshRenderer>().material;
+        original_map_material = map_material;
+
         map_manager.plane = plane;
         map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
 
@@ -38,7 +41,7 @@ public class Agent1 : Agent {
 
     }
 
-    // Called when the Agent is initialized (at the beginning of each epoch).
+    // Called when the Agent is initialized (only one time, same as Start)
     //public override void Initialize() {}
 
     // Called when the Agent requests a decision
@@ -47,20 +50,21 @@ public class Agent1 : Agent {
         //Debug.Log(actions.DiscreteActions[0]);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
-        fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
+        
 
     }
-
-    // Called when the Agent's observations need to be updated
-    //public override void CollectObservations(VectorSensor sensor) {}
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
     public override void OnEpisodeBegin() {
-        //map_manager.ResetMap();
-    }
 
-    // Called when heuristic method is requested (Behaviour=Heuristic). Also known as "Policy"
-    //public override void Heuristic(in ActionBuffers actions_out) {}
+        fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
+
+        // Calculate rewards based on burned pixels
+
+        map_manager.ResetMap();
+        map_material =  original_map_material;
+
+    }
 
     public void CalculateColorMappings() {
 
