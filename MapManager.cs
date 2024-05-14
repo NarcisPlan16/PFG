@@ -49,22 +49,25 @@ public class MapManager {
         //map_material.mainTexture = original_map;
     }
 
+    public void SaveMappings(List<ColorToVegetation> m) {
+        mappings = m;
+    }
+
     public void StoreMappings(string file_path) {
 
-        ColorToVegetationListWrapper list = new ColorToVegetationListWrapper(mappings);
+        ColorToVegetationListWrapper list_w = new ColorToVegetationListWrapper(mappings); 
 
-        string json_content = JsonUtility.ToJson(list);
+        string json_content = JsonUtility.ToJson(list_w);
         File.WriteAllText(file_path, json_content);
-        Debug.Log(json_content);
 
     }
 
     public void LoadMappings(string file_path) {
 
         string json_content = File.ReadAllText(file_path);
-        List<ColorToVegetation> data = JsonUtility.FromJson<List<ColorToVegetation>>(json_content);
+        ColorToVegetationListWrapper data = JsonUtility.FromJson<ColorToVegetationListWrapper>(json_content);
 
-        mappings = data;
+        mappings = data.list;
     }
    
 }

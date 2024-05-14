@@ -73,6 +73,7 @@ public class Agent1 : Agent {
     }
 
     public void StoreMappings() {
+        map_manager.SaveMappings(mappings);
         map_manager.StoreMappings(JSON_Dir + mappings_filename);
     }
 
