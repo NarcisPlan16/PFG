@@ -151,9 +151,9 @@ public class FireSimulator {
             int height_enable = height_on? 1 : 0;
             int wind_enable = wind_on? 1 : 0;
 
-            double alfa_weight = 0.37*veg_enable; // Weight or the expand_coefficient
-            double h_weight = 0.25*height_enable; // Weight for the height coefficient
-            double w_weight = 0.28*wind_enable; // Wheight for the winf coefficient
+            double alfa_weight = 0.35*veg_enable; // Weight or the expand_coefficient
+            double h_weight = 0.23*height_enable; // Weight for the height coefficient
+            double w_weight = 0.32*wind_enable; // Wheight for the wind coefficient
             double r_weight = 0.1; // Wheight for the random Coefficient
             double max_probability = alfa_weight + h_weight + w_weight + r_weight; 
             // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
