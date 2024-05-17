@@ -22,6 +22,7 @@ public class Agent1 : Agent {
     public Texture2D input_vegetation_map;
     public Texture2D height_map;
 
+    private bool init;
     private Material map_material;
     private Material original_map_material;
     private const string JSON_Dir = "";
@@ -38,6 +39,7 @@ public class Agent1 : Agent {
 
         fire_simulation = new FireSimulator(mappings, wind_direction);
         fire_simulation.InitRandomFire(map_manager, map, map_material);
+        init = true;
 
     }
 
@@ -47,7 +49,8 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        //Debug.Log(actions.DiscreteActions[0]);
+        Debug.Log(actions.DiscreteActions[0]);
+        //Debug.Log(actions.DiscreteActions[1]);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
         
@@ -57,13 +60,28 @@ public class Agent1 : Agent {
     // Called when the Agent resets. Here is where we reset everything after the reward is given
     public override void OnEpisodeBegin() {
 
-        fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
+        map_manager.ResetMap();
+        map_material = original_map_material;
+        Debug.Log("Epoch finished");
+
+    }
+
+    public void Update() {
+
+        bool fire_ended = false;
+        /*while (!fire_ended)*/ fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
 
         // Calculate rewards based on burned pixels
+        List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();
+        float reward = 0.0f;
+        /*foreach (FireSimulator.Cell cell in burnt_pixels) {
+            Color pixel_color = map_manager.GetPixel(cell.x, cell.y);
+            ColorToVegetation mapping = ObtainMapping(pixel_color);
 
-        map_manager.ResetMap();
-        map_material =  original_map_material;
+            reward -= mapping.burnPriority;
+        }*/
 
+        Debug.Log("Reward: " + reward);
     }
 
     public void CalculateColorMappings() {
@@ -84,6 +102,21 @@ public class Agent1 : Agent {
     public void LoadMappings() {
         map_manager.LoadMappings(JSON_Dir + mappings_filename);
         mappings = map_manager.GetMappings();
+    }
+
+    private ColorToVegetation ObtainMapping(Color color) {
+
+        bool found = false;
+        int i = 0;
+        ColorToVegetation mapping = new ColorToVegetation();
+        while (!found) {
+            if (mappings[i].color == color) {
+                mapping = mappings[i];
+                found = true;
+            }
+        }
+
+        return mapping;
     }
     
 }

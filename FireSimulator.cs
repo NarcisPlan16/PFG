@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class FireSimulator {
@@ -21,7 +22,7 @@ public class FireSimulator {
 
     private Dictionary<Color, ColorToVegetation> color_mappings;
     private HashSet<Cell> pixels_burning;
-
+    private HashSet<Cell> pixels_burned;
     private Vector3 wind_direction;
 
     public FireSimulator(List<ColorToVegetation> mappings, Vector3 wind) {
@@ -32,6 +33,7 @@ public class FireSimulator {
         }
 
         pixels_burning = new HashSet<Cell>(); // TODO: Carregar-me els veïns i buscar-los a cada iteració (ObtainNeighborsUnburned a cada iteració)
+        pixels_burned = new HashSet<Cell>();
         wind_direction = wind;
     }
 
@@ -63,6 +65,10 @@ public class FireSimulator {
         return res;
     }
 
+    public List<Cell> BurntPixels() {
+        return pixels_burned.ToList();
+    }
+
     public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map, MapManager map_manager) {
 
         List<Cell> res = new List<Cell>();
@@ -90,12 +96,14 @@ public class FireSimulator {
         return map_manager.GetPixel(x, y) != new Color(0.0f, 0.0f, 0.0f);
     }
 
-    public void ExpandFireRandom(Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { // TODO: Expandir-me només en 4 direccions (n,s,e,w)
+    public bool ExpandFireRandom(Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { // TODO: Expandir-me només en 4 direccions (n,s,e,w)
+
+        bool fire_ended = false;
 
         if (pixels_burning.Count > 0) {
 
             map = map_manager.GetMap();
-            int rand_expand_pixels = Random.Range(0, 10); // number of pixels tu expand this iteration. Maximum of 10
+            int rand_expand_pixels = Random.Range(0, 20); // number of pixels tu expand this iteration. Maximum of 10
             for (int i = 0; i < rand_expand_pixels; i++) {
 
                 int rand_pixel = Random.Range(0, pixels_burning.Count);
@@ -122,18 +130,32 @@ public class FireSimulator {
                     }
 
                     if (!expanded) origin_cell.opportunities--;
-                    else pixels_burning.Remove(origin_cell);
+                    else {
+                        pixels_burning.Remove(origin_cell);
+                        pixels_burned.Add(origin_cell);
+                    }
 
                 }
 
-                if (origin_cell.opportunities == 0) pixels_burning.Remove(origin_cell);
-                if (pixels_burning.Count == 0) break; // Break the for loop
+                if (origin_cell.opportunities == 0) {
+                    pixels_burning.Remove(origin_cell);
+                    pixels_burned.Add(origin_cell);
+                }
+                if (pixels_burning.Count == 0) {
+                    Debug.Log("The fire has ended");
+                    fire_ended = true;
+                    break; // Break the for loop
+                }
 
             }
 
         }
-        else Debug.Log("The fire has ended");
+        else {
+            Debug.Log("The fire has ended");
+            fire_ended = true;
+        }
 
+        return fire_ended;
     }
 
     private double ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, 
