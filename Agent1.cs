@@ -22,12 +22,13 @@ public class Agent1 : Agent {
     public Texture2D input_vegetation_map;
     public Texture2D height_map;
 
-    private bool init;
+    private bool episode_start;
     private Material map_material;
     private Material original_map_material;
     private const string JSON_Dir = "";
 
-    void Start() {
+    // Called when the Agent is initialized (only one time)
+    public override void Initialize() {
 
         map_material = plane.GetComponent<MeshRenderer>().material;
         original_map_material = map_material;
@@ -39,34 +40,35 @@ public class Agent1 : Agent {
 
         fire_simulation = new FireSimulator(mappings, wind_direction);
         fire_simulation.InitRandomFire(map_manager, map, map_material);
-        init = true;
+        episode_start = true;
 
     }
-
-    // Called when the Agent is initialized (only one time, same as Start)
-    //public override void Initialize() {}
 
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        Debug.Log(actions.DiscreteActions[0]);
+        Debug.Log(actions.DiscreteActions[2]);
         //Debug.Log(actions.DiscreteActions[1]);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
-        
+
+        if (actions.DiscreteActions[2] == 1) {
+            Debug.Log("Reset enviroment");
+            ResetEnviroment();
+        }
 
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
     public override void OnEpisodeBegin() {
 
-        map_manager.ResetMap();
-        map_material = original_map_material;
-        Debug.Log("Epoch finished");
-
     }
 
     public void Update() {
+
+    }
+
+    public void ResetEnviroment() {
 
         bool fire_ended = false;
         /*while (!fire_ended)*/ fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
@@ -82,6 +84,12 @@ public class Agent1 : Agent {
         }*/
 
         Debug.Log("Reward: " + reward);
+        
+        //EndEpisode();
+        map_manager.ResetMap();
+        map_material = original_map_material;
+        map = input_vegetation_map;
+
     }
 
     public void CalculateColorMappings() {
