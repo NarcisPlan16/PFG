@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 using UnityEngine;
 using UnityEditor;
@@ -30,6 +31,8 @@ public class Agent1 : Agent {
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
+        this.MaxStep = 1; // Maximum number of iterations for each epoch
+
         map_material = plane.GetComponent<MeshRenderer>().material;
         original_map_material = map_material;
 
@@ -41,37 +44,52 @@ public class Agent1 : Agent {
         fire_simulation = new FireSimulator(mappings, wind_direction);
         fire_simulation.InitRandomFire(map_manager, map, map_material);
         episode_start = true;
+        Academy.Instance.AutomaticSteppingEnabled = false;
+        
+        //EnvironmentParameters a = Academy.Instance.EnvironmentParameters;
 
+    }
+
+    public void Update() {
+        if (episode_start) {
+            Academy.Instance.EnvironmentStep();
+            episode_start = false;
+        }
     }
 
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        Debug.Log(actions.DiscreteActions[2]);
-        //Debug.Log(actions.DiscreteActions[1]);
+        Debug.Log("aaaa"/*actions.DiscreteActions[1]*/);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
-
-        if (actions.DiscreteActions[2] == 1) {
-            Debug.Log("Reset enviroment");
-            ResetEnviroment();
-        }
 
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
     public override void OnEpisodeBegin() {
 
+        if (!episode_start) {
+
+            FinishEpoch();
+            Debug.Log("Restart Epoch");
+            episode_start = true;
+            
+        }
+
     }
 
-    public void Update() {
-
+    public void FinishEpoch() {
+        StartCoroutine(ResetEnviroment());
     }
 
-    public void ResetEnviroment() {
+    public IEnumerator ResetEnviroment() {
 
         bool fire_ended = false;
-        /*while (!fire_ended)*/ fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
+        while (!fire_ended) {
+            fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
+            yield return null;
+        }
 
         // Calculate rewards based on burned pixels
         List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();

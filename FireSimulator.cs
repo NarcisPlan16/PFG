@@ -24,6 +24,7 @@ public class FireSimulator {
     private HashSet<Cell> pixels_burning;
     private HashSet<Cell> pixels_burned;
     private Vector3 wind_direction;
+    private System.Random random = new System.Random();
 
     public FireSimulator(List<ColorToVegetation> mappings, Vector3 wind) {
 
@@ -103,10 +104,10 @@ public class FireSimulator {
         if (pixels_burning.Count > 0) {
 
             map = map_manager.GetMap();
-            int rand_expand_pixels = Random.Range(0, 20); // number of pixels tu expand this iteration. Maximum of 10
+            int rand_expand_pixels = random.Next(0, 20); // number of pixels tu expand this iteration. Maximum of 20
             for (int i = 0; i < rand_expand_pixels; i++) {
 
-                int rand_pixel = Random.Range(0, pixels_burning.Count);
+                int rand_pixel = random.Next(0, pixels_burning.Count);
                 List<Cell> pixels_burning_list = new List<Cell>(pixels_burning);
 
                 Cell origin_cell = pixels_burning_list[rand_pixel];
@@ -118,8 +119,8 @@ public class FireSimulator {
                     bool expanded = false;
                     foreach (Cell neigh in neighbors) {
 
-                        double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, heightmap, map, map_manager);
-                        if (expand_prob >= 0.2) { // 0.2
+                        double expand_prob = ExpandProbability(origin_cell, neigh, true, false, false, heightmap, map, map_manager);
+                        if (expand_prob >= 0.25) { // 0.2
 
                             map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
                             pixels_burning.Add(neigh);
