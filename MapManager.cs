@@ -8,7 +8,7 @@ public class MapManager {
 
     private MapPreprocessing map_preprocessing = new MapPreprocessing();
     private Texture2D map;
-    private Texture2D original_map;
+    private Color[] original_map_pixels;
     private List<ColorToVegetation> mappings = new List<ColorToVegetation>();
     public GameObject plane;
 
@@ -19,7 +19,7 @@ public class MapManager {
 
         map = map_preprocessing.ObtainProcessedMap();
 
-        original_map = map; // Save the original so we can restore the map
+        original_map_pixels = map.GetPixels(); // Save the original so we can restore the map
         mat.mainTexture = map;
         mappings = map_preprocessing.ObtainMappings();
         
@@ -45,7 +45,8 @@ public class MapManager {
     }
 
     public void ResetMap() {
-        map = original_map;
+        map.SetPixels(original_map_pixels);
+        map.Apply();
         //map_material.mainTexture = original_map;
     }
 

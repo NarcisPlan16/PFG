@@ -24,8 +24,10 @@ public class Agent1 : Agent {
     public Texture2D height_map;
 
     private bool episode_start;
+    private bool finishing;
     private Material map_material;
     private Material original_map_material;
+    private Color[] original_map_pixels;
     private const string JSON_Dir = "";
 
     // Called when the Agent is initialized (only one time)
@@ -40,10 +42,11 @@ public class Agent1 : Agent {
         map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
 
         map = map_manager.GetMap();
+        original_map_pixels = map.GetPixels();
 
         fire_simulation = new FireSimulator(mappings, wind_direction);
-        fire_simulation.InitRandomFire(map_manager, map, map_material);
         episode_start = true;
+        finishing = false;
         Academy.Instance.AutomaticSteppingEnabled = false;
         
         //EnvironmentParameters a = Academy.Instance.EnvironmentParameters;
@@ -51,14 +54,15 @@ public class Agent1 : Agent {
     }
 
     public void Update() {
+
         if (episode_start) {
-
-            Academy.Instance.EnvironmentStep();
-            FinishEpoch();
-            this.EndEpisode();
-
             episode_start = false;
+            Academy.Instance.EnvironmentStep();
+            this.EndEpisode();
         }
+        else if (!finishing) FinishEpoch();
+        
+
     }
 
     // Called when the Agent requests a decision
@@ -67,19 +71,23 @@ public class Agent1 : Agent {
         Debug.Log("aaaa"/*actions.DiscreteActions[1]*/);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
-
+        episode_start = false;
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
-    public override void OnEpisodeBegin() {}
+    public override void OnEpisodeBegin() {
+        
+    }
 
     public void FinishEpoch() {
+        finishing = true;
         StartCoroutine(ResetEnviroment());
     }
 
     public IEnumerator ResetEnviroment() {
 
         bool fire_ended = false;
+        fire_simulation.InitRandomFire(map_manager, map, map_material);
         while (!fire_ended) {
             fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
             yield return null;
@@ -97,11 +105,15 @@ public class Agent1 : Agent {
 
         Debug.Log("Reward: " + reward);
         
-        //EndEpisode();
         map_manager.ResetMap();
         map_material = original_map_material;
-        map = input_vegetation_map;
 
+        map.SetPixels(original_map_pixels);
+        map.Apply();
+
+        episode_start = true;
+        finishing = false;
+        fire_simulation = new FireSimulator(mappings, wind_direction); // TODO: Comprovar que no ocupa més memòria
     }
 
     public void CalculateColorMappings() {

@@ -21,8 +21,8 @@ public class FireSimulator {
     private const int MAX_TRIES = 5;
 
     private Dictionary<Color, ColorToVegetation> color_mappings;
-    private HashSet<Cell> pixels_burning;
-    private HashSet<Cell> pixels_burned;
+    private List<Cell> pixels_burning;
+    private List<Cell> pixels_burned;
     private Vector3 wind_direction;
     private System.Random random = new System.Random();
 
@@ -33,8 +33,8 @@ public class FireSimulator {
             color_mappings.Add(mapping.color, mapping);
         }
 
-        pixels_burning = new HashSet<Cell>(); // TODO: Carregar-me els veïns i buscar-los a cada iteració (ObtainNeighborsUnburned a cada iteració)
-        pixels_burned = new HashSet<Cell>();
+        pixels_burning = new List<Cell>();
+        pixels_burned = new List<Cell>();
         wind_direction = wind;
     }
 
@@ -67,7 +67,7 @@ public class FireSimulator {
     }
 
     public List<Cell> BurntPixels() {
-        return pixels_burned.ToList();
+        return pixels_burned;
     }
 
     public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map, MapManager map_manager) {
@@ -107,40 +107,39 @@ public class FireSimulator {
             int rand_expand_pixels = random.Next(0, 20); // number of pixels tu expand this iteration. Maximum of 20
             for (int i = 0; i < rand_expand_pixels; i++) {
 
+                // expand the fire to its neighbors (to all or to only some of them)
                 int rand_pixel = random.Next(0, pixels_burning.Count);
-                List<Cell> pixels_burning_list = new List<Cell>(pixels_burning);
-
-                Cell origin_cell = pixels_burning_list[rand_pixel];
+                Cell origin_cell = pixels_burning[rand_pixel];
                 List<Cell> neighbors = ObtainNeighborsUnburned(origin_cell, map, map_manager);
 
-                // expand the fire to its neighbors (to all or to only some of them)
                 if (neighbors.Count > 0) {
 
                     bool expanded = false;
                     foreach (Cell neigh in neighbors) {
 
                         double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, heightmap, map, map_manager);
-                        if (expand_prob >= 0.38) { // 0.2
+                        if (expand_prob >= 0.35) { // 0.2
 
                             map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
                             pixels_burning.Add(neigh);
-                            pixels_burning.Remove(origin_cell);
-                            pixels_burned.Add(origin_cell);
-
-                        }
-                        else {
-                            origin_cell.opportunities -= 1;
-                            Debug.Log(origin_cell.opportunities);
-                        }
-
-                        if (origin_cell.opportunities == 0) {
-                            pixels_burning.Remove(origin_cell);
-                            pixels_burned.Add(origin_cell);
+                            expanded = true;
+                            
                         }
 
                     }
 
+                    if (expanded) AddPixelToBurntOnes(rand_pixel, origin_cell);
+                    else {
+
+                        origin_cell.opportunities -= 1;
+                        pixels_burning[rand_pixel] = origin_cell;
+
+                        if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel, origin_cell);
+
+                    }                   
+
                 }
+                else AddPixelToBurntOnes(rand_pixel, origin_cell);
                 
                 if (pixels_burning.Count == 0) {
                     Debug.Log("The fire has ended");
@@ -164,6 +163,13 @@ public class FireSimulator {
         //Debug.Log(pixels_burning.Count);
 
         return fire_ended;
+    }
+
+    private void AddPixelToBurntOnes(int cell_index, Cell origin_cell) {
+        // Both cell_index and origin_cell are the same pixel but one is for removing from an index and the other is for adding directly the cell
+
+        pixels_burning.RemoveAt(cell_index); // Remove origin_cell
+        pixels_burned.Add(origin_cell);
     }
 
     private double ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, 
