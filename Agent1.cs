@@ -95,13 +95,16 @@ public class Agent1 : Agent {
 
         // Calculate rewards based on burned pixels
         List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();
+        Debug.Log("Total pixels burnt: " + burnt_pixels.Count);
         float reward = 0.0f;
-        /*foreach (FireSimulator.Cell cell in burnt_pixels) {
+        //StartCoroutine(CalcReward(burnt_pixels));
+        foreach (FireSimulator.Cell cell in burnt_pixels) {
             Color pixel_color = map_manager.GetPixel(cell.x, cell.y);
             ColorToVegetation mapping = ObtainMapping(pixel_color);
 
             reward -= mapping.burnPriority;
-        }*/
+            yield return null;
+        }
 
         Debug.Log("Reward: " + reward);
         
@@ -114,6 +117,21 @@ public class Agent1 : Agent {
         episode_start = true;
         finishing = false;
         fire_simulation = new FireSimulator(mappings, wind_direction); // TODO: Comprovar que no ocupa més memòria
+    }
+
+    public IEnumerator CalcReward(List<FireSimulator.Cell> burnt_pixels) {
+
+        float reward = 0.0f;
+        foreach (FireSimulator.Cell cell in burnt_pixels) {
+            Color pixel_color = map_manager.GetPixel(cell.x, cell.y);
+            ColorToVegetation mapping = ObtainMapping(pixel_color);
+
+            reward -= mapping.burnPriority;
+            yield return null;
+        }
+
+        Debug.Log("Rew " + reward);
+
     }
 
     public void CalculateColorMappings() {
