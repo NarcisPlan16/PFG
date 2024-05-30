@@ -52,7 +52,11 @@ public class Agent1 : Agent {
 
     public void Update() {
         if (episode_start) {
+
             Academy.Instance.EnvironmentStep();
+            FinishEpoch();
+            this.EndEpisode();
+
             episode_start = false;
         }
     }
@@ -67,17 +71,7 @@ public class Agent1 : Agent {
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
-    public override void OnEpisodeBegin() {
-
-        if (!episode_start) {
-
-            FinishEpoch();
-            Debug.Log("Restart Epoch");
-            episode_start = true;
-            
-        }
-
-    }
+    public override void OnEpisodeBegin() {}
 
     public void FinishEpoch() {
         StartCoroutine(ResetEnviroment());

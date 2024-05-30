@@ -119,29 +119,29 @@ public class FireSimulator {
                     bool expanded = false;
                     foreach (Cell neigh in neighbors) {
 
-                        double expand_prob = ExpandProbability(origin_cell, neigh, true, false, false, heightmap, map, map_manager);
-                        if (expand_prob >= 0.25) { // 0.2
+                        double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, heightmap, map, map_manager);
+                        if (expand_prob >= 0.38) { // 0.2
 
                             map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
                             pixels_burning.Add(neigh);
-                            expanded = true;
+                            pixels_burning.Remove(origin_cell);
+                            pixels_burned.Add(origin_cell);
 
+                        }
+                        else {
+                            origin_cell.opportunities -= 1;
+                            Debug.Log(origin_cell.opportunities);
+                        }
+
+                        if (origin_cell.opportunities == 0) {
+                            pixels_burning.Remove(origin_cell);
+                            pixels_burned.Add(origin_cell);
                         }
 
                     }
 
-                    if (!expanded) origin_cell.opportunities--;
-                    else {
-                        pixels_burning.Remove(origin_cell);
-                        pixels_burned.Add(origin_cell);
-                    }
-
                 }
-
-                if (origin_cell.opportunities == 0) {
-                    pixels_burning.Remove(origin_cell);
-                    pixels_burned.Add(origin_cell);
-                }
+                
                 if (pixels_burning.Count == 0) {
                     Debug.Log("The fire has ended");
                     fire_ended = true;
@@ -155,6 +155,13 @@ public class FireSimulator {
             Debug.Log("The fire has ended");
             fire_ended = true;
         }
+
+        if (pixels_burning.Count == 0) {
+            Debug.Log("The fire has ended");
+            fire_ended = true;
+        }
+
+        //Debug.Log(pixels_burning.Count);
 
         return fire_ended;
     }
