@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Linq;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 using UnityEngine;
 using UnityEditor;
@@ -81,33 +84,15 @@ public class Agent1 : Agent {
 
     public void FinishEpoch() {
         finishing = true;
-        StartCoroutine(ResetEnviroment());
+        StartCoroutine(SimulateFireAndCalcReward());
     }
 
-    public IEnumerator ResetEnviroment() {
+    public IEnumerator SimulateFireAndCalcReward() {
 
-        bool fire_ended = false;
-        fire_simulation.InitRandomFire(map_manager, map, map_material);
-        while (!fire_ended) {
-            fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
-            yield return null;
-        }
+        yield return StartCoroutine(SimulateFire());
+        yield return StartCoroutine(CalcReward());
 
-        // Calculate rewards based on burned pixels
-        List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();
-        Debug.Log("Total pixels burnt: " + burnt_pixels.Count);
-        float reward = 0.0f;
-        //StartCoroutine(CalcReward(burnt_pixels));
-        foreach (FireSimulator.Cell cell in burnt_pixels) {
-            Color pixel_color = map_manager.GetPixel(cell.x, cell.y);
-            ColorToVegetation mapping = ObtainMapping(pixel_color);
-
-            reward -= mapping.burnPriority;
-            yield return null;
-        }
-
-        Debug.Log("Reward: " + reward);
-        
+        // Reset the map
         map_manager.ResetMap();
         map_material = original_map_material;
 
@@ -117,21 +102,61 @@ public class Agent1 : Agent {
         episode_start = true;
         finishing = false;
         fire_simulation = new FireSimulator(mappings, wind_direction); // TODO: Comprovar que no ocupa més memòria
+
     }
 
-    public IEnumerator CalcReward(List<FireSimulator.Cell> burnt_pixels) {
+    public IEnumerator SimulateFire() {
 
-        float reward = 0.0f;
-        foreach (FireSimulator.Cell cell in burnt_pixels) {
-            Color pixel_color = map_manager.GetPixel(cell.x, cell.y);
-            ColorToVegetation mapping = ObtainMapping(pixel_color);
-
-            reward -= mapping.burnPriority;
+        bool fire_ended = false;
+        fire_simulation.InitRandomFire(map_manager, map, map_material);
+        while (!fire_ended) {
+            fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
             yield return null;
         }
 
-        Debug.Log("Rew " + reward);
+    }
 
+
+    public IEnumerator CalcReward() {
+
+        // Calculate rewards based on burnt pixels
+        List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();
+        Debug.Log("Total pixels burnt: " + burnt_pixels.Count);
+
+        // Cache pixel colors because we can't acess a Texture2D inside a parallel thread
+        List<Color> pixel_colors = new List<Color>();
+        for (int i = 0; i < burnt_pixels.Count; i++) {
+
+            FireSimulator.Cell cell = burnt_pixels[i];
+            pixel_colors.Add(input_vegetation_map.GetPixel(cell.x, cell.y)); // Get the original pixel color
+            
+            yield return null;
+        }
+
+        ConcurrentBag<float> results = new ConcurrentBag<float>();
+
+        int batch_size = 200;
+        int total_batches = (burnt_pixels.Count + batch_size - 1) / batch_size;
+
+        for (int batch = 0; batch < total_batches; batch++) {
+
+            int start = batch * batch_size;
+            int end = Mathf.Min(start + batch_size, burnt_pixels.Count);
+
+            Parallel.For(start, end, i => {
+
+                Color pixel_color = pixel_colors[i];
+                ColorToVegetation mapping = ObtainMapping(pixel_color);
+
+                results.Add(-mapping.burnPriority);
+            });
+
+            yield return null; // Prevent unity scene from freezing
+        }
+
+        // Sum the results after parallel processing
+        float reward = results.Sum();
+        Debug.Log("Reward: " + reward);
     }
 
     public void CalculateColorMappings() {
@@ -159,11 +184,18 @@ public class Agent1 : Agent {
         bool found = false;
         int i = 0;
         ColorToVegetation mapping = new ColorToVegetation();
+        Debug.Log("Mappings count: " + mappings.Count);
         while (!found) {
+
+            Debug.Log("Color to search: " + color);
+            Debug.Log("Mapping color actual: "+ mappings[i].color);
+
+
             if (mappings[i].color == color) {
                 mapping = mappings[i];
                 found = true;
             }
+            i++;
         }
 
         return mapping;
