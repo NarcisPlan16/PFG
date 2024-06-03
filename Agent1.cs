@@ -71,7 +71,7 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        Debug.Log("aaaa"/*actions.DiscreteActions[1]*/);
+        //Debug.Log(actions.DiscreteActions[1]);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
         episode_start = false;
@@ -85,6 +85,7 @@ public class Agent1 : Agent {
     public void FinishEpoch() {
         finishing = true;
         StartCoroutine(SimulateFireAndCalcReward());
+        EndEpisode();
     }
 
     public IEnumerator SimulateFireAndCalcReward() {
@@ -156,6 +157,7 @@ public class Agent1 : Agent {
 
         // Sum the results after parallel processing
         float reward = results.Sum();
+        SetReward(reward);
         Debug.Log("Reward: " + reward);
     }
 
@@ -184,11 +186,11 @@ public class Agent1 : Agent {
         bool found = false;
         int i = 0;
         ColorToVegetation mapping = new ColorToVegetation();
-        Debug.Log("Mappings count: " + mappings.Count);
-        while (!found) {
+        //Debug.Log("Mappings count: " + mappings.Count);
+        while (!found && i < mappings.Count) {
 
-            Debug.Log("Color to search: " + color);
-            Debug.Log("Mapping color actual: "+ mappings[i].color);
+            //Debug.Log("Color to search: " + color);
+            //Debug.Log("Mapping color actual: "+ mappings[i].color);
 
 
             if (mappings[i].color == color) {

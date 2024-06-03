@@ -155,13 +155,6 @@ public class FireSimulator {
             fire_ended = true;
         }
 
-        if (pixels_burning.Count == 0) {
-            Debug.Log("The fire has ended");
-            fire_ended = true;
-        }
-
-        //Debug.Log(pixels_burning.Count);
-
         return fire_ended;
     }
 
