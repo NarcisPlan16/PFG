@@ -32,6 +32,7 @@ public class Agent1 : Agent {
     private Material original_map_material;
     private Color[] original_map_pixels;
     private const string JSON_Dir = "";
+    private Color FIRETRENCH_COLOR = new Color(1.0f, 0.588f, 0.196f);
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -71,7 +72,17 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        //Debug.Log(actions.DiscreteActions[1]);
+        Vector2 origin = new Vector2();
+        origin.x = actions.DiscreteActions[0];
+        origin.y = actions.DiscreteActions[1];
+
+        Vector2 destination = new Vector2();
+        destination.x = actions.DiscreteActions[2];
+        destination.y = actions.DiscreteActions[3];
+
+        Color color = FIRETRENCH_COLOR;
+        LineDrawer line_drawer = new LineDrawer();
+        line_drawer.DrawLine(origin, destination, color, map, map_material, map_manager);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
         episode_start = false;
