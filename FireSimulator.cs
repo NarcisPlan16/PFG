@@ -147,6 +147,13 @@ public class FireSimulator {
                     break; // Break the for loop
                 }
 
+                //---------DEBUG ONLY---------//
+                if (pixels_burned.Count >= 4000) {
+                    fire_ended = true;
+                    break;
+                }
+                //---------DEBUG ONLY---------//
+
             }
 
         }

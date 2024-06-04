@@ -52,6 +52,7 @@ public class Agent1 : Agent {
         episode_start = true;
         finishing = false;
         Academy.Instance.AutomaticSteppingEnabled = false;
+        SetReward(100000f);
         
         //EnvironmentParameters a = Academy.Instance.EnvironmentParameters;
 
@@ -60,6 +61,7 @@ public class Agent1 : Agent {
     public void Update() {
 
         if (episode_start) {
+            SetReward(100000f);
             episode_start = false;
             Academy.Instance.EnvironmentStep();
             this.EndEpisode();
@@ -83,6 +85,7 @@ public class Agent1 : Agent {
         Color color = FIRETRENCH_COLOR;
         LineDrawer line_drawer = new LineDrawer();
         line_drawer.DrawLine(origin, destination, color, map, map_material, map_manager);
+        Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
         episode_start = false;
@@ -96,7 +99,8 @@ public class Agent1 : Agent {
     public void FinishEpoch() {
         finishing = true;
         StartCoroutine(SimulateFireAndCalcReward());
-        EndEpisode();
+        Debug.Log("Epoch ended");
+        Debug.Log("Reward: " + GetCumulativeReward());
     }
 
     public IEnumerator SimulateFireAndCalcReward() {
@@ -168,8 +172,7 @@ public class Agent1 : Agent {
 
         // Sum the results after parallel processing
         float reward = results.Sum();
-        SetReward(reward);
-        Debug.Log("Reward: " + reward);
+        AddReward(reward);
     }
 
     public void CalculateColorMappings() {

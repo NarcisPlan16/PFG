@@ -1,6 +1,8 @@
 behaviors:
   Firetrench Agent:
     trainer_type: ppo
+    summary_freq: 100
+    time_horizon: 4
     hyperparameters:
       batch_size: 64
       buffer_size: 2048
@@ -18,7 +20,8 @@ behaviors:
       extrinsic:
         gamma: 0.99
         strength: 1.0
+      curiosity:
+        strength: 0.05
+        gamma: 0.88
     max_steps: 5e5
-    time_horizon: 64
-    summary_freq: 1000
-    threaded: True
+    threaded: false
