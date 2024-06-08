@@ -61,10 +61,12 @@ public class Agent1 : Agent {
     public void Update() {
 
         if (episode_start) {
-            SetReward(100000f);
-            episode_start = false;
+            Debug.Log("--------------------------EPOCH " + Academy.Instance.EpisodeCount + "--------------------------");
             Academy.Instance.EnvironmentStep();
-            this.EndEpisode();
+            episode_start = false;
+            SetReward(100000f);
+            this.RequestDecision();
+            Debug.Log("R1: " + + GetCumulativeReward()); // DEBUG
         }
         else if (!finishing) FinishEpoch();
         
@@ -101,6 +103,7 @@ public class Agent1 : Agent {
         StartCoroutine(SimulateFireAndCalcReward());
         Debug.Log("Epoch ended");
         Debug.Log("Reward: " + GetCumulativeReward());
+        //this.EndEpisode(); // Dev
     }
 
     public IEnumerator SimulateFireAndCalcReward() {
