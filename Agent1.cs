@@ -28,8 +28,6 @@ public class Agent1 : Agent {
     public Texture2D input_vegetation_map;
     public Texture2D height_map;
 
-    private bool episode_start;
-    private bool finishing;
     private Material map_material;
     private Material original_map_material;
     private Color[] original_map_pixels;
@@ -52,8 +50,6 @@ public class Agent1 : Agent {
         original_map_pixels = map.GetPixels();
 
         fire_simulation = new FireSimulator(mappings, wind_direction);
-        episode_start = true;
-        finishing = false;
         Academy.Instance.AutomaticSteppingEnabled = false;
         SetReward(100000f);
         
@@ -62,19 +58,6 @@ public class Agent1 : Agent {
     }
 
     public void Update() {
-
-        
-
-        if (episode_start) {
-            Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
-            Academy.Instance.EnvironmentStep();
-            episode_start = false;
-            SetReward(100000f);
-            this.RequestDecision();
-            Debug.Log("R1: " + + GetCumulativeReward()); // DEBUG
-        }
-        else if (!finishing) FinishEpoch();
-        
 
     }
 
@@ -95,18 +78,27 @@ public class Agent1 : Agent {
         Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
         //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
-        episode_start = false;
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
     public override void OnEpisodeBegin() {
-        
+
+        Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
+        SetReward(100000f);
+        Debug.Log("R1: " + + GetCumulativeReward()); // DEBUG
+
     }
 
     public void FinishEpoch() {
 
-        finishing = true;
-        
+        Academy.Instance.AutomaticSteppingEnabled = false;
+        on_sim_end.AddListener(() => {
+            Debug.Log("Episode Ended");
+            Debug.Log("Reward: " + GetCumulativeReward());
+            Academy.Instance.AutomaticSteppingEnabled = true;
+        });
+
+        StartCoroutine(SimulateFireAndCalcReward());
     }
 
     public IEnumerator SimulateFireAndCalcReward() {
@@ -121,8 +113,6 @@ public class Agent1 : Agent {
         map.SetPixels(original_map_pixels);
         map.Apply();
 
-        episode_start = true;
-        finishing = false;
         fire_simulation = new FireSimulator(mappings, wind_direction); // TODO: Comprovar que no ocupa més memòria
         on_sim_end.Invoke(); //Fire the event as the coroutine has ended and thus we can continue 
 
