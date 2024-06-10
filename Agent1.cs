@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.Events;
+
 
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -33,6 +35,7 @@ public class Agent1 : Agent {
     private Color[] original_map_pixels;
     private const string JSON_Dir = "";
     private Color FIRETRENCH_COLOR = new Color(1.0f, 0.588f, 0.196f);
+    private UnityEvent on_sim_end = new UnityEvent();
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -61,7 +64,7 @@ public class Agent1 : Agent {
     public void Update() {
 
         if (episode_start) {
-            Debug.Log("--------------------------EPOCH " + Academy.Instance.EpisodeCount + "--------------------------");
+            Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
             Academy.Instance.EnvironmentStep();
             episode_start = false;
             SetReward(100000f);
@@ -99,11 +102,15 @@ public class Agent1 : Agent {
     }
 
     public void FinishEpoch() {
+
         finishing = true;
+        on_sim_end.AddListener(() => {
+            Debug.Log("Episode Ended");
+            Debug.Log("Reward: " + GetCumulativeReward());
+            this.EndEpisode(); // Dev
+        });
+
         StartCoroutine(SimulateFireAndCalcReward());
-        Debug.Log("Epoch ended");
-        Debug.Log("Reward: " + GetCumulativeReward());
-        //this.EndEpisode(); // Dev
     }
 
     public IEnumerator SimulateFireAndCalcReward() {
@@ -121,6 +128,7 @@ public class Agent1 : Agent {
         episode_start = true;
         finishing = false;
         fire_simulation = new FireSimulator(mappings, wind_direction); // TODO: Comprovar que no ocupa més memòria
+        on_sim_end.Invoke(); //Fire the event as the coroutine has ended and thus we can continue 
 
     }
 
@@ -175,7 +183,8 @@ public class Agent1 : Agent {
 
         // Sum the results after parallel processing
         float reward = results.Sum();
-        AddReward(reward);
+        SetReward(100000f + reward);
+        Debug.Log("R2: " + + GetCumulativeReward()); // DEBUG
     }
 
     public void CalculateColorMappings() {
