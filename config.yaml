@@ -24,5 +24,5 @@ behaviors:
     max_steps: 5e5
     threaded: true
     summary_freq: 5
-    time_horizon: 64
-    checkpoint_interval: 20
+    time_horizon: 64 # specifies the maximum number of steps to collect in an agent's experience buffer before using these experiences for training
+    checkpoint_interval: 100
