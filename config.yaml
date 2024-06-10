@@ -2,7 +2,7 @@ behaviors:
   Firetrench Agent:
     trainer_type: ppo
     summary_freq: 100
-    time_horizon: 4
+    time_horizon: 1
     hyperparameters:
       batch_size: 64
       buffer_size: 2048

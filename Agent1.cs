@@ -63,6 +63,8 @@ public class Agent1 : Agent {
 
     public void Update() {
 
+        
+
         if (episode_start) {
             Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
             Academy.Instance.EnvironmentStep();
@@ -104,13 +106,7 @@ public class Agent1 : Agent {
     public void FinishEpoch() {
 
         finishing = true;
-        on_sim_end.AddListener(() => {
-            Debug.Log("Episode Ended");
-            Debug.Log("Reward: " + GetCumulativeReward());
-            this.EndEpisode(); // Dev
-        });
-
-        StartCoroutine(SimulateFireAndCalcReward());
+        
     }
 
     public IEnumerator SimulateFireAndCalcReward() {
@@ -183,8 +179,8 @@ public class Agent1 : Agent {
 
         // Sum the results after parallel processing
         float reward = results.Sum();
-        SetReward(100000f + reward);
-        Debug.Log("R2: " + + GetCumulativeReward()); // DEBUG
+        //SetReward(100000f + reward);
+        AddReward(reward);
     }
 
     public void CalculateColorMappings() {
