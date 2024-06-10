@@ -1,16 +1,14 @@
 behaviors:
   Firetrench Agent:
     trainer_type: ppo
-    summary_freq: 100
-    time_horizon: 1
     hyperparameters:
-      batch_size: 64
-      buffer_size: 2048
+      batch_size: 2 # there are buffer_size / batch_size = batches per epoch.
+      buffer_size: 10 # How many steps to fill the buffer in order to learn
+      num_epoch: 3 # meaning the model is trained num_epoch times on the entire buffer during one update cycle.
       learning_rate: 0.0003
       beta: 0.01
       epsilon: 0.2
       lambd: 0.95
-      num_epoch: 3
       learning_rate_schedule: linear
     network_settings:
       normalize: true
@@ -24,4 +22,7 @@ behaviors:
         strength: 0.05
         gamma: 0.88
     max_steps: 5e5
-    threaded: false
+    threaded: true
+    summary_freq: 5
+    time_horizon: 64
+    checkpoint_interval: 20

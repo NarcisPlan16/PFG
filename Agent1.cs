@@ -28,6 +28,7 @@ public class Agent1 : Agent {
     public Texture2D input_vegetation_map;
     public Texture2D height_map;
 
+    //private bool action_taken;
     private Material map_material;
     private Material original_map_material;
     private Color[] original_map_pixels;
@@ -50,7 +51,8 @@ public class Agent1 : Agent {
         original_map_pixels = map.GetPixels();
 
         fire_simulation = new FireSimulator(mappings, wind_direction);
-        Academy.Instance.AutomaticSteppingEnabled = false;
+        Academy.Instance.AutomaticSteppingEnabled = true;
+        //action_taken = false;
         SetReward(100000f);
         
         //EnvironmentParameters a = Academy.Instance.EnvironmentParameters;
@@ -64,6 +66,9 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
+        //if (!action_taken) {
+
+        //action_taken = true;
         Vector2 origin = new Vector2();
         origin.x = actions.DiscreteActions[0];
         origin.y = actions.DiscreteActions[1];
@@ -77,14 +82,16 @@ public class Agent1 : Agent {
         line_drawer.DrawLine(origin, destination, color, map, map_material, map_manager);
         Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
-        //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
+            //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
+        FinishEpoch();
+        //}
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
     public override void OnEpisodeBegin() {
 
         Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
-        SetReward(100000f);
+        //SetReward(100000f);
         Debug.Log("R1: " + + GetCumulativeReward()); // DEBUG
 
     }
@@ -93,8 +100,8 @@ public class Agent1 : Agent {
 
         Academy.Instance.AutomaticSteppingEnabled = false;
         on_sim_end.AddListener(() => {
-            Debug.Log("Episode Ended");
             Debug.Log("Reward: " + GetCumulativeReward());
+            //action_taken = false;
             Academy.Instance.AutomaticSteppingEnabled = true;
         });
 

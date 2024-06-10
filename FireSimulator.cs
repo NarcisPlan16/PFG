@@ -148,7 +148,7 @@ public class FireSimulator {
                 }
 
                 //---------DEBUG ONLY---------//
-                if (pixels_burned.Count >= 4000) {
+                if (pixels_burned.Count >= 3000) {
                     fire_ended = true;
                     break;
                 }
