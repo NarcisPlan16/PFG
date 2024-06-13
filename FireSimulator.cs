@@ -47,8 +47,8 @@ public class FireSimulator {
         int random_y =  Random.Range(0, map.height);
         
         //----------Debug only------
-        random_x = 206;
-        random_y = 206;
+        random_x = 103;
+        random_y = 103;
         //--------------------------
 
         res.Add(random_x);
@@ -148,7 +148,7 @@ public class FireSimulator {
                 }
 
                 //---------DEBUG ONLY---------//
-                if (pixels_burned.Count >= 3000) {
+                if (pixels_burned.Count >= 4) {
                     fire_ended = true;
                     break;
                 }

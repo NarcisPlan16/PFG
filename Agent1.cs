@@ -35,6 +35,7 @@ public class Agent1 : Agent {
     private const string JSON_Dir = "";
     private Color FIRETRENCH_COLOR = new Color(1.0f, 0.588f, 0.196f);
     private UnityEvent on_sim_end = new UnityEvent();
+    private const int MAX_BURN_PRIO = 5;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -61,6 +62,17 @@ public class Agent1 : Agent {
 
     public void Update() {
 
+    }
+
+     public override void CollectObservations(VectorSensor sensor) {
+
+        Color[] observations = map.GetPixels(); // Flatten the terrain map into a 1D float array
+
+        foreach (Color obs in observations) { // Add observations to the VectorSensor
+            sensor.AddObservation(obs.r);
+            sensor.AddObservation(obs.g);
+            sensor.AddObservation(obs.b);
+        }
     }
 
     // Called when the Agent requests a decision
@@ -176,8 +188,9 @@ public class Agent1 : Agent {
 
         // Sum the results after parallel processing
         float reward = results.Sum();
-        //SetReward(100000f + reward);
-        AddReward(reward);
+        float max_reward = map.width*map.height*MAX_BURN_PRIO;
+        SetReward(max_reward + reward);
+        //AddReward(reward);
     }
 
     public void CalculateColorMappings() {

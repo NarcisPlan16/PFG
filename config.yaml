@@ -2,8 +2,8 @@ behaviors:
   Firetrench Agent:
     trainer_type: ppo
     hyperparameters:
-      batch_size: 2 # there are buffer_size / batch_size = batches per epoch.
-      buffer_size: 10 # How many steps to fill the buffer in order to learn
+      batch_size: 32 #  Number of experiences sampled from the replay buffer for each update step of the neural network.
+      buffer_size: 128 # Maximum number of experiences stored in the replay buffer at any given time.
       num_epoch: 3 # meaning the model is trained num_epoch times on the entire buffer during one update cycle.
       learning_rate: 0.0003
       beta: 0.01
@@ -23,6 +23,7 @@ behaviors:
         gamma: 0.88
     max_steps: 5e5
     threaded: true
-    summary_freq: 5
-    time_horizon: 64 # specifies the maximum number of steps to collect in an agent's experience buffer before using these experiences for training
+    summary_freq: 10
+    time_horizon: 32 # Number of time steps to collect data from the environment before performing an update to the neural network.
     checkpoint_interval: 100
+    keep_checkpoints: 5
