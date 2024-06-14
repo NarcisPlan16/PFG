@@ -5,11 +5,11 @@ using System.Linq;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System;
 
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Events;
-
 
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -32,15 +32,18 @@ public class Agent1 : Agent {
     private Material map_material;
     private Material original_map_material;
     private Color[] original_map_pixels;
-    private const string JSON_Dir = "";
+    private const string JSON_Dir = "./Assets/Resources/JSON/";
     private Color FIRETRENCH_COLOR = new Color(1.0f, 0.588f, 0.196f);
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
+    private const int MAX_FIRE_SPAN = 1000;
+    private float reward;
+    private System.Random random = new System.Random();
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
-        this.MaxStep = 1; // Maximum number of iterations for each epoch
+        //this.MaxStep = 1; // Maximum number of iterations for each epoch
 
         map_material = plane.GetComponent<MeshRenderer>().material;
         original_map_material = map_material;
@@ -54,25 +57,18 @@ public class Agent1 : Agent {
         fire_simulation = new FireSimulator(mappings, wind_direction);
         Academy.Instance.AutomaticSteppingEnabled = true;
         //action_taken = false;
-        SetReward(100000f);
+        SetReward(0);
         
-        //EnvironmentParameters a = Academy.Instance.EnvironmentParameters;
-
     }
 
-    public void Update() {
-
+    public void StoreReward(float value) {
+        reward = value;
     }
 
-     public override void CollectObservations(VectorSensor sensor) {
+    public override void CollectObservations(VectorSensor sensor) {
 
-        Color[] observations = map.GetPixels(); // Flatten the terrain map into a 1D float array
+        //sensor.AddObservation();
 
-        foreach (Color obs in observations) { // Add observations to the VectorSensor
-            sensor.AddObservation(obs.r);
-            sensor.AddObservation(obs.g);
-            sensor.AddObservation(obs.b);
-        }
     }
 
     // Called when the Agent requests a decision
@@ -123,7 +119,7 @@ public class Agent1 : Agent {
     public IEnumerator SimulateFireAndCalcReward() {
 
         yield return StartCoroutine(SimulateFire());
-        yield return StartCoroutine(CalcReward());
+        yield return StartCoroutine(CalcReward(StoreReward));
 
         // Reset the map
         map_manager.ResetMap();
@@ -142,14 +138,13 @@ public class Agent1 : Agent {
         bool fire_ended = false;
         fire_simulation.InitRandomFire(map_manager, map, map_material);
         while (!fire_ended) {
-            fire_ended = fire_simulation.ExpandFireRandom(height_map, map_manager, map, map_material);
+            fire_ended = fire_simulation.ExpandFireRandom(MAX_FIRE_SPAN, height_map, map_manager, map, map_material);
             yield return null;
         }
 
     }
 
-
-    public IEnumerator CalcReward() {
+    public IEnumerator CalcReward(Action<float> callback) {
 
         // Calculate rewards based on burnt pixels
         List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();
@@ -189,7 +184,10 @@ public class Agent1 : Agent {
         // Sum the results after parallel processing
         float reward = results.Sum();
         float max_reward = map.width*map.height*MAX_BURN_PRIO;
-        SetReward(max_reward + reward);
+
+        callback(max_reward + reward);
+
+        //SetReward(max_reward + reward);
         //AddReward(reward);
     }
 

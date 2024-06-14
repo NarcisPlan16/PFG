@@ -47,8 +47,8 @@ public class FireSimulator {
         int random_y =  Random.Range(0, map.height);
         
         //----------Debug only------
-        random_x = 103;
-        random_y = 103;
+        //random_x = 103;
+        //random_y = 103;
         //--------------------------
 
         res.Add(random_x);
@@ -97,7 +97,7 @@ public class FireSimulator {
         return map_manager.GetPixel(x, y) != new Color(0.0f, 0.0f, 0.0f);
     }
 
-    public bool ExpandFireRandom(Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { // TODO: Expandir-me només en 4 direccions (n,s,e,w)
+    public bool ExpandFireRandom(int max_span, Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { 
 
         bool fire_ended = false;
 
@@ -148,7 +148,7 @@ public class FireSimulator {
                 }
 
                 //---------DEBUG ONLY---------//
-                if (pixels_burned.Count >= 4) {
+                if (pixels_burned.Count >= max_span) {
                     fire_ended = true;
                     break;
                 }
