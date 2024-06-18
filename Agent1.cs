@@ -39,6 +39,7 @@ public class Agent1 : Agent {
     private const int MAX_FIRE_SPAN = 1000;
     private float reward;
     private System.Random random = new System.Random();
+    private Dictionary<Color, ColorToVegetation> mappings_dict;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -54,7 +55,12 @@ public class Agent1 : Agent {
         map = map_manager.GetMap();
         original_map_pixels = map.GetPixels();
 
-        fire_simulation = new FireSimulator(mappings, wind_direction);
+        mappings_dict = new Dictionary<Color, ColorToVegetation>();
+        foreach (ColorToVegetation c in mappings) {
+            mappings_dict.Add(c.color, c);
+        }
+
+        fire_simulation = new FireSimulator(mappings_dict, wind_direction);
         Academy.Instance.AutomaticSteppingEnabled = true;
         //action_taken = false;
         SetReward(0);
@@ -128,7 +134,7 @@ public class Agent1 : Agent {
         map.SetPixels(original_map_pixels);
         map.Apply();
 
-        fire_simulation = new FireSimulator(mappings, wind_direction); // TODO: Comprovar que no ocupa més memòria
+        fire_simulation = new FireSimulator(mappings_dict, wind_direction); // TODO: Comprovar que no ocupa més memòria
         on_sim_end.Invoke(); //Fire the event as the coroutine has ended and thus we can continue 
 
     }
@@ -195,39 +201,34 @@ public class Agent1 : Agent {
 
         map_material = plane.GetComponent<MeshRenderer>().sharedMaterial;
         map_manager.plane = plane;
-        mappings = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+        mappings_dict = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+
+        mappings = new List<ColorToVegetation>();
+        foreach ((Color key, ColorToVegetation value) in mappings_dict) {
+            mappings.Add(value);
+        }
 
         map = map_manager.GetMap();
 
     }
 
     public void StoreMappings() {
-        map_manager.SaveMappings(mappings);
+        map_manager.SaveMappings(mappings_dict);
         map_manager.StoreMappings(JSON_Dir + mappings_filename);
     }
 
     public void LoadMappings() {
         map_manager.LoadMappings(JSON_Dir + mappings_filename);
-        mappings = map_manager.GetMappings();
+        mappings_dict = map_manager.GetMappings();
     }
 
     private ColorToVegetation ObtainMapping(Color color) {
 
         bool found = false;
-        int i = 0;
         ColorToVegetation mapping = new ColorToVegetation();
-        //Debug.Log("Mappings count: " + mappings.Count);
-        while (!found && i < mappings.Count) {
-
-            //Debug.Log("Color to search: " + color);
-            //Debug.Log("Mapping color actual: "+ mappings[i].color);
-
-
-            if (mappings[i].color == color) {
-                mapping = mappings[i];
-                found = true;
-            }
-            i++;
+        if (mappings_dict.ContainsKey(color)) {
+            mapping = mappings_dict[color];
+            found = true;
         }
 
         return mapping;

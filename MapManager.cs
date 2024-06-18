@@ -9,10 +9,10 @@ public class MapManager {
     private MapPreprocessing map_preprocessing = new MapPreprocessing();
     private Texture2D map;
     private Color[] original_map_pixels;
-    private List<ColorToVegetation> mappings = new List<ColorToVegetation>();
+    private Dictionary<Color, ColorToVegetation> mappings;
     public GameObject plane;
 
-    public List<ColorToVegetation> Preprocessing(Texture2D input_map, Material mat) {
+    public Dictionary<Color, ColorToVegetation> Preprocessing(Texture2D input_map, Material mat) {
 
         map_preprocessing.Start(input_map);
         map_preprocessing.CalculateColorMappings();
@@ -26,7 +26,7 @@ public class MapManager {
         return mappings;
     }
 
-    public List<ColorToVegetation> GetMappings() {
+    public Dictionary<Color, ColorToVegetation> GetMappings() {
         return mappings;
     }
 
@@ -50,7 +50,7 @@ public class MapManager {
         //map_material.mainTexture = original_map;
     }
 
-    public void SaveMappings(List<ColorToVegetation> m) {
+    public void SaveMappings(Dictionary<Color, ColorToVegetation> m) {
         mappings = m;
     }
 
@@ -68,7 +68,7 @@ public class MapManager {
         string json_content = File.ReadAllText(file_path);
         ColorToVegetationListWrapper data = JsonUtility.FromJson<ColorToVegetationListWrapper>(json_content);
 
-        mappings = data.list;
+        mappings = data.ListToDict();
     }
    
 }

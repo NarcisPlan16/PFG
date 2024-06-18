@@ -16,7 +16,7 @@ public class VegetationGenerator : MonoBehaviour {
     public Texture2D vegetationMap; // Assign JPG file
     public float threshold = 0.2877f; // Threshold for considering colors the same
     public int minSeparation = 1; // Density of vegetation (how close the vegetation is generated with eachother)
-    public List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>(); // List to map colors to vegetation prefabs
+    public Dictionary<Color, ColorToVegetation> colorVegetationMappings = new Dictionary<Color, ColorToVegetation>(); // List to map colors to vegetation prefabs
 
     void Start() {
         

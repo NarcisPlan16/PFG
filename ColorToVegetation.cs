@@ -48,7 +48,23 @@ public class ColorToVegetation {
 public class ColorToVegetationListWrapper {
     public List<ColorToVegetation> list = new List<ColorToVegetation>();
 
-    public ColorToVegetationListWrapper(List<ColorToVegetation> new_list) {
-        list = new_list;
+    public ColorToVegetationListWrapper(Dictionary<Color, ColorToVegetation> new_list) {
+
+        List<ColorToVegetation> list_aux = new List<ColorToVegetation>();
+        foreach (ColorToVegetation mapping in new_list.Values) {
+            list.Add(mapping);
+        }
+
     }
+
+    public Dictionary<Color, ColorToVegetation> ListToDict() {
+
+        Dictionary<Color, ColorToVegetation> res = new Dictionary<Color, ColorToVegetation>();
+        foreach (ColorToVegetation mapping in list) {
+            res.Add(mapping.color, mapping);
+        }
+
+        return res;
+    }
+
 }

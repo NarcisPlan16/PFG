@@ -10,7 +10,7 @@ public class MapPreprocessing {
 
     private ColorVegetationMapper colorVegMapper = new ColorVegetationMapper();
     private Texture2D work_map;
-    private List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>();
+    private Dictionary<Color, ColorToVegetation> colorVegetationMappings = new Dictionary<Color, ColorToVegetation>();
     private Texture2D vegetationMap; 
 
     public void Start(Texture2D input_map) {
@@ -31,7 +31,7 @@ public class MapPreprocessing {
             for (int j = 0; j < vegetationMap.height; j++) {
 
                 Color original_color = vegetationMap.GetPixel(i, j);
-                foreach (ColorToVegetation mapping in colorVegetationMappings) {
+                foreach (ColorToVegetation mapping in colorVegetationMappings.Values) {
                     if (mapping.Contains(original_color)) {
                         new_map.SetPixel(i, j, mapping.color); // Replace the original color with the mapped color
                         break; // Exit the foreach loop once a mapping is found
@@ -84,7 +84,7 @@ public class MapPreprocessing {
                 ColorToVegetation aux = new ColorToVegetation() {color = new_color};
                 aux.AddToMappedColors(new_color);
 
-                colorVegetationMappings.Add(aux);
+                colorVegetationMappings.Add(new_color, aux);
             }
 
         }
@@ -114,7 +114,7 @@ public class MapPreprocessing {
         return work_map;
     }
 
-    public List<ColorToVegetation> ObtainMappings() {
+    public Dictionary<Color, ColorToVegetation> ObtainMappings() {
         return colorVegetationMappings;
     }
 

@@ -26,13 +26,9 @@ public class FireSimulator {
     private Vector3 wind_direction;
     private System.Random random = new System.Random();
 
-    public FireSimulator(List<ColorToVegetation> mappings, Vector3 wind) {
+    public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind) {
 
-        color_mappings = new Dictionary<Color, ColorToVegetation>();
-        foreach (ColorToVegetation mapping in mappings) {
-            color_mappings.Add(mapping.color, mapping);
-        }
-
+        color_mappings = mappings;
         pixels_burning = new List<Cell>();
         pixels_burned = new List<Cell>();
         wind_direction = wind;
@@ -118,7 +114,7 @@ public class FireSimulator {
                     foreach (Cell neigh in neighbors) {
 
                         double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, heightmap, map, map_manager);
-                        if (expand_prob >= 0.35) { // 0.2
+                        if (expand_prob >= 0.2) { // 0.2
 
                             map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
                             pixels_burning.Add(neigh);

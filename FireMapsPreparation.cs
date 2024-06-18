@@ -19,13 +19,12 @@ public class FireMapsPreparation : MonoBehaviour {
     public GameObject plane; // Reference to the terrain object
     public Material plane_material;
     public const int MAX_FIRE_SPAN = 1000;
-    public List<ColorToVegetation> mappings;
+    public Dictionary<Color, ColorToVegetation> mappings;
     public string mappings_filename;
 
 
     private Texture2D actual_map;
     private MapManager map_manager = new MapManager();
-    private float reward;
     private Material map_material;
     private const int MAX_BURN_PRIO = 5;
     private const string JSON_Dir = "./Assets/Resources/JSON/";
@@ -34,17 +33,19 @@ public class FireMapsPreparation : MonoBehaviour {
     [System.Serializable]
     public struct FireData {
 
-        public FireData(int x, int y, float cost, Vector3 wind, int span) {
+        public FireData(int x, int y, float cost, Vector3 wind, int span, int pixels) {
             this.init_x = x;
             this.init_y = y;
             this.total_cost = cost;
             this.wind_dir = wind;
             this.max_span = span;
+            this.pixels_burnt = pixels;
         }
 
         public int init_x;
         public int init_y;
         public float total_cost;
+        public int pixels_burnt;
         public Vector3 wind_dir;
         public int max_span; // Maximum timespan simulated
     }
@@ -57,11 +58,11 @@ public class FireMapsPreparation : MonoBehaviour {
         map_manager.plane = plane;
         map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
         actual_map = map_manager.GetMap();
-        
+
+        LoadMappings();
 
         List<FireData> fires_data = new List<FireData>();
-
-        int n_fires = 5;
+        int n_fires = 1;
         for (int i = 0; i < n_fires; i++) {
 
             Vector3 wind = new Vector3();
@@ -79,21 +80,22 @@ public class FireMapsPreparation : MonoBehaviour {
             while (!fire_ended) {
                 fire_ended = fire_sim.ExpandFireRandom(MAX_FIRE_SPAN, height_map, map_manager, actual_map, map_material);
             }
-
-            StartCoroutine(CalcReward());
-            FireData fire_data = new FireData(x_ini, y_ini, reward, wind, MAX_FIRE_SPAN);
+            
+            (float, int) res = CalcReward();
+            FireData fire_data = new FireData(x_ini, y_ini, res.Item1, wind, MAX_FIRE_SPAN, res.Item2);
 
             string jsonData = JsonUtility.ToJson(fire_data);
             System.IO.File.WriteAllText(JSON_Dir+"SampleMaps/fire_"+i, jsonData);
 
             map_manager.ResetMap();
             actual_map = map_manager.GetMap();
+            Debug.Log("Calulated Reward: " + res.Item1);
             Debug.Log("**********************************");
         }
 
     }
 
-    public IEnumerator CalcReward() {
+    public (float, int) CalcReward() {
 
         // Calculate rewards based on burnt pixels
         List<FireSimulator.Cell> burnt_pixels = fire_sim.BurntPixels();
@@ -101,13 +103,20 @@ public class FireMapsPreparation : MonoBehaviour {
 
         // Cache pixel colors because we can't acess a Texture2D inside a parallel thread
         List<Color> pixel_colors = new List<Color>();
-        for (int i = 0; i < burnt_pixels.Count; i++) {
+        for (int j = 0; j < burnt_pixels.Count; j++) {
 
-            FireSimulator.Cell cell = burnt_pixels[i];
-            pixel_colors.Add(actual_map.GetPixel(cell.x, cell.y)); // Get the original pixel color
+            FireSimulator.Cell cell = burnt_pixels[j];
+            pixel_colors.Add(input_vegetation_map.GetPixel(cell.x, cell.y)); // Get the original pixel color
             
-            yield return null;
         }
+
+        /*List<float> results = new List<float>();
+        for (int i = 0; i < burnt_pixels.Count; i++) {
+            Color pixel_color = pixel_colors[i];
+            ColorToVegetation mapping = ObtainMapping(pixel_color);
+
+            results.Add(-mapping.burnPriority);
+        }*/
 
         ConcurrentBag<float> results = new ConcurrentBag<float>();
 
@@ -125,16 +134,19 @@ public class FireMapsPreparation : MonoBehaviour {
                 ColorToVegetation mapping = ObtainMapping(pixel_color);
 
                 results.Add(-mapping.burnPriority);
+                //if (i == 10) Debug.Log("Mapping color: " + mapping.color);
             });
 
-            yield return null; // Prevent unity scene from freezing
+            //Debug.Log("Sum: " + results.Sum());
+
         }
 
         // Sum the results after parallel processing
+
         float rew = results.Sum();
         float max_reward = actual_map.width*actual_map.height*MAX_BURN_PRIO;
 
-        reward = rew + max_reward;
+        return (rew, burnt_pixels.Count);
     }
 
     public void CalculateColorMappings() {
@@ -147,11 +159,6 @@ public class FireMapsPreparation : MonoBehaviour {
 
     }
 
-    public void StoreMappings() {
-        map_manager.SaveMappings(mappings);
-        map_manager.StoreMappings(JSON_Dir + mappings_filename);
-    }
-
     public void LoadMappings() {
         map_manager.LoadMappings(JSON_Dir + mappings_filename);
         mappings = map_manager.GetMappings();
@@ -159,15 +166,17 @@ public class FireMapsPreparation : MonoBehaviour {
 
     private ColorToVegetation ObtainMapping(Color color) {
 
-        bool found = false;
-        int i = 0;
         ColorToVegetation mapping = new ColorToVegetation();
-        while (!found && i < mappings.Count) {
-            if (mappings[i].color == color) {
-                mapping = mappings[i];
-                found = true;
-            }
-            i++;
+        if (mappings.ContainsKey(color)) {
+            mapping = mappings[color];
+        }
+        else {
+
+            ColorVegetationMapper col_mapper = new ColorVegetationMapper();
+            col_mapper.colorVegetationMappings = mappings;
+
+            mapping = col_mapper.FindClosestMapping(color);
+
         }
 
         return mapping;
@@ -181,10 +190,7 @@ public class FireMapsPreparationEditor : Editor {
         DrawDefaultInspector();
         FireMapsPreparation myScript = (FireMapsPreparation)target;
 
-        if (GUILayout.Button("Generate maps")) myScript.PrepareFireCollection();
-        if (GUILayout.Button("Calculate Color Mappings")) myScript.CalculateColorMappings();
-        if (GUILayout.Button("Save mappings")) myScript.StoreMappings();
-        if (GUILayout.Button("Load mappings")) myScript.LoadMappings();
+        if (GUILayout.Button("Pregenerate fire simulations")) myScript.PrepareFireCollection();
         
     }
 }

@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 
 public class ColorVegetationMapper {
 
-    private List<ColorToVegetation> colorVegetationMappings = new List<ColorToVegetation>();
+    public Dictionary<Color, ColorToVegetation> colorVegetationMappings = new Dictionary<Color, ColorToVegetation>();
     public float colorThreshold = 1.0f;
 
-    public List<ColorToVegetation> ObtainMappings() {
+    public Dictionary<Color, ColorToVegetation> ObtainMappings() {
         return colorVegetationMappings;
     }
 
-    public void MapToTargetColors(List<ColorToVegetation> target_mappings, Texture2D vegetation_map) {
+    public void MapToTargetColors(Dictionary<Color, ColorToVegetation> target_mappings, Texture2D vegetation_map) {
     
         colorVegetationMappings = target_mappings;
         for (int x = 0; x < vegetation_map.width; x++) {
@@ -28,12 +29,12 @@ public class ColorVegetationMapper {
         
     }
 
-    private ColorToVegetation FindClosestMapping(Color color) {
+    public ColorToVegetation FindClosestMapping(Color color) {
 
-        ColorToVegetation closest_mapping = colorVegetationMappings[0];
+        ColorToVegetation closest_mapping = colorVegetationMappings.Values.First();
         float last_distance = ColorDistance(color, closest_mapping.color);;
 
-        foreach (ColorToVegetation target in colorVegetationMappings) {
+        foreach (ColorToVegetation target in colorVegetationMappings.Values) {
 
             float distance = ColorDistance(color, target.color);
             if (distance < last_distance) {      
@@ -69,7 +70,7 @@ public class ColorVegetationMapper {
     public void AddColorMapping(Color newColor) {
 
         bool foundSimilarColor = false;
-        foreach (ColorToVegetation mapping in colorVegetationMappings) {
+        foreach (ColorToVegetation mapping in colorVegetationMappings.Values) {
             
             if (ColorDistance(newColor, mapping.color) < colorThreshold) { // the two colors are similar
                 mapping.AddToMappedColors(newColor); // Add the color to the mapped ones that are similar
@@ -80,40 +81,15 @@ public class ColorVegetationMapper {
         }
 
         if (!foundSimilarColor) {
-
             ColorToVegetation new_mapping = new ColorToVegetation() {color = newColor};
-            int pos = FindColorToVegetationPos(new_mapping); // Find its position on the list
-            colorVegetationMappings.Insert(pos, new_mapping); // add the same color to the ones mapped. The list is ordered by colors
+            colorVegetationMappings.Add(newColor, new_mapping); // add the same color to the ones mapped. The list is ordered by colors
         }
 
-    }
-
-    public int FindColorToVegetationPos(ColorToVegetation m) {
-
-        int pos = 0;
-        foreach (ColorToVegetation mapping in colorVegetationMappings) {
-
-            if (mapping.CompareToColor(m.color) < 0) break;
-            else pos++;
-
-        }
-
-        return pos;
     }
 
     public ColorToVegetation GetColorMapping(Color pixelColor) {
 
-        ColorToVegetation result = new ColorToVegetation();
-        foreach (ColorToVegetation mapping in colorVegetationMappings) {
-
-            if (mapping.color == pixelColor || mapping.Contains(pixelColor)) {
-                result = mapping;
-                break;
-            }
-
-        } 
-
-        return result;
+        return colorVegetationMappings[pixelColor];
     }
 
     public float ColorDistance(Color c1, Color c2) {
