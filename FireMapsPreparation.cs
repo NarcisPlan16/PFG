@@ -21,6 +21,7 @@ public class FireMapsPreparation : MonoBehaviour {
     public const int MAX_FIRE_SPAN = 1000;
     public Dictionary<Color, ColorToVegetation> mappings;
     public string mappings_filename;
+    public int n_fires = 2;
 
 
     private Texture2D actual_map;
@@ -62,7 +63,6 @@ public class FireMapsPreparation : MonoBehaviour {
         LoadMappings();
 
         List<FireData> fires_data = new List<FireData>();
-        int n_fires = 1;
         for (int i = 0; i < n_fires; i++) {
 
             Vector3 wind = new Vector3();
@@ -110,14 +110,6 @@ public class FireMapsPreparation : MonoBehaviour {
             
         }
 
-        /*List<float> results = new List<float>();
-        for (int i = 0; i < burnt_pixels.Count; i++) {
-            Color pixel_color = pixel_colors[i];
-            ColorToVegetation mapping = ObtainMapping(pixel_color);
-
-            results.Add(-mapping.burnPriority);
-        }*/
-
         ConcurrentBag<float> results = new ConcurrentBag<float>();
 
         int batch_size = 200;
@@ -134,15 +126,11 @@ public class FireMapsPreparation : MonoBehaviour {
                 ColorToVegetation mapping = ObtainMapping(pixel_color);
 
                 results.Add(-mapping.burnPriority);
-                //if (i == 10) Debug.Log("Mapping color: " + mapping.color);
             });
-
-            //Debug.Log("Sum: " + results.Sum());
 
         }
 
         // Sum the results after parallel processing
-
         float rew = results.Sum();
         float max_reward = actual_map.width*actual_map.height*MAX_BURN_PRIO;
 
@@ -173,7 +161,7 @@ public class FireMapsPreparation : MonoBehaviour {
         else {
 
             ColorVegetationMapper col_mapper = new ColorVegetationMapper();
-            col_mapper.colorVegetationMappings = mappings;
+            col_mapper.mappings = mappings;
 
             mapping = col_mapper.FindClosestMapping(color);
 

@@ -188,10 +188,10 @@ public class Agent1 : Agent {
         }
 
         // Sum the results after parallel processing
-        float reward = results.Sum();
+        float rew = results.Sum();
         float max_reward = map.width*map.height*MAX_BURN_PRIO;
 
-        callback(max_reward + reward);
+        callback(max_reward + rew);
 
         //SetReward(max_reward + reward);
         //AddReward(reward);
@@ -202,11 +202,7 @@ public class Agent1 : Agent {
         map_material = plane.GetComponent<MeshRenderer>().sharedMaterial;
         map_manager.plane = plane;
         mappings_dict = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
-
-        mappings = new List<ColorToVegetation>();
-        foreach ((Color key, ColorToVegetation value) in mappings_dict) {
-            mappings.Add(value);
-        }
+        mappings = mappings_dict.Values.ToList();
 
         map = map_manager.GetMap();
 
@@ -224,11 +220,17 @@ public class Agent1 : Agent {
 
     private ColorToVegetation ObtainMapping(Color color) {
 
-        bool found = false;
         ColorToVegetation mapping = new ColorToVegetation();
         if (mappings_dict.ContainsKey(color)) {
             mapping = mappings_dict[color];
-            found = true;
+        }
+        else {
+
+            ColorVegetationMapper col_mapper = new ColorVegetationMapper();
+            col_mapper.mappings = mappings_dict;
+
+            mapping = col_mapper.FindClosestMapping(color);
+
         }
 
         return mapping;

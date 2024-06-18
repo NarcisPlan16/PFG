@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using BitMiracle.LibTiff.Classic;
+using System.Linq;
 
 using UnityEngine;
 
@@ -116,6 +117,10 @@ public class MapPreprocessing {
 
     public Dictionary<Color, ColorToVegetation> ObtainMappings() {
         return colorVegetationMappings;
+    }
+
+    public List<ColorToVegetation> ObtainMappingsAsList() {
+        return colorVegetationMappings.Values.ToList();
     }
 
 }
