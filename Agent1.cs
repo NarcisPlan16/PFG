@@ -40,6 +40,7 @@ public class Agent1 : Agent {
     private float reward;
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
+    private Dictionary<int, FireMapsPreparation.FireData> fires_data;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -64,7 +65,26 @@ public class Agent1 : Agent {
         Academy.Instance.AutomaticSteppingEnabled = true;
         //action_taken = false;
         SetReward(0);
+
+        fires_data = new Dictionary<int, FireMapsPreparation.FireData>();
+        GetFiresData();
         
+    }
+
+    private void GetFiresData() {
+
+        string[] files = Directory.GetFiles(JSON_Dir + "SampleMaps");
+        
+        for (int i = 0; i < (int) files.Length / 2; i++) {
+
+            string json_content = File.ReadAllText(JSON_Dir + "SampleMaps/fire_" + i);
+            FireMapsPreparation.FireData fire_data = JsonUtility.FromJson<FireMapsPreparation.FireData>(json_content);
+
+            fires_data.Add(i, fire_data);
+
+        }
+        
+
     }
 
     public void StoreReward(float value) {
@@ -96,7 +116,7 @@ public class Agent1 : Agent {
         line_drawer.DrawLine(origin, destination, color, map, map_material, map_manager);
         Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
-            //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
+        //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
         FinishEpoch();
         //}
     }
@@ -188,13 +208,12 @@ public class Agent1 : Agent {
         }
 
         // Sum the results after parallel processing
-        float rew = results.Sum();
-        float max_reward = map.width*map.height*MAX_BURN_PRIO;
+        float penalization = results.Sum();
+        float max_pen = 0;
 
-        callback(max_reward + rew);
+        //callback(max_reward + rew);
 
-        //SetReward(max_reward + reward);
-        //AddReward(reward);
+        SetReward(max_pen + penalization);
     }
 
     public void CalculateColorMappings() {
