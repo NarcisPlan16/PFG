@@ -34,13 +34,14 @@ public class FireMapsPreparation : MonoBehaviour {
     [System.Serializable]
     public struct FireData {
 
-        public FireData(int x, int y, float cost, Vector3 wind, int span, int pixels) {
+        public FireData(int x, int y, float cost, Vector3 wind, int humidity, int span, int pixels) {
             this.init_x = x;
             this.init_y = y;
             this.total_cost = cost;
             this.wind_dir = wind;
             this.max_span = span;
             this.pixels_burnt = pixels;
+            this.humidity_percentage = humidity;
         }
 
         public int init_x;
@@ -48,6 +49,7 @@ public class FireMapsPreparation : MonoBehaviour {
         public float total_cost;
         public int pixels_burnt;
         public Vector3 wind_dir;
+        public int humidity_percentage;
         public int max_span; // Maximum timespan simulated
     }
 
@@ -62,27 +64,38 @@ public class FireMapsPreparation : MonoBehaviour {
 
         LoadMappings();
 
+        int n_low_hum = (int) Mathf.Round(n_fires * 0.2f);
+        int n_high_hum = (int) Mathf.Round(n_fires * 0.2f);
+
         List<FireData> fires_data = new List<FireData>();
-        for (int i = 0; i < n_fires; i++) {
+        PrepareNFires(0, n_low_hum, 0, 30);
+        PrepareNFires(n_low_hum, n_high_hum, 50, 100);
+        PrepareNFires(n_low_hum+n_high_hum, n_fires, 30, 50);
+    }
+
+    public void PrepareNFires(int ini_i, int number_of_fires, int min_humidity, int max_humidity) {
+
+        for (int i = ini_i; i < number_of_fires+ini_i; i++) {
 
             Vector3 wind = new Vector3();
             wind.x = UnityEngine.Random.Range(-60, 60);
-            wind.y = UnityEngine.Random.Range(-60, 60);
+            wind.y = UnityEngine.Random.Range(-60, 60); // TODO: Does vertical (height) wind affect?
             wind.z = UnityEngine.Random.Range(-60, 60);
 
             int x_ini = UnityEngine.Random.Range(0, actual_map.width);
             int y_ini = UnityEngine.Random.Range(0, actual_map.height);
+            int humidity = UnityEngine.Random.Range(min_humidity, max_humidity);
 
-            fire_sim = new FireSimulator(mappings, wind);
+            fire_sim = new FireSimulator(mappings, wind, humidity);
             List<int> init = fire_sim.InitRandomFire(map_manager, actual_map, map_material);
 
             bool fire_ended = false;
             while (!fire_ended) {
-                fire_ended = fire_sim.ExpandFireRandom(MAX_FIRE_SPAN, height_map, map_manager, actual_map, map_material);
+                fire_ended = fire_sim.ExpandFire(MAX_FIRE_SPAN, height_map, map_manager, actual_map, map_material);
             }
             
             (float, int) res = CalcReward();
-            FireData fire_data = new FireData(x_ini, y_ini, res.Item1, wind, MAX_FIRE_SPAN, res.Item2);
+            FireData fire_data = new FireData(x_ini, y_ini, res.Item1, wind, humidity, MAX_FIRE_SPAN, res.Item2);
 
             string jsonData = JsonUtility.ToJson(fire_data);
             System.IO.File.WriteAllText(JSON_Dir+"SampleMaps/fire_"+i, jsonData);

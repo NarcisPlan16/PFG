@@ -22,13 +22,11 @@ public class Agent1 : Agent {
     private Texture2D map;
     public GameObject plane; // Reference to the terrain object
     public Material plane_material;
-    public Vector3 wind_direction;
     public List<ColorToVegetation> mappings;
     public string mappings_filename;
     public Texture2D input_vegetation_map;
     public Texture2D height_map;
 
-    //private bool action_taken;
     private Material map_material;
     private Material original_map_material;
     private Color[] original_map_pixels;
@@ -61,13 +59,11 @@ public class Agent1 : Agent {
             mappings_dict.Add(c.color, c);
         }
 
-        fire_simulation = new FireSimulator(mappings_dict, wind_direction);
-        Academy.Instance.AutomaticSteppingEnabled = true;
-        //action_taken = false;
-        SetReward(0);
-
         fires_data = new Dictionary<int, FireMapsPreparation.FireData>();
         GetFiresData();
+
+        Academy.Instance.AutomaticSteppingEnabled = true;
+        SetReward(0);
         
     }
 
@@ -100,9 +96,6 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        //if (!action_taken) {
-
-        //action_taken = true;
         Vector2 origin = new Vector2();
         origin.x = actions.DiscreteActions[0];
         origin.y = actions.DiscreteActions[1];
@@ -116,9 +109,7 @@ public class Agent1 : Agent {
         line_drawer.DrawLine(origin, destination, color, map, map_material, map_manager);
         Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
-        //map_manager.SetPixel(Random.Range(0, 512), Random.Range(0, 512), new Color(0.8f, 0, 0), map, map_material);
         FinishEpoch();
-        //}
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
@@ -144,6 +135,8 @@ public class Agent1 : Agent {
 
     public IEnumerator SimulateFireAndCalcReward() {
 
+        fire_simulation = new FireSimulator(mappings_dict); // TODO: Comprovar que no ocupa més memòria
+
         yield return StartCoroutine(SimulateFire());
         yield return StartCoroutine(CalcReward(StoreReward));
 
@@ -154,7 +147,6 @@ public class Agent1 : Agent {
         map.SetPixels(original_map_pixels);
         map.Apply();
 
-        fire_simulation = new FireSimulator(mappings_dict, wind_direction); // TODO: Comprovar que no ocupa més memòria
         on_sim_end.Invoke(); //Fire the event as the coroutine has ended and thus we can continue 
 
     }
@@ -162,9 +154,9 @@ public class Agent1 : Agent {
     public IEnumerator SimulateFire() {
 
         bool fire_ended = false;
-        fire_simulation.InitRandomFire(map_manager, map, map_material);
+        fire_simulation.InitFireWithData(fires_data[1], map_manager, map, map_material);
         while (!fire_ended) {
-            fire_ended = fire_simulation.ExpandFireRandom(MAX_FIRE_SPAN, height_map, map_manager, map, map_material);
+            fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, height_map, map_manager, map, map_material);
             yield return null;
         }
 

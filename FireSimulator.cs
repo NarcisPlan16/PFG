@@ -18,20 +18,22 @@ public class FireSimulator {
         public int opportunities;
     }
 
-    private const int MAX_TRIES = 5;
-
     private Dictionary<Color, ColorToVegetation> color_mappings;
     private List<Cell> pixels_burning;
     private List<Cell> pixels_burned;
     private Vector3 wind_direction;
+    private int humidity_coeff;
+    private bool debug;
     private System.Random random = new System.Random();
 
-    public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind) {
+    public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), int humidity = 0, bool debug = false) {
 
-        color_mappings = mappings;
-        pixels_burning = new List<Cell>();
-        pixels_burned = new List<Cell>();
-        wind_direction = wind;
+        this.color_mappings = mappings;
+        this.pixels_burning = new List<Cell>();
+        this.pixels_burned = new List<Cell>();
+        this.wind_direction = wind;
+        this.humidity_coeff = humidity;
+        this.debug = debug;
     }
 
     public List<int> InitRandomFire(MapManager map_manager, Texture2D map, Material map_material) {
@@ -41,25 +43,30 @@ public class FireSimulator {
 
         int random_x = Random.Range(0, map.width);
         int random_y =  Random.Range(0, map.height);
-        
-        //----------Debug only------
-        //random_x = 103;
-        //random_y = 103;
-        //--------------------------
-
         res.Add(random_x);
         res.Add(random_y);
-
-        Color pixel_color = map.GetPixel(random_x, random_y);
-        ColorToVegetation mapping = color_mappings[pixel_color];
-        int opportunities = (int) Mathf.Round(mapping.expandCoefficient * MAX_TRIES);
+        int opportunities = CalcOpportunities(random_x, random_y, map);  
 
         pixels_burning.Add(new Cell(random_x, random_y, opportunities));
         map_manager.SetPixel(random_x, random_y, new Color(0.0f, 0.0f, 0.0f), map, map_material); // Set the piel to "Black" as it ois the "fire/burned" color
 
-        Debug.Log("Init -- X: " + res[0] + " Y: " + res[1]);
+        if (debug) Debug.Log("Init -- X: " + res[0] + " Y: " + res[1]);
 
         return res;
+    }
+
+    public void InitFireWithData(FireMapsPreparation.FireData fire_data, MapManager map_manager, Texture2D map, Material map_material) {
+        // Returns where the fire was originated
+
+        int init_x = fire_data.init_x;
+        int init_y = fire_data.init_y;
+        int opportunities = CalcOpportunities(init_x, init_y, map);  
+
+        pixels_burning.Add(new Cell(init_x, init_y, opportunities));
+        map_manager.SetPixel(init_x, init_y, new Color(0.0f, 0.0f, 0.0f), map, map_material); // Set the piel to "Black" as it ois the "fire/burned" color
+
+        if (debug) Debug.Log("Init -- X: " + init_x + " Y: " + init_y);
+
     }
 
     public List<Cell> BurntPixels() {
@@ -93,7 +100,7 @@ public class FireSimulator {
         return map_manager.GetPixel(x, y) != new Color(0.0f, 0.0f, 0.0f);
     }
 
-    public bool ExpandFireRandom(int max_span, Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { 
+    public bool ExpandFire(int max_span, Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { 
 
         bool fire_ended = false;
 
@@ -113,7 +120,7 @@ public class FireSimulator {
                     bool expanded = false;
                     foreach (Cell neigh in neighbors) {
 
-                        double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, heightmap, map, map_manager);
+                        double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, heightmap, map, map_manager);
                         if (expand_prob >= 0.2) { // 0.2
 
                             map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
@@ -168,45 +175,45 @@ public class FireSimulator {
         pixels_burned.Add(origin_cell);
     }
 
-    private double ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, 
+    private double ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, bool hum_on, 
                                     Texture2D heightmap, Texture2D map, MapManager map_manager) { 
 
         // TODO: Fer funció amb paràmetre que calculi la probabilitat necessària per expandir a aquella casella (segons vent, altura...)
 
         double probability = 0.0;
+        if (hum_on && CalcHumidityProbability() < 30) probability = 1.0;
+        else {
 
-        Color pixel_color = map.GetPixel(target_pixel.x, target_pixel.y);
-        if (pixel_color != new Color(0, 0, 0)) { // if not burned
+            Color pixel_color = map.GetPixel(target_pixel.x, target_pixel.y);
+            if (pixel_color != new Color(0, 0, 0)) { // if not burned
 
-            // Store enable bits to multiply the coefficients (1 if true, 0 if false)
-            int veg_enable = veg_coeff_on? 1 : 0;
-            int height_enable = height_on? 1 : 0;
-            int wind_enable = wind_on? 1 : 0;
+                // Store enable bits to multiply the coefficients (1 if true, 0 if false)
+                int veg_enable = veg_coeff_on? 1 : 0;
+                int height_enable = height_on? 1 : 0;
+                int wind_enable = wind_on? 1 : 0;
+                int hum_enable = hum_on? 1 : 0;
 
-            double alfa_weight = 0.35*veg_enable; // Weight or the expand_coefficient
-            double h_weight = 0.23*height_enable; // Weight for the height coefficient
-            double w_weight = 0.32*wind_enable; // Wheight for the wind coefficient
-            double r_weight = 0.1; // Wheight for the random Coefficient
-            double max_probability = alfa_weight + h_weight + w_weight + r_weight; 
-            // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
-            // P.E: 0.45+0.3 = 0.75. Thus we could only have values between 0 and 0.75 because the other coefficients are
-            //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
+                double alfa_weight = 0.30*veg_enable; // Weight or the expand_coefficient
+                double h_weight = 0.10*height_enable; // Weight for the height coefficient
+                double w_weight = 0.50*wind_enable; // Wheight for the wind coefficient
+                double hum_weight = 0.10*hum_enable; // Wheight for the humidity coefficient
 
-            ColorToVegetation mapping = color_mappings[pixel_color];
-            //Debug.Log("Expand Coefficient: " + mapping.expandCoefficient);
+                double max_probability = alfa_weight + h_weight + w_weight + hum_weight; 
+                // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
+                // P.E: 0.3+0.5 = 0.8. Thus we could only have values between 0 and 0.75 because the other coefficients are
+                //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
 
-            double alfa = mapping.expandCoefficient;
-            double w = CalcWindProbability(origin_pixel, target_pixel, heightmap); // TODO
-            double h = CalcHeightProbability(origin_pixel, target_pixel, heightmap); // TODO
-            double r = Random.Range(0.0f, 1.0f);
+                ColorToVegetation mapping = color_mappings[pixel_color];
 
-            probability = alfa*alfa_weight + h*h_weight + w*w_weight + r*r_weight;
-            probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
+                double alfa = mapping.expandCoefficient;
+                double w = CalcWindProbability(origin_pixel, target_pixel, heightmap); 
+                double h = CalcHeightProbability(origin_pixel, target_pixel, heightmap);
+                double hum = CalcHumidityProbability();
 
-            //Debug.Log("w: " + w);
-            //Debug.Log("h: " + h);
-            //Debug.Log("Expand Probability: " + probability);
-            //Debug.Log("Max probabiliy: " + max_probability);
+                probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight;
+                probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
+
+            }
 
         }
         
@@ -220,9 +227,6 @@ public class FireSimulator {
         Vector3 vec_displacement_norm = (pointB - pointA).normalized; // Vector fo displacement, normalized (-1 to 1);
 
         float scalar_prod = Vector3.Dot(wind_direction.normalized, vec_displacement_norm); // Scalar product
-        //double res = scalar_prod / (vec_displacement_norm * wind_direction.normalized);
-
-        //Debug.Log("Scalar prod: " + scalar_prod);
         
         float modul = wind_direction.magnitude;
         if (modul < 3) scalar_prod *= 0.05f;
@@ -246,10 +250,11 @@ public class FireSimulator {
 
         float cos_alpha = Vector3.Dot(vec_displacement.normalized, y_plane.normalized); // Com que ens desplaçem només en N,S,E,W sí que és només el cosinus de l'algle. Sinó és el cosinus * un escalar
 
-        //Debug.Log("Displacement: " +  vec_displacement);
-        //Debug.Log("Cos alpha: " + cos_alpha);
-
         return cos_alpha;
+    }
+
+    private double CalcHumidityProbability() {
+        return 1 - (humidity_coeff / 100.0);
     }
 
     private Vector3 Get3DPointAt(Cell point, Texture2D heightmap) {
@@ -270,7 +275,7 @@ public class FireSimulator {
         point_3D.y = 0;
         point_3D.z = terrain_coords_2D.y;
 
-        // Get z coordinate (height) of the terrain on that point
+        // Get y coordinate (height) of the terrain on that point
         point_3D.y = Terrain.activeTerrain.SampleHeight(point_3D); 
 
         return point_3D;
@@ -281,7 +286,11 @@ public class FireSimulator {
         Color pixel_color = map.GetPixel(x, y);
         ColorToVegetation mapping = color_mappings[pixel_color];
 
-        return (int) Mathf.Round(mapping.expandCoefficient * MAX_TRIES);
+        int opportunities = 0; // All colors with code 4XX
+        if (mapping.ICGC_id < 200 && mapping.ICGC_id >= 100) opportunities = 2; // All colors with code 1XX
+        else if (mapping.ICGC_id < 400 && mapping.ICGC_id >= 200) opportunities = 3; // All colors with code 2XX or 3XX   
+
+        return opportunities;
     }
 
 }

@@ -7,6 +7,7 @@ using UnityEngine;
 [System.Serializable]
 public class ColorToVegetation {
     public Color color = new Color(); // Color in the vegetation map
+    public int ICGC_id; // Id provided by the ICGC
     public string cathegory;
     public GameObject vegetationPrefab; // Prefab of the vegetation
     public float expandCoefficient = 0.37f; // Coefficient of "velocity" for the fire to expand to this zone
