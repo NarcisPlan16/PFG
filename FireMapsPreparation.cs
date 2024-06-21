@@ -34,7 +34,7 @@ public class FireMapsPreparation : MonoBehaviour {
     [System.Serializable]
     public struct FireData {
 
-        public FireData(int x, int y, float cost, Vector3 wind, int humidity, int span, int pixels) {
+        public FireData(int x, int y, float cost, Vector3 wind, double humidity, double temperature, int span, int pixels) {
             this.init_x = x;
             this.init_y = y;
             this.total_cost = cost;
@@ -42,6 +42,7 @@ public class FireMapsPreparation : MonoBehaviour {
             this.max_span = span;
             this.pixels_burnt = pixels;
             this.humidity_percentage = humidity;
+            this.temperature = temperature;
         }
 
         public int init_x;
@@ -49,7 +50,8 @@ public class FireMapsPreparation : MonoBehaviour {
         public float total_cost;
         public int pixels_burnt;
         public Vector3 wind_dir;
-        public int humidity_percentage;
+        public double humidity_percentage;
+        public double temperature;
         public int max_span; // Maximum timespan simulated
     }
 
@@ -64,16 +66,29 @@ public class FireMapsPreparation : MonoBehaviour {
 
         LoadMappings();
 
-        int n_low_hum = (int) Mathf.Round(n_fires * 0.2f);
-        int n_high_hum = (int) Mathf.Round(n_fires * 0.2f);
+        int n_extreme_cases = (int) Mathf.Round(n_fires * 0.2f);
+        (int, int)[] humidity_values = new (int, int)[] {(0, 30), (50, 100)}; // normality range: (30, 50)
+        (int, int)[] temperature_values = new (int, int)[] {(0, 30), (40, 60)}; // normality range: (30, 40)
 
-        List<FireData> fires_data = new List<FireData>();
-        PrepareNFires(0, n_low_hum, 0, 30);
-        PrepareNFires(n_low_hum, n_high_hum, 50, 100);
-        PrepareNFires(n_low_hum+n_high_hum, n_fires, 30, 50);
+        int total_files = 0;
+        foreach ((int, int) hum_range in humidity_values) {
+            foreach ((int, int) temp_range in temperature_values) {
+
+                PrepareNFires(total_files, 
+                            n_extreme_cases, 
+                            hum_range.Item1, 
+                            hum_range.Item2, 
+                            temp_range.Item1, 
+                            temp_range.Item2);
+
+                total_files += n_extreme_cases;
+            }
+        }
+
+        PrepareNFires(total_files, n_fires+total_files, 30, 50, 30, 40); // Generate n_fires number of normality values simulations
     }
 
-    public void PrepareNFires(int ini_i, int number_of_fires, int min_humidity, int max_humidity) {
+    public void PrepareNFires(int ini_i, int number_of_fires, int min_humidity, int max_humidity, int min_temp, int max_temp) {
 
         for (int i = ini_i; i < number_of_fires+ini_i; i++) {
 
@@ -84,9 +99,10 @@ public class FireMapsPreparation : MonoBehaviour {
 
             int x_ini = UnityEngine.Random.Range(0, actual_map.width);
             int y_ini = UnityEngine.Random.Range(0, actual_map.height);
-            int humidity = UnityEngine.Random.Range(min_humidity, max_humidity);
+            double humidity = UnityEngine.Random.Range(min_humidity, max_humidity);
+            double temperature = UnityEngine.Random.Range(min_temp, max_temp);
 
-            fire_sim = new FireSimulator(mappings, wind, humidity);
+            fire_sim = new FireSimulator(mappings, wind, humidity, temperature);
             List<int> init = fire_sim.InitRandomFire(map_manager, actual_map, map_material);
 
             bool fire_ended = false;
@@ -95,7 +111,7 @@ public class FireMapsPreparation : MonoBehaviour {
             }
             
             (float, int) res = CalcReward();
-            FireData fire_data = new FireData(x_ini, y_ini, res.Item1, wind, humidity, MAX_FIRE_SPAN, res.Item2);
+            FireData fire_data = new FireData(x_ini, y_ini, res.Item1, wind, humidity, temperature, MAX_FIRE_SPAN, res.Item2);
 
             string jsonData = JsonUtility.ToJson(fire_data);
             System.IO.File.WriteAllText(JSON_Dir+"SampleMaps/fire_"+i, jsonData);

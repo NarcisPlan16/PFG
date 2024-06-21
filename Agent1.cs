@@ -31,11 +31,10 @@ public class Agent1 : Agent {
     private Material original_map_material;
     private Color[] original_map_pixels;
     private const string JSON_Dir = "./Assets/Resources/JSON/";
-    private Color FIRETRENCH_COLOR = new Color(1.0f, 0.588f, 0.196f);
+    private Color FIRETRENCH_COLOR = new Color(1.0f, 0.588f, 0.196f); // TODO: Set to white
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
     private const int MAX_FIRE_SPAN = 1000;
-    private float reward;
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
@@ -83,10 +82,6 @@ public class Agent1 : Agent {
 
     }
 
-    public void StoreReward(float value) {
-        reward = value;
-    }
-
     public override void CollectObservations(VectorSensor sensor) {
 
         //sensor.AddObservation();
@@ -125,7 +120,7 @@ public class Agent1 : Agent {
 
         Academy.Instance.AutomaticSteppingEnabled = false;
         on_sim_end.AddListener(() => {
-            Debug.Log("Reward: " + GetCumulativeReward());
+            //Debug.Log("Reward: " + GetCumulativeReward());
             //action_taken = false;
             Academy.Instance.AutomaticSteppingEnabled = true;
         });
@@ -135,10 +130,14 @@ public class Agent1 : Agent {
 
     public IEnumerator SimulateFireAndCalcReward() {
 
-        fire_simulation = new FireSimulator(mappings_dict); // TODO: Comprovar que no ocupa més memòria
+        fire_simulation = new FireSimulator(mappings_dict, 
+                                            fires_data[4].wind_dir, 
+                                            fires_data[4].humidity_percentage, 
+                                            fires_data[4].temperature
+                                            ); // TODO: Comprovar que no ocupa més memòria
 
         yield return StartCoroutine(SimulateFire());
-        yield return StartCoroutine(CalcReward(StoreReward));
+        yield return StartCoroutine(CalcReward());
 
         // Reset the map
         map_manager.ResetMap();
@@ -154,7 +153,7 @@ public class Agent1 : Agent {
     public IEnumerator SimulateFire() {
 
         bool fire_ended = false;
-        fire_simulation.InitFireWithData(fires_data[1], map_manager, map, map_material);
+        fire_simulation.InitFireWithData(fires_data[4], map_manager, map, map_material);
         while (!fire_ended) {
             fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, height_map, map_manager, map, map_material);
             yield return null;
@@ -162,7 +161,7 @@ public class Agent1 : Agent {
 
     }
 
-    public IEnumerator CalcReward(Action<float> callback) {
+    public IEnumerator CalcReward() {
 
         // Calculate rewards based on burnt pixels
         List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();
@@ -202,8 +201,6 @@ public class Agent1 : Agent {
         // Sum the results after parallel processing
         float penalization = results.Sum();
         float max_pen = 0;
-
-        //callback(max_reward + rew);
 
         SetReward(max_pen + penalization);
     }

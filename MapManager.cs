@@ -47,7 +47,6 @@ public class MapManager {
     public void ResetMap() {
         map.SetPixels(original_map_pixels);
         map.Apply();
-        //map_material.mainTexture = original_map;
     }
 
     public void SaveMappings(Dictionary<Color, ColorToVegetation> m) {
