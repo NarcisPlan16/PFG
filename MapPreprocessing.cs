@@ -42,6 +42,7 @@ public class MapPreprocessing {
 
             }
         }
+        new_map.Apply();
 
         work_map = new_map;
 

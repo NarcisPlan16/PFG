@@ -123,7 +123,8 @@ public class FireSimulator {
                     foreach (Cell neigh in neighbors) {
 
                         double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map, map_manager);
-                        if (expand_prob >= 0.2) { // 0.2
+                        double prob = random.Next(0, 100) / 100;
+                        if (expand_prob >= prob) { // 0.2
 
                             map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
                             pixels_burning.Add(neigh);
@@ -293,7 +294,13 @@ public class FireSimulator {
     private int CalcOpportunities(int x, int y, Texture2D map) {
 
         Color pixel_color = map.GetPixel(x, y);
-        ColorToVegetation mapping = color_mappings[pixel_color];
+
+        ColorVegetationMapper mapper = new ColorVegetationMapper();
+        mapper.mappings = color_mappings;
+
+        ColorToVegetation mapping = new ColorToVegetation();
+        if (color_mappings.ContainsKey(pixel_color))  mapping = color_mappings[pixel_color];
+        else mapping = mapper.FindClosestMapping(pixel_color);
 
         int opportunities = 0; // All colors with code 4XX
         if (mapping.ICGC_id < 200 && mapping.ICGC_id >= 100) opportunities = 2; // All colors with code 1XX

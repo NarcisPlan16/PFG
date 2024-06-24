@@ -61,8 +61,9 @@ public class FireMapsPreparation : MonoBehaviour {
         map_material = plane.GetComponent<MeshRenderer>().material;
 
         map_manager.plane = plane;
-        map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+        map_manager.Preprocessing(input_vegetation_map); // TODO: Paralelitzar per fer-lo més ràpid
         actual_map = map_manager.GetMap();
+        map_material.mainTexture = actual_map;
 
         LoadMappings();
 
@@ -170,7 +171,7 @@ public class FireMapsPreparation : MonoBehaviour {
 
         map_material = plane.GetComponent<MeshRenderer>().sharedMaterial;
         map_manager.plane = plane;
-        mappings = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+        mappings = map_manager.Preprocessing(input_vegetation_map); // TODO: Paralelitzar per fer-lo més ràpid
 
         actual_map = map_manager.GetMap();
 

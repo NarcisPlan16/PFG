@@ -3,7 +3,7 @@ using UnityEngine;
 public class LineDrawer {
 
     // Draw a line from (x0, y0) to (x1, y1)
-    public void DrawLine(Vector2 origin, Vector2 destination, Color color, Texture2D map, Material material, MapManager map_manager) {
+    public void DrawLine(Vector2 origin, Vector2 destination, Color color, Texture2D map, Material map_material, MapManager map_manager) {
 
         int x0 = (int)origin.x;
         int y0 = (int)origin.y;
@@ -19,9 +19,10 @@ public class LineDrawer {
         int err = dx - dy;
 
         bool done = false;
+        map = map_manager.GetMap();
         while (!done){
 
-            map_manager.SetPixel(x0, y0, color, map, material);
+            map_manager.SetPixel(x0, y0, color, map, map_material);
 
             if (x0 == x1 && y0 == y1) done = true; // We have reached destination 
             else {

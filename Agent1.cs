@@ -17,21 +17,15 @@ using Unity.MLAgents.Sensors;
 
 public class Agent1 : Agent {
 
-    private FireSimulator fire_simulation;
-    public MapManager map_manager = new MapManager();
-    private Texture2D map;
     public GameObject plane; // Reference to the terrain object
-    public Material plane_material;
-    public List<ColorToVegetation> mappings;
-    public string mappings_filename;
-    public Texture2D input_vegetation_map;
-    public Texture2D height_map;
-
+    
+    private EnviromentManager enviroment_manager;
+    private MapManager map_manager = new MapManager();
+    private FireSimulator fire_simulation;
+    private Texture2D map;
     private Material map_material;
-    private Material original_map_material;
-    private Color[] original_map_pixels;
     private const string JSON_Dir = "./Assets/Resources/JSON/";
-    private Color FIRETRENCH_COLOR = new Color(1.0f, 0.588f, 0.196f); // TODO: Set to white
+    private Color FIRETRENCH_COLOR = new Color(1.0f, 1.0f, 1.0f);
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
     private const int MAX_FIRE_SPAN = 1000;
@@ -42,21 +36,24 @@ public class Agent1 : Agent {
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
-        //this.MaxStep = 1; // Maximum number of iterations for each epoch
+        enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
 
         map_material = plane.GetComponent<MeshRenderer>().material;
-        original_map_material = map_material;
-
         map_manager.plane = plane;
-        map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
+        map_manager.Preprocessing(enviroment_manager.VegetationMapTexture()); // TODO: Paralelitzar per fer-lo més ràpid
 
-        map = map_manager.GetMap();
-        original_map_pixels = map.GetPixels();
+        map = new Texture2D(map_manager.GetMap().width, map_manager.GetMap().height, TextureFormat.RGBA32, false);
+        map.SetPixels(map_manager.GetMap().GetPixels());
+        map_material.mainTexture = map;
 
-        mappings_dict = new Dictionary<Color, ColorToVegetation>();
-        foreach (ColorToVegetation c in mappings) {
-            mappings_dict.Add(c.color, c);
-        }
+        ColorToVegetation white_mapping = new ColorToVegetation();
+        white_mapping.color = FIRETRENCH_COLOR;
+        white_mapping.ICGC_id = -1;
+        white_mapping.expandCoefficient = 0.1f;
+        white_mapping.burnPriority = 1;
+
+        mappings_dict = enviroment_manager.Mappings();
+        mappings_dict.Add(FIRETRENCH_COLOR, white_mapping);
 
         fires_data = new Dictionary<int, FireMapsPreparation.FireData>();
         GetFiresData();
@@ -101,6 +98,7 @@ public class Agent1 : Agent {
 
         Color color = FIRETRENCH_COLOR;
         LineDrawer line_drawer = new LineDrawer();
+
         line_drawer.DrawLine(origin, destination, color, map, map_material, map_manager);
         Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
@@ -111,8 +109,7 @@ public class Agent1 : Agent {
     public override void OnEpisodeBegin() {
 
         Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
-        //SetReward(100000f);
-        Debug.Log("R1: " + + GetCumulativeReward()); // DEBUG
+        //Debug.Log("REWARD: " + + GetCumulativeReward()); // DEBUG
 
     }
 
@@ -120,7 +117,7 @@ public class Agent1 : Agent {
 
         Academy.Instance.AutomaticSteppingEnabled = false;
         on_sim_end.AddListener(() => {
-            //Debug.Log("Reward: " + GetCumulativeReward());
+            Debug.Log("REWARD: " + GetCumulativeReward());
             //action_taken = false;
             Academy.Instance.AutomaticSteppingEnabled = true;
         });
@@ -134,16 +131,18 @@ public class Agent1 : Agent {
                                             fires_data[4].wind_dir, 
                                             fires_data[4].humidity_percentage, 
                                             fires_data[4].temperature
-                                            ); // TODO: Comprovar que no ocupa més memòria
+                                            );
 
         yield return StartCoroutine(SimulateFire());
         yield return StartCoroutine(CalcReward());
 
         // Reset the map
         map_manager.ResetMap();
-        map_material = original_map_material;
+        map_material = enviroment_manager.MapMaterial();
 
-        map.SetPixels(original_map_pixels);
+        Texture2D tex = enviroment_manager.VegetationMapTexture();
+        map = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, false);
+        map.SetPixels(tex.GetPixels());
         map.Apply();
 
         on_sim_end.Invoke(); //Fire the event as the coroutine has ended and thus we can continue 
@@ -155,7 +154,12 @@ public class Agent1 : Agent {
         bool fire_ended = false;
         fire_simulation.InitFireWithData(fires_data[4], map_manager, map, map_material);
         while (!fire_ended) {
-            fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, height_map, map_manager, map, map_material);
+            fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, 
+                                                    enviroment_manager.HeightMap(), 
+                                                    map_manager, 
+                                                    map, 
+                                                    map_material
+                                                    );
             yield return null;
         }
 
@@ -172,7 +176,8 @@ public class Agent1 : Agent {
         for (int i = 0; i < burnt_pixels.Count; i++) {
 
             FireSimulator.Cell cell = burnt_pixels[i];
-            pixel_colors.Add(input_vegetation_map.GetPixel(cell.x, cell.y)); // Get the original pixel color
+            Texture2D veg_map_texture = enviroment_manager.VegetationMapTexture();
+            pixel_colors.Add(veg_map_texture.GetPixel(cell.x, cell.y)); // Get the original pixel color
             
             yield return null;
         }
@@ -200,30 +205,9 @@ public class Agent1 : Agent {
 
         // Sum the results after parallel processing
         float penalization = results.Sum();
-        float max_pen = 0;
+        float max_pen = fires_data[4].total_cost;
 
-        SetReward(max_pen + penalization);
-    }
-
-    public void CalculateColorMappings() {
-
-        map_material = plane.GetComponent<MeshRenderer>().sharedMaterial;
-        map_manager.plane = plane;
-        mappings_dict = map_manager.Preprocessing(input_vegetation_map, map_material); // TODO: Paralelitzar per fer-lo més ràpid
-        mappings = mappings_dict.Values.ToList();
-
-        map = map_manager.GetMap();
-
-    }
-
-    public void StoreMappings() {
-        map_manager.SaveMappings(mappings_dict);
-        map_manager.StoreMappings(JSON_Dir + mappings_filename);
-    }
-
-    public void LoadMappings() {
-        map_manager.LoadMappings(JSON_Dir + mappings_filename);
-        mappings_dict = map_manager.GetMappings();
+        SetReward(penalization - max_pen);
     }
 
     private ColorToVegetation ObtainMapping(Color color) {
@@ -252,15 +236,7 @@ public class Agent1Editor : Editor {
         DrawDefaultInspector();
 
         Agent1 myScript = (Agent1)target;
-        if (GUILayout.Button("Calculate Color Mappings")) {
-            myScript.CalculateColorMappings();
-        }
-        if (GUILayout.Button("Save mappings")) {
-            myScript.StoreMappings();
-        }
-        if (GUILayout.Button("Load mappings")) {
-            myScript.LoadMappings();
-        }
+
     }
 
 }
