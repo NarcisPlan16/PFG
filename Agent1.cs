@@ -17,8 +17,7 @@ using Unity.MLAgents.Sensors;
 
 public class Agent1 : Agent {
 
-    public GameObject plane; // Reference to the terrain object
-    
+    private GameObject plane; // Reference to the terrain object
     private EnviromentManager enviroment_manager;
     private MapManager map_manager = new MapManager();
     private FireSimulator fire_simulation;
@@ -36,6 +35,8 @@ public class Agent1 : Agent {
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
+        plane = transform.parent.Find("Plane").gameObject; 
+        // transform.parent.Find("Plane")?.gameObject; --> The ? prevents it throwing NullReferenceError and instead returns null if the error is thrown
         enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
 
         map_material = plane.GetComponent<MeshRenderer>().material;

@@ -109,7 +109,7 @@ public class FireSimulator {
         if (pixels_burning.Count > 0) {
 
             map = map_manager.GetMap();
-            int rand_expand_pixels = random.Next(0, 20); // number of pixels tu expand this iteration. Maximum of 20
+            int rand_expand_pixels = random.Next(0, 10); // number of pixels tu expand this iteration. Maximum of 10
             for (int i = 0; i < rand_expand_pixels; i++) {
 
                 // expand the fire to its neighbors (to all or to only some of them)
