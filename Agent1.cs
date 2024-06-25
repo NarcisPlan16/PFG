@@ -39,7 +39,10 @@ public class Agent1 : Agent {
         // transform.parent.Find("Plane")?.gameObject; --> The ? prevents it throwing NullReferenceError and instead returns null if the error is thrown
         enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
 
-        map_material = plane.GetComponent<MeshRenderer>().material;
+        // Prevent modifying the same material as the other agents
+        map_material = new Material(enviroment_manager.MapMaterial());
+        plane.GetComponent<MeshRenderer>().material = map_material;
+
         map_manager.plane = plane;
         map_manager.Preprocessing(enviroment_manager.VegetationMapTexture()); // TODO: Paralelitzar per fer-lo més ràpid
 
