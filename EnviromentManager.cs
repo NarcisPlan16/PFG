@@ -30,7 +30,7 @@ public class EnviromentManager : MonoBehaviour {
         agents_ready.Add(1);
     }
 
-    private void Update() {
+    private void Update() { // TODO
         
         if (agents_ready.Sum() == n_agents.Sum() and n_agents.Sum() == n_enviroments) {
 

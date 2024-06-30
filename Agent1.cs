@@ -119,7 +119,8 @@ public class Agent1 : Agent {
         on_sim_end.AddListener(() => {
             Debug.Log("REWARD: " + GetCumulativeReward());
             //action_taken = false;
-            Academy.Instance.EnvironmentStep(); // TOOD: Crear agent manager que faci que s'esperi a que tots els agents acabin per llavors fer el next step.
+            Academy.Instance.EnvironmentStep(); 
+            // TOOD: Crear agent manager que faci que s'esperi a que tots els agents acabin per llavors fer el next step. I eliminar-lo d'aqui
         });
 
         StartCoroutine(SimulateFireAndCalcReward());
