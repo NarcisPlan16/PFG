@@ -104,11 +104,11 @@ public class FireMapsPreparation : MonoBehaviour {
             double temperature = UnityEngine.Random.Range(min_temp, max_temp);
 
             fire_sim = new FireSimulator(mappings, wind, humidity, temperature);
-            List<int> init = fire_sim.InitRandomFire(map_manager, actual_map, map_material);
+            List<int> init = fire_sim.InitRandomFire(actual_map, map_material);
 
             bool fire_ended = false;
             while (!fire_ended) {
-                fire_ended = fire_sim.ExpandFire(MAX_FIRE_SPAN, height_map, map_manager, actual_map, map_material);
+                fire_ended = fire_sim.ExpandFire(MAX_FIRE_SPAN, height_map, actual_map, map_material);
             }
             
             (float, int) res = CalcReward();

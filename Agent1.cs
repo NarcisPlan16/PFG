@@ -17,9 +17,9 @@ using Unity.MLAgents.Sensors;
 
 public class Agent1 : Agent {
 
-    private GameObject plane; // Reference to the terrain object
+    public GameObject plane; // Reference to the terrain object
+    public bool debug = false;
     private EnviromentManager enviroment_manager;
-    private MapManager map_manager = new MapManager();
     private FireSimulator fire_simulation;
     private Texture2D map;
     private Material map_material;
@@ -35,19 +35,14 @@ public class Agent1 : Agent {
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
-        plane = transform.parent.Find("Plane").gameObject; 
-        // transform.parent.Find("Plane")?.gameObject; --> The ? prevents it throwing NullReferenceError and instead returns null if the error is thrown
         enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
 
         // Prevent modifying the same material as the other agents
-        map_material = new Material(enviroment_manager.MapMaterial());
-        plane.GetComponent<MeshRenderer>().material = map_material;
+        map_material = enviroment_manager.MapMaterial();
+        plane.GetComponent<MeshRenderer>().sharedMaterial = map_material;
 
-        map_manager.plane = plane;
-        map_manager.Preprocessing(enviroment_manager.VegetationMapTexture()); // TODO: Paralelitzar per fer-lo més ràpid
-
-        map = new Texture2D(map_manager.GetMap().width, map_manager.GetMap().height, TextureFormat.RGBA32, false);
-        map.SetPixels(map_manager.GetMap().GetPixels());
+        mappings_dict = enviroment_manager.Preprocessing(); // TODO: Paralelitzar per fer-lo més ràpid
+        map = enviroment_manager.VegetationMapTexture();
         map_material.mainTexture = map;
 
         ColorToVegetation white_mapping = new ColorToVegetation();
@@ -56,14 +51,14 @@ public class Agent1 : Agent {
         white_mapping.expandCoefficient = 0.1f;
         white_mapping.burnPriority = 1;
 
-        mappings_dict = enviroment_manager.Mappings();
         mappings_dict.Add(FIRETRENCH_COLOR, white_mapping);
 
         fires_data = new Dictionary<int, FireMapsPreparation.FireData>();
         GetFiresData();
 
-        Academy.Instance.AutomaticSteppingEnabled = true;
+        Academy.Instance.AutomaticSteppingEnabled = false;
         SetReward(0);
+        enviroment_manager.AddAgent();
         
     }
 
@@ -103,7 +98,9 @@ public class Agent1 : Agent {
         Color color = FIRETRENCH_COLOR;
         LineDrawer line_drawer = new LineDrawer();
 
-        line_drawer.DrawLine(origin, destination, color, map, map_material, map_manager);
+        if (debug) map_material.color = Color.red;
+
+        line_drawer.DrawLine(origin, destination, color, map);
         Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
         FinishEpoch();
@@ -119,11 +116,10 @@ public class Agent1 : Agent {
 
     public void FinishEpoch() {
 
-        Academy.Instance.AutomaticSteppingEnabled = false;
         on_sim_end.AddListener(() => {
             Debug.Log("REWARD: " + GetCumulativeReward());
             //action_taken = false;
-            Academy.Instance.AutomaticSteppingEnabled = true;
+            Academy.Instance.EnvironmentStep(); // TOOD: Crear agent manager que faci que s'esperi a que tots els agents acabin per llavors fer el next step.
         });
 
         StartCoroutine(SimulateFireAndCalcReward());
@@ -137,30 +133,31 @@ public class Agent1 : Agent {
                                             fires_data[4].temperature
                                             );
 
+        Debug.Log("Pre Sim");
         yield return StartCoroutine(SimulateFire());
+        Debug.Log("Post Sim");
         yield return StartCoroutine(CalcReward());
+        Debug.Log("Post rew");
+
+        yield return new WaitForSeconds(5);
+        Debug.Log("Post wait secs");
+
 
         // Reset the map
-        map_manager.ResetMap();
-        map_material = enviroment_manager.MapMaterial();
-
-        Texture2D tex = enviroment_manager.VegetationMapTexture();
-        map = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, false);
-        map.SetPixels(tex.GetPixels());
-        map.Apply();
+        map = enviroment_manager.VegetationMapTexture();
+        map_material.mainTexture = map;
 
         on_sim_end.Invoke(); //Fire the event as the coroutine has ended and thus we can continue 
 
     }
 
-    public IEnumerator SimulateFire() {
+    private IEnumerator SimulateFire() {
 
         bool fire_ended = false;
-        fire_simulation.InitFireWithData(fires_data[4], map_manager, map, map_material);
+        fire_simulation.InitFireWithData(fires_data[4], map, map_material);
         while (!fire_ended) {
             fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, 
                                                     enviroment_manager.HeightMap(), 
-                                                    map_manager, 
                                                     map, 
                                                     map_material
                                                     );
@@ -180,8 +177,7 @@ public class Agent1 : Agent {
         for (int i = 0; i < burnt_pixels.Count; i++) {
 
             FireSimulator.Cell cell = burnt_pixels[i];
-            Texture2D veg_map_texture = enviroment_manager.VegetationMapTexture();
-            pixel_colors.Add(veg_map_texture.GetPixel(cell.x, cell.y)); // Get the original pixel color
+            pixel_colors.Add(enviroment_manager.GetPixel(cell.x, cell.y)); // Get the original pixel color
             
             yield return null;
         }

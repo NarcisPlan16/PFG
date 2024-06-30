@@ -26,6 +26,7 @@ public class FireSimulator {
     private double temperature_coeff;
     private bool debug;
     private System.Random random = new System.Random();
+    private readonly Color BLACK_COLOR = Color.black; // Unity no permet colors constants, posem readonly que fa la mateixa funció
 
     public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), double humidity = 0.0, double temperature = 0.0, bool debug = false) {
 
@@ -38,7 +39,7 @@ public class FireSimulator {
         this.debug = debug;
     }
 
-    public List<int> InitRandomFire(MapManager map_manager, Texture2D map, Material map_material) {
+    public List<int> InitRandomFire(Texture2D map, Material map_material) {
         // Returns where the fire was originated
 
         List<int> res = new List<int>();
@@ -50,14 +51,15 @@ public class FireSimulator {
         int opportunities = CalcOpportunities(random_x, random_y, map);  
 
         pixels_burning.Add(new Cell(random_x, random_y, opportunities));
-        map_manager.SetPixel(random_x, random_y, new Color(0.0f, 0.0f, 0.0f), map, map_material); // Set the piel to "Black" as it ois the "fire/burned" color
+        map.SetPixel(random_x, random_y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
+        map.Apply();
 
         if (debug) Debug.Log("Init -- X: " + res[0] + " Y: " + res[1]);
 
         return res;
     }
 
-    public void InitFireWithData(FireMapsPreparation.FireData fire_data, MapManager map_manager, Texture2D map, Material map_material) {
+    public void InitFireWithData(FireMapsPreparation.FireData fire_data, Texture2D map, Material map_material) {
         // Returns where the fire was originated
 
         int init_x = fire_data.init_x;
@@ -65,7 +67,8 @@ public class FireSimulator {
         int opportunities = CalcOpportunities(init_x, init_y, map);  
 
         pixels_burning.Add(new Cell(init_x, init_y, opportunities));
-        map_manager.SetPixel(init_x, init_y, new Color(0.0f, 0.0f, 0.0f), map, map_material); // Set the piel to "Black" as it ois the "fire/burned" color
+        map.SetPixel(init_x, init_y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
+        map.Apply();
 
         if (debug) Debug.Log("Init -- X: " + init_x + " Y: " + init_y);
 
@@ -75,7 +78,7 @@ public class FireSimulator {
         return pixels_burned;
     }
 
-    public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map, MapManager map_manager) {
+    public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map) {
 
         List<Cell> res = new List<Cell>();
         /*
@@ -90,43 +93,42 @@ public class FireSimulator {
         int x = cell.x;
         int y = cell.y;
 
-        if (x - 1 >= 0 && NotBurned(x - 1, y, map_manager)) res.Add(new Cell(x-1, y, CalcOpportunities(x-1, y, map))); // North neighbor
-        if (y - 1 >= 0 && NotBurned(x, y - 1, map_manager)) res.Add(new Cell(x, y-1, CalcOpportunities(x, y-1, map))); // West neighbor
-        if (y + 1 < map.width && NotBurned(x, y + 1, map_manager)) res.Add(new Cell(x, y+1, CalcOpportunities(x, y+1, map))); // East neighbor
-        if (x + 1 < map.height && NotBurned(x + 1, y, map_manager)) res.Add(new Cell(x+1, y, CalcOpportunities(x+1, y, map))); // South neighbor
+        if (x - 1 >= 0 && NotBurned(x - 1, y, map)) res.Add(new Cell(x-1, y, CalcOpportunities(x-1, y, map))); // North neighbor
+        if (y - 1 >= 0 && NotBurned(x, y - 1, map)) res.Add(new Cell(x, y-1, CalcOpportunities(x, y-1, map))); // West neighbor
+        if (y + 1 < map.width && NotBurned(x, y + 1, map)) res.Add(new Cell(x, y+1, CalcOpportunities(x, y+1, map))); // East neighbor
+        if (x + 1 < map.height && NotBurned(x + 1, y, map)) res.Add(new Cell(x+1, y, CalcOpportunities(x+1, y, map))); // South neighbor
 
         return res;
     }
 
-    public bool NotBurned(int x, int y, MapManager map_manager) {
-        return map_manager.GetPixel(x, y) != new Color(0.0f, 0.0f, 0.0f);
+    public bool NotBurned(int x, int y, Texture2D map) {
+        return map.GetPixel(x, y) != BLACK_COLOR;
     }
 
-    public bool ExpandFire(int max_span, Texture2D heightmap, MapManager map_manager, Texture2D map, Material map_material) { 
+    public bool ExpandFire(int max_span, Texture2D heightmap, Texture2D map, Material map_material) { 
 
         bool fire_ended = false;
 
         if (pixels_burning.Count > 0) {
 
-            map = map_manager.GetMap();
             int rand_expand_pixels = random.Next(0, 10); // number of pixels tu expand this iteration. Maximum of 10
             for (int i = 0; i < rand_expand_pixels; i++) {
 
                 // expand the fire to its neighbors (to all or to only some of them)
                 int rand_pixel = random.Next(0, pixels_burning.Count);
                 Cell origin_cell = pixels_burning[rand_pixel];
-                List<Cell> neighbors = ObtainNeighborsUnburned(origin_cell, map, map_manager);
+                List<Cell> neighbors = ObtainNeighborsUnburned(origin_cell, map);
 
                 if (neighbors.Count > 0) {
 
                     bool expanded = false;
                     foreach (Cell neigh in neighbors) {
 
-                        double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map, map_manager);
+                        double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
                         double prob = random.Next(0, 100) / 100;
                         if (expand_prob >= prob) { // 0.2
 
-                            map_manager.SetPixel(neigh.x, neigh.y, new Color(0.0f, 0.0f, 0.0f), map, map_material);
+                            map.SetPixel(neigh.x, neigh.y, BLACK_COLOR);
                             pixels_burning.Add(neigh);
                             expanded = true;
                             
@@ -162,6 +164,9 @@ public class FireSimulator {
 
             }
 
+            map.Apply();
+            map_material.mainTexture = map;
+
         }
         else {
             Debug.Log("The fire has ended");
@@ -179,7 +184,7 @@ public class FireSimulator {
     }
 
     private double ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, bool hum_on, 
-                                    bool temp_on, Texture2D heightmap, Texture2D map, MapManager map_manager) { 
+                                    bool temp_on, Texture2D heightmap, Texture2D map) { 
 
         // TODO: Fer funció amb paràmetre que calculi la probabilitat necessària per expandir a aquella casella (segons vent, altura...)
 

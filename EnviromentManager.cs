@@ -12,14 +12,45 @@ public class EnviromentManager : MonoBehaviour {
     public string mappings_filename;
     public Texture2D height_map;
     public Texture2D vegetation_map;
+    public int n_enviroments = 1;
 
+    private Texture2D preprocessed_map;
     private Color[] map_pixels;
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private const string JSON_Dir = "./Assets/Resources/JSON/";
+    private MapPreprocessing map_preprocessing = new MapPreprocessing();
+    private ConcurrentBag<int> agents_ready = new ConcurrentBag<int>();
+    private ConcurrentBag<int> n_agents = new ConcurrentBag<int>();
 
-    // Start is called before the first frame update
-    void Start() {
+    public void AddAgent() {
+        n_agents.Add(1);
+    }
+
+    public void AddAgentReady() {
+        agents_ready.Add(1);
+    }
+
+    private void Update() {
         
+        if (agents_ready.Sum() == n_agents.Sum() and n_agents.Sum() == n_enviroments) {
+
+            agents_ready.Clear();
+            Academy.Instance.EnvironmentStep();
+
+        }
+
+    }
+
+    public Dictionary<Color, ColorToVegetation> Preprocessing() {
+
+        map_preprocessing.Start(vegetation_map);
+        map_preprocessing.CalculateColorMappings();
+
+        preprocessed_map = map_preprocessing.ObtainProcessedMap();
+        map_pixels = preprocessed_map.GetPixels(); // Save the original so we can restore the map
+        mappings = map_preprocessing.ObtainMappingsAsList();
+        
+        return Mappings();
     }
 
     public Texture2D HeightMap() {
@@ -27,11 +58,19 @@ public class EnviromentManager : MonoBehaviour {
     }
 
     public Material MapMaterial() {
-        return plane_material;
+        return new Material(plane_material);
+    }
+
+    public Color GetPixel(int x, int y) {
+        return preprocessed_map.GetPixel(x, y);
     }
 
     public Texture2D VegetationMapTexture() {
-        return vegetation_map;
+        Texture2D new_tex = new Texture2D(preprocessed_map.width, preprocessed_map.height, TextureFormat.RGBA32, false);
+        new_tex.SetPixels(preprocessed_map.GetPixels());
+        new_tex.Apply();
+
+        return new_tex;
     }
 
     public Dictionary<Color, ColorToVegetation> Mappings() {
@@ -46,12 +85,9 @@ public class EnviromentManager : MonoBehaviour {
 
     public void CalculateColorMappings() {
 
-        MapManager map_manager = new MapManager();
-        mappings_dict = map_manager.Preprocessing(vegetation_map); // TODO: Paralelitzar per fer-lo més ràpid
+        mappings_dict = Preprocessing(); // TODO: Paralelitzar per fer-lo més ràpid
         mappings = mappings_dict.Values.ToList();
 
-        vegetation_map = map_manager.GetMap();
-        plane_material.mainTexture = vegetation_map;
     }
 
     public void StoreMappings() {
