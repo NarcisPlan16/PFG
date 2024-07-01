@@ -27,6 +27,7 @@ public class FireSimulator {
     private bool debug;
     private System.Random random = new System.Random();
     private readonly Color BLACK_COLOR = Color.black; // Unity no permet colors constants, posem readonly que fa la mateixa funció
+    private float reward;
 
     public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), double humidity = 0.0, double temperature = 0.0, bool debug = false) {
 
@@ -37,6 +38,8 @@ public class FireSimulator {
         this.humidity_coeff = humidity;
         this.temperature_coeff = temperature;
         this.debug = debug;
+
+        this.reward = 0;
     }
 
     public List<int> InitRandomFire(Texture2D map, Material map_material) {
@@ -49,6 +52,8 @@ public class FireSimulator {
         res.Add(random_x);
         res.Add(random_y);
         int opportunities = CalcOpportunities(random_x, random_y, map);  
+
+        reward += CalcReward(random_x, random_y, map);
 
         pixels_burning.Add(new Cell(random_x, random_y, opportunities));
         map.SetPixel(random_x, random_y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
@@ -65,6 +70,8 @@ public class FireSimulator {
         int init_x = fire_data.init_x;
         int init_y = fire_data.init_y;
         int opportunities = CalcOpportunities(init_x, init_y, map);  
+
+        reward += CalcReward(init_x, init_y, map);
 
         pixels_burning.Add(new Cell(init_x, init_y, opportunities));
         map.SetPixel(init_x, init_y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
@@ -128,6 +135,8 @@ public class FireSimulator {
                         double prob = random.Next(0, 100) / 100;
                         if (expand_prob >= prob) { // 0.2
 
+                            reward += CalcReward(neigh.x, neigh.y, map);
+
                             map.SetPixel(neigh.x, neigh.y, BLACK_COLOR);
                             pixels_burning.Add(neigh);
                             expanded = true;
@@ -174,6 +183,36 @@ public class FireSimulator {
         }
 
         return fire_ended;
+    }
+
+    public float CalcReward(int x, int y, Texture2D map) {
+
+        Color pixel_color = map.GetPixel(x, y);
+        ColorToVegetation mapping = ObtainMapping(pixel_color);
+
+        return -mapping.burnPriority;
+    }
+
+    public float GetReward() {
+        return reward;
+    }
+
+    private ColorToVegetation ObtainMapping(Color color) {
+
+        ColorToVegetation mapping = new ColorToVegetation();
+        if (color_mappings.ContainsKey(color)) {
+            mapping = color_mappings[color];
+        }
+        else {
+
+            ColorVegetationMapper col_mapper = new ColorVegetationMapper();
+            col_mapper.mappings = color_mappings;
+
+            mapping = col_mapper.FindClosestMapping(color);
+
+        }
+
+        return mapping;
     }
 
     private void AddPixelToBurntOnes(int cell_index, Cell origin_cell) {

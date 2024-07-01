@@ -56,9 +56,10 @@ public class Agent1 : Agent {
         fires_data = new Dictionary<int, FireMapsPreparation.FireData>();
         GetFiresData();
 
-        Academy.Instance.AutomaticSteppingEnabled = false;
         SetReward(0);
         enviroment_manager.AddAgent();
+        enviroment_manager.AddAgentReady();
+        Debug.Log("Init done");
         
     }
 
@@ -101,7 +102,7 @@ public class Agent1 : Agent {
         if (debug) map_material.color = Color.red;
 
         line_drawer.DrawLine(origin, destination, color, map);
-        Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
+        //Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
 
         FinishEpoch();
     }
@@ -116,13 +117,7 @@ public class Agent1 : Agent {
 
     public void FinishEpoch() {
 
-        on_sim_end.AddListener(() => {
-            Debug.Log("REWARD: " + GetCumulativeReward());
-            //action_taken = false;
-            Academy.Instance.EnvironmentStep(); 
-            // TOOD: A l'enviroment manager, que faci que s'esperi a que tots els agents acabin per llavors fer el next step. I eliminar-lo d'aqui
-        });
-
+        // TOOD: A l'enviroment manager, que faci que s'esperi a que tots els agents acabin per llavors fer el next step. I eliminar-lo d'aqui
         StartCoroutine(SimulateFireAndCalcReward());
     }
 
@@ -134,21 +129,14 @@ public class Agent1 : Agent {
                                             fires_data[4].temperature
                                             );
 
-        Debug.Log("Pre Sim");
         yield return StartCoroutine(SimulateFire());
-        Debug.Log("Post Sim");
-        yield return StartCoroutine(CalcReward());
-        Debug.Log("Post rew");
-
-        yield return new WaitForSeconds(5);
-        Debug.Log("Post wait secs");
-
 
         // Reset the map
         map = enviroment_manager.VegetationMapTexture();
         map_material.mainTexture = map;
 
-        on_sim_end.Invoke(); //Fire the event as the coroutine has ended and thus we can continue 
+        Debug.Log("REWARD: " + GetCumulativeReward());
+        enviroment_manager.AddAgentReady();
 
     }
 
@@ -165,68 +153,11 @@ public class Agent1 : Agent {
             yield return null;
         }
 
-    }
 
-    public IEnumerator CalcReward() {
-
-        // Calculate rewards based on burnt pixels
-        List<FireSimulator.Cell> burnt_pixels = fire_simulation.BurntPixels();
-        Debug.Log("Total pixels burnt: " + burnt_pixels.Count);
-
-        // Cache pixel colors because we can't acess a Texture2D inside a parallel thread
-        List<Color> pixel_colors = new List<Color>();
-        for (int i = 0; i < burnt_pixels.Count; i++) {
-
-            FireSimulator.Cell cell = burnt_pixels[i];
-            pixel_colors.Add(enviroment_manager.GetPixel(cell.x, cell.y)); // Get the original pixel color
-            
-            yield return null;
-        }
-
-        ConcurrentBag<float> results = new ConcurrentBag<float>();
-
-        int batch_size = 200;
-        int total_batches = (burnt_pixels.Count + batch_size - 1) / batch_size;
-
-        for (int batch = 0; batch < total_batches; batch++) {
-
-            int start = batch * batch_size;
-            int end = Mathf.Min(start + batch_size, burnt_pixels.Count);
-
-            Parallel.For(start, end, i => {
-
-                Color pixel_color = pixel_colors[i];
-                ColorToVegetation mapping = ObtainMapping(pixel_color);
-
-                results.Add(-mapping.burnPriority);
-            });
-
-            yield return null; // Prevent unity scene from freezing
-        }
-
-        // Sum the results after parallel processing
-        float penalization = results.Sum();
+        float penalization = fire_simulation.GetReward();
         float max_pen = fires_data[4].total_cost;
 
         SetReward(penalization - max_pen);
-    }
-
-    private ColorToVegetation ObtainMapping(Color color) {
-
-        ColorToVegetation mapping = new ColorToVegetation();
-        if (mappings_dict.ContainsKey(color)) {
-            mapping = mappings_dict[color];
-        }
-        else {
-
-            ColorVegetationMapper col_mapper = new ColorVegetationMapper();
-            col_mapper.mappings = mappings_dict;
-
-            mapping = col_mapper.FindClosestMapping(color);
-
-        }
-
-        return mapping;
     }
     
 }

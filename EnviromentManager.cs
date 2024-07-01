@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 
+using Unity.MLAgents;
 using UnityEngine;
 using UnityEditor;
 
@@ -22,6 +24,10 @@ public class EnviromentManager : MonoBehaviour {
     private ConcurrentBag<int> agents_ready = new ConcurrentBag<int>();
     private ConcurrentBag<int> n_agents = new ConcurrentBag<int>();
 
+    void Start() {
+        Academy.Instance.AutomaticSteppingEnabled = false;
+    }
+
     public void AddAgent() {
         n_agents.Add(1);
     }
@@ -31,8 +37,8 @@ public class EnviromentManager : MonoBehaviour {
     }
 
     private void Update() { // TODO
-        
-        if (agents_ready.Sum() == n_agents.Sum() and n_agents.Sum() == n_enviroments) {
+
+        if (agents_ready.Sum() == n_agents.Sum() && n_agents.Sum() == n_enviroments) {
 
             agents_ready.Clear();
             Academy.Instance.EnvironmentStep();
