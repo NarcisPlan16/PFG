@@ -20,20 +20,20 @@ public class FireSimulator {
 
     private Dictionary<Color, ColorToVegetation> color_mappings;
     private List<Cell> pixels_burning;
-    private List<Cell> pixels_burned;
+    private int pixels_burnt;
     private Vector3 wind_direction;
     private double humidity_coeff;
     private double temperature_coeff;
     private bool debug;
     private System.Random random = new System.Random();
     private readonly Color BLACK_COLOR = Color.black; // Unity no permet colors constants, posem readonly que fa la mateixa funció
-    private float reward;
+    private float reward; // Accumulated reward
 
     public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), double humidity = 0.0, double temperature = 0.0, bool debug = false) {
 
         this.color_mappings = mappings;
         this.pixels_burning = new List<Cell>();
-        this.pixels_burned = new List<Cell>();
+        this.pixels_burnt = 0;
         this.wind_direction = wind;
         this.humidity_coeff = humidity;
         this.temperature_coeff = temperature;
@@ -51,8 +51,9 @@ public class FireSimulator {
         int random_y =  Random.Range(0, map.height);
         res.Add(random_x);
         res.Add(random_y);
-        int opportunities = CalcOpportunities(random_x, random_y, map);  
+        int opportunities = CalcOpportunities(random_x, random_y, map); 
 
+        reward = 0;
         reward += CalcReward(random_x, random_y, map);
 
         pixels_burning.Add(new Cell(random_x, random_y, opportunities));
@@ -71,6 +72,7 @@ public class FireSimulator {
         int init_y = fire_data.init_y;
         int opportunities = CalcOpportunities(init_x, init_y, map);  
 
+        reward = 0;
         reward += CalcReward(init_x, init_y, map);
 
         pixels_burning.Add(new Cell(init_x, init_y, opportunities));
@@ -79,10 +81,6 @@ public class FireSimulator {
 
         if (debug) Debug.Log("Init -- X: " + init_x + " Y: " + init_y);
 
-    }
-
-    public List<Cell> BurntPixels() {
-        return pixels_burned;
     }
 
     public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map) {
@@ -145,18 +143,18 @@ public class FireSimulator {
 
                     }
 
-                    if (expanded) AddPixelToBurntOnes(rand_pixel, origin_cell);
+                    if (expanded) AddPixelToBurntOnes(rand_pixel);
                     else {
 
                         origin_cell.opportunities -= 1;
                         pixels_burning[rand_pixel] = origin_cell;
 
-                        if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel, origin_cell);
+                        if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel);
 
                     }                   
 
                 }
-                else AddPixelToBurntOnes(rand_pixel, origin_cell);
+                else AddPixelToBurntOnes(rand_pixel);
                 
                 if (pixels_burning.Count == 0) {
                     Debug.Log("The fire has ended");
@@ -165,7 +163,7 @@ public class FireSimulator {
                 }
 
                 //---------DEBUG ONLY---------//
-                if (pixels_burned.Count >= max_span) {
+                if (pixels_burnt >= max_span) {
                     fire_ended = true;
                     break;
                 }
@@ -190,11 +188,15 @@ public class FireSimulator {
         Color pixel_color = map.GetPixel(x, y);
         ColorToVegetation mapping = ObtainMapping(pixel_color);
 
-        return -mapping.burnPriority;
+        return mapping.burnPriority;
     }
 
     public float GetReward() {
         return reward;
+    }
+
+    public int TotalPixelsBurnt() {
+        return pixels_burnt;
     }
 
     private ColorToVegetation ObtainMapping(Color color) {
@@ -215,11 +217,10 @@ public class FireSimulator {
         return mapping;
     }
 
-    private void AddPixelToBurntOnes(int cell_index, Cell origin_cell) {
-        // Both cell_index and origin_cell are the same pixel but one is for removing from an index and the other is for adding directly the cell
+    private void AddPixelToBurntOnes(int cell_index) {
 
         pixels_burning.RemoveAt(cell_index); // Remove origin_cell
-        pixels_burned.Add(origin_cell);
+        pixels_burnt += 1;
     }
 
     private double ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, bool hum_on, 
@@ -243,7 +244,7 @@ public class FireSimulator {
 
                 double alfa_weight = 0.30*veg_enable; // Weight or the expand_coefficient
                 double h_weight = 0.10*height_enable; // Weight for the height coefficient
-                double w_weight = 0.50*wind_enable; // Wheight for the wind coefficient
+                double w_weight = 0.40*wind_enable; // Wheight for the wind coefficient
                 double hum_weight = 0.10*hum_enable; // Wheight for the humidity coefficient
                 double temp_weight = 0.10*temp_enable; // Wheight for the temperature coefficient
 
@@ -279,12 +280,12 @@ public class FireSimulator {
         float scalar_prod = Vector3.Dot(wind_direction.normalized, vec_displacement_norm); // Scalar product
         
         float modul = wind_direction.magnitude;
-        if (modul < 3) scalar_prod *= 0.05f;
-        else if (modul < 10) scalar_prod *= 0.1f;
-        else if (modul < 15) scalar_prod *= 0.2f;
-        else if (modul < 30) scalar_prod *= 0.3f;
-        else if (modul < 50) scalar_prod *= 0.4f;
-        else if (modul > 50) scalar_prod *= 0.5f;
+        if (modul < 3) scalar_prod *= 0.025f;
+        else if (modul < 10) scalar_prod *= 0.05f;
+        else if (modul < 15) scalar_prod *= 0.1f;
+        else if (modul < 30) scalar_prod *= 0.15f;
+        else if (modul < 50) scalar_prod *= 0.2f;
+        else if (modul > 50) scalar_prod *= 0.25f;
 
         return scalar_prod;
     }

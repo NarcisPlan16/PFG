@@ -18,7 +18,6 @@ using Unity.MLAgents.Sensors;
 public class Agent1 : Agent {
 
     public GameObject plane; // Reference to the terrain object
-    public bool debug = false;
     private EnviromentManager enviroment_manager;
     private FireSimulator fire_simulation;
     private Texture2D map;
@@ -41,7 +40,9 @@ public class Agent1 : Agent {
         map_material = enviroment_manager.MapMaterial();
         plane.GetComponent<MeshRenderer>().sharedMaterial = map_material;
 
-        mappings_dict = enviroment_manager.Preprocessing(); // TODO: Paralelitzar per fer-lo més ràpid
+        WaitEnviromentInit(); // Wait for enviroment manager to finish preprocessing
+
+        mappings_dict = enviroment_manager.ObtainEditorMappingsDict();
         map = enviroment_manager.VegetationMapTexture();
         map_material.mainTexture = map;
 
@@ -61,6 +62,10 @@ public class Agent1 : Agent {
         enviroment_manager.AddAgentReady();
         Debug.Log("Init done");
         
+    }
+
+    private void WaitEnviromentInit() {
+        while(!enviroment_manager.PreprocessingDone());
     }
 
     private void GetFiresData() {
@@ -98,8 +103,6 @@ public class Agent1 : Agent {
 
         Color color = FIRETRENCH_COLOR;
         LineDrawer line_drawer = new LineDrawer();
-
-        if (debug) map_material.color = Color.red;
 
         line_drawer.DrawLine(origin, destination, color, map);
         //Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
@@ -156,8 +159,9 @@ public class Agent1 : Agent {
 
         float penalization = fire_simulation.GetReward();
         float max_pen = fires_data[4].total_cost;
+        float total_reward = 1 - (penalization / max_pen);
 
-        SetReward(penalization - max_pen);
+        AddReward(total_reward);
     }
     
 }

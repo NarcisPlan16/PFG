@@ -111,60 +111,24 @@ public class FireMapsPreparation : MonoBehaviour {
                 fire_ended = fire_sim.ExpandFire(MAX_FIRE_SPAN, height_map, actual_map, map_material);
             }
             
-            (float, int) res = CalcReward();
-            FireData fire_data = new FireData(x_ini, y_ini, res.Item1, wind, humidity, temperature, MAX_FIRE_SPAN, res.Item2);
+            FireData fire_data = new FireData(x_ini, 
+                                              y_ini, 
+                                              fire_sim.GetReward(), 
+                                              wind, 
+                                              humidity, 
+                                              temperature, 
+                                              MAX_FIRE_SPAN, 
+                                              fire_sim.TotalPixelsBurnt());
 
             string jsonData = JsonUtility.ToJson(fire_data);
             System.IO.File.WriteAllText(JSON_Dir+"SampleMaps/fire_"+i, jsonData);
 
             map_manager.ResetMap();
             actual_map = map_manager.GetMap();
-            Debug.Log("Calulated Reward: " + res.Item1);
+            Debug.Log("Calulated Reward: " + fire_sim.GetReward());
             Debug.Log("**********************************");
         }
 
-    }
-
-    public (float, int) CalcReward() {
-
-        // Calculate rewards based on burnt pixels
-        List<FireSimulator.Cell> burnt_pixels = fire_sim.BurntPixels();
-        Debug.Log("Total pixels burnt: " + burnt_pixels.Count);
-
-        // Cache pixel colors because we can't acess a Texture2D inside a parallel thread
-        List<Color> pixel_colors = new List<Color>();
-        for (int j = 0; j < burnt_pixels.Count; j++) {
-
-            FireSimulator.Cell cell = burnt_pixels[j];
-            pixel_colors.Add(input_vegetation_map.GetPixel(cell.x, cell.y)); // Get the original pixel color
-            
-        }
-
-        ConcurrentBag<float> results = new ConcurrentBag<float>();
-
-        int batch_size = 200;
-        int total_batches = (burnt_pixels.Count + batch_size - 1) / batch_size;
-
-        for (int batch = 0; batch < total_batches; batch++) {
-
-            int start = batch * batch_size;
-            int end = Mathf.Min(start + batch_size, burnt_pixels.Count);
-
-            Parallel.For(start, end, i => {
-
-                Color pixel_color = pixel_colors[i];
-                ColorToVegetation mapping = ObtainMapping(pixel_color);
-
-                results.Add(-mapping.burnPriority);
-            });
-
-        }
-
-        // Sum the results after parallel processing
-        float rew = results.Sum();
-        float max_reward = actual_map.width*actual_map.height*MAX_BURN_PRIO;
-
-        return (rew, burnt_pixels.Count);
     }
 
     public void CalculateColorMappings() {

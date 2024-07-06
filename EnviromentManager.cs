@@ -23,9 +23,11 @@ public class EnviromentManager : MonoBehaviour {
     private MapPreprocessing map_preprocessing = new MapPreprocessing();
     private ConcurrentBag<int> agents_ready = new ConcurrentBag<int>();
     private ConcurrentBag<int> n_agents = new ConcurrentBag<int>();
+    private bool preprocessing_done = false;
 
     void Start() {
         Academy.Instance.AutomaticSteppingEnabled = false;
+        Preprocessing();
     }
 
     public void AddAgent() {
@@ -36,7 +38,7 @@ public class EnviromentManager : MonoBehaviour {
         agents_ready.Add(1);
     }
 
-    private void Update() { // TODO
+    private void Update() {
 
         if (agents_ready.Sum() == n_agents.Sum() && n_agents.Sum() == n_enviroments) {
 
@@ -47,16 +49,19 @@ public class EnviromentManager : MonoBehaviour {
 
     }
 
-    public Dictionary<Color, ColorToVegetation> Preprocessing() {
+    public void Preprocessing() {
 
         map_preprocessing.Start(vegetation_map);
         map_preprocessing.CalculateColorMappings();
 
         preprocessed_map = map_preprocessing.ObtainProcessedMap();
         map_pixels = preprocessed_map.GetPixels(); // Save the original so we can restore the map
-        mappings = map_preprocessing.ObtainMappingsAsList();
         
-        return Mappings();
+        preprocessing_done = true;
+    }
+
+    public bool PreprocessingDone() {
+        return preprocessing_done;
     }
 
     public Texture2D HeightMap() {
@@ -79,7 +84,7 @@ public class EnviromentManager : MonoBehaviour {
         return new_tex;
     }
 
-    public Dictionary<Color, ColorToVegetation> Mappings() {
+    public Dictionary<Color, ColorToVegetation> ObtainEditorMappingsDict() {
 
         Dictionary<Color, ColorToVegetation> dict = new Dictionary<Color, ColorToVegetation>();
         foreach (ColorToVegetation mapping in mappings) {
@@ -91,8 +96,8 @@ public class EnviromentManager : MonoBehaviour {
 
     public void CalculateColorMappings() {
 
-        mappings_dict = Preprocessing(); // TODO: Paralelitzar per fer-lo més ràpid
-        mappings = mappings_dict.Values.ToList();
+        Preprocessing(); // TODO: Paralelitzar per fer-lo més ràpid
+        mappings = map_preprocessing.ObtainMappingsAsList();
 
     }
 
