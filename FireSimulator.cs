@@ -22,14 +22,16 @@ public class FireSimulator {
     private List<Cell> pixels_burning;
     private int pixels_burnt;
     private Vector3 wind_direction;
-    private double humidity_coeff;
-    private double temperature_coeff;
+    private float humidity_coeff;
+    private float temperature_coeff;
     private bool debug;
     private System.Random random = new System.Random();
     private readonly Color BLACK_COLOR = Color.black; // Unity no permet colors constants, posem readonly que fa la mateixa funció
     private float reward; // Accumulated reward
+    private int total_opportunities; // Total cell opportunities that could have been spent on this fire
+    private int spent_opportunities; // Actual spent opportunities on this fire
 
-    public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), double humidity = 0.0, double temperature = 0.0, bool debug = false) {
+    public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), float humidity = 0.0f, float temperature = 0.0f, bool debug = false) {
 
         this.color_mappings = mappings;
         this.pixels_burning = new List<Cell>();
@@ -40,6 +42,8 @@ public class FireSimulator {
         this.debug = debug;
 
         this.reward = 0;
+        this.total_opportunities = 0;
+        this.spent_opportunities = 0;
     }
 
     public List<int> InitRandomFire(Texture2D map, Material map_material) {
@@ -52,6 +56,7 @@ public class FireSimulator {
         res.Add(random_x);
         res.Add(random_y);
         int opportunities = CalcOpportunities(random_x, random_y, map); 
+        this.total_opportunities += opportunities;
 
         reward = 0;
         reward += CalcReward(random_x, random_y, map);
@@ -71,6 +76,7 @@ public class FireSimulator {
         int init_x = fire_data.init_x;
         int init_y = fire_data.init_y;
         int opportunities = CalcOpportunities(init_x, init_y, map);  
+        this.total_opportunities += opportunities;
 
         reward = 0;
         reward += CalcReward(init_x, init_y, map);
@@ -86,18 +92,10 @@ public class FireSimulator {
     public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map) {
 
         List<Cell> res = new List<Cell>();
-        /*
-        // The next code gets all the neighbor pixels (8) including diagonals
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                if (x >= 0 && y >= 0 && x < map.width && y < map.height && NotBurned(i, j, map_manager)) res.Add((i, j));
-            }
-        }
-        */
-
         int x = cell.x;
         int y = cell.y;
 
+        // Expand to the 4 adjacent cells 
         if (x - 1 >= 0 && NotBurned(x - 1, y, map)) res.Add(new Cell(x-1, y, CalcOpportunities(x-1, y, map))); // North neighbor
         if (y - 1 >= 0 && NotBurned(x, y - 1, map)) res.Add(new Cell(x, y-1, CalcOpportunities(x, y-1, map))); // West neighbor
         if (y + 1 < map.width && NotBurned(x, y + 1, map)) res.Add(new Cell(x, y+1, CalcOpportunities(x, y+1, map))); // East neighbor
@@ -122,6 +120,7 @@ public class FireSimulator {
                 // expand the fire to its neighbors (to all or to only some of them)
                 int rand_pixel = random.Next(0, pixels_burning.Count);
                 Cell origin_cell = pixels_burning[rand_pixel];
+                this.total_opportunities += origin_cell.opportunities;
                 List<Cell> neighbors = ObtainNeighborsUnburned(origin_cell, map);
 
                 if (neighbors.Count > 0) {
@@ -129,9 +128,12 @@ public class FireSimulator {
                     bool expanded = false;
                     foreach (Cell neigh in neighbors) {
 
-                        double expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
-                        double prob = random.Next(0, 100) / 100;
-                        if (expand_prob >= prob) { // 0.2
+                        float expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
+                        float prob = random.Next(0, 100) / 100.0f;
+
+                        if (prob <= expand_prob) { 
+                            // Throw a dice (prob), if prob <= expand_prob, expand. For example if expand_prob is 0.7, 
+                            // prob should be between 0 and 0.7 in order to expand, meaning a 70% chance to expand.
 
                             reward += CalcReward(neigh.x, neigh.y, map);
 
@@ -148,6 +150,7 @@ public class FireSimulator {
 
                         origin_cell.opportunities -= 1;
                         pixels_burning[rand_pixel] = origin_cell;
+                        this.spent_opportunities += 1;
 
                         if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel);
 
@@ -195,6 +198,14 @@ public class FireSimulator {
         return reward;
     }
 
+    public int TotalOpportunities() {
+        return total_opportunities;
+    }
+
+    public int SpentOpportunities() {
+        return spent_opportunities;
+    }
+
     public int TotalPixelsBurnt() {
         return pixels_burnt;
     }
@@ -223,13 +234,13 @@ public class FireSimulator {
         pixels_burnt += 1;
     }
 
-    private double ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, bool hum_on, 
+    private float ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, bool hum_on, 
                                     bool temp_on, Texture2D heightmap, Texture2D map) { 
 
         // TODO: Fer funció amb paràmetre que calculi la probabilitat necessària per expandir a aquella casella (segons vent, altura...)
 
-        double probability = 0.0;
-        if (hum_on && CalcHumidityProbability() < 30) probability = 1.0;
+        float probability = 0.0f;
+        if (hum_on && CalcHumidityProbability() < 0.3) probability = 1.0f;
         else {
             
             Color pixel_color = map.GetPixel(target_pixel.x, target_pixel.y);
@@ -242,24 +253,24 @@ public class FireSimulator {
                 int hum_enable = hum_on? 1 : 0;
                 int temp_enable = temp_on? 1 : 0;
 
-                double alfa_weight = 0.30*veg_enable; // Weight or the expand_coefficient
-                double h_weight = 0.10*height_enable; // Weight for the height coefficient
-                double w_weight = 0.40*wind_enable; // Wheight for the wind coefficient
-                double hum_weight = 0.10*hum_enable; // Wheight for the humidity coefficient
-                double temp_weight = 0.10*temp_enable; // Wheight for the temperature coefficient
+                float alfa_weight = 0.30f*veg_enable; // Weight or the expand_coefficient
+                float h_weight = 0.10f*height_enable; // Weight for the height coefficient
+                float w_weight = 0.40f*wind_enable; // Wheight for the wind coefficient
+                float hum_weight = 0.10f*hum_enable; // Wheight for the humidity coefficient
+                float temp_weight = 0.10f*temp_enable; // Wheight for the temperature coefficient
 
-                double max_probability = alfa_weight + h_weight + w_weight + hum_weight; 
+                float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight; 
                 // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
                 // P.E: 0.3+0.5 = 0.8. Thus we could only have values between 0 and 0.75 because the other coefficients are
                 //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
 
                 ColorToVegetation mapping = color_mappings[pixel_color];
 
-                double alfa = mapping.expandCoefficient;
-                double w = CalcWindProbability(origin_pixel, target_pixel, heightmap); 
-                double h = CalcHeightProbability(origin_pixel, target_pixel, heightmap);
-                double hum = CalcHumidityProbability();
-                double temp = CalcTemperatureProbanility();
+                float alfa = mapping.expandCoefficient;
+                float w = CalcWindProbability(origin_pixel, target_pixel, heightmap); 
+                float h = CalcHeightProbability(origin_pixel, target_pixel, heightmap);
+                float hum = CalcHumidityProbability();
+                float temp = CalcTemperatureProbanility();
 
                 probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight + temp*temp_weight;
                 probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
@@ -271,7 +282,7 @@ public class FireSimulator {
         return probability;
     }
 
-    private double CalcWindProbability(Cell origin_pixel, Cell target_pixel, Texture2D heightmap) {
+    private float CalcWindProbability(Cell origin_pixel, Cell target_pixel, Texture2D heightmap) {
 
         Vector3 pointA = Get3DPointAt(origin_pixel, heightmap);
         Vector3 pointB = Get3DPointAt(target_pixel, heightmap);
@@ -280,17 +291,17 @@ public class FireSimulator {
         float scalar_prod = Vector3.Dot(wind_direction.normalized, vec_displacement_norm); // Scalar product
         
         float modul = wind_direction.magnitude;
-        if (modul < 3) scalar_prod *= 0.025f;
-        else if (modul < 10) scalar_prod *= 0.05f;
-        else if (modul < 15) scalar_prod *= 0.1f;
-        else if (modul < 30) scalar_prod *= 0.15f;
-        else if (modul < 50) scalar_prod *= 0.2f;
-        else if (modul > 50) scalar_prod *= 0.25f;
+        if (modul < 3) scalar_prod *= 0.05f;
+        else if (modul < 10) scalar_prod *= 0.1f;
+        else if (modul < 15) scalar_prod *= 0.2f;
+        else if (modul < 30) scalar_prod *= 0.3f;
+        else if (modul < 50) scalar_prod *= 0.4f;
+        else if (modul > 50) scalar_prod *= 0.5f;
 
         return scalar_prod;
     }
 
-    private double CalcHeightProbability(Cell origin_pixel, Cell target_pixel, Texture2D heightmap) {
+    private float CalcHeightProbability(Cell origin_pixel, Cell target_pixel, Texture2D heightmap) {
 
         // Get the height at each point from the heightmap
         Vector3 pointA = Get3DPointAt(origin_pixel, heightmap);
@@ -304,12 +315,12 @@ public class FireSimulator {
         return cos_alpha;
     }
 
-    private double CalcHumidityProbability() {
-        return 1 - (humidity_coeff / 100.0);
+    private float CalcHumidityProbability() {
+        return 1 - (humidity_coeff / 100.0f);
     }
 
-    private double CalcTemperatureProbanility() {
-        return 1 - (temperature_coeff / 100.0); 
+    private float CalcTemperatureProbanility() {
+        return 1 - (temperature_coeff / 100.0f); 
     }
 
     private Vector3 Get3DPointAt(Cell point, Texture2D heightmap) {

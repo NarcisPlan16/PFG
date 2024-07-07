@@ -34,7 +34,7 @@ public class FireMapsPreparation : MonoBehaviour {
     [System.Serializable]
     public struct FireData {
 
-        public FireData(int x, int y, float cost, Vector3 wind, double humidity, double temperature, int span, int pixels) {
+        public FireData(int x, int y, float cost, Vector3 wind, float humidity, float temperature, int span, int pixels) {
             this.init_x = x;
             this.init_y = y;
             this.total_cost = cost;
@@ -50,8 +50,8 @@ public class FireMapsPreparation : MonoBehaviour {
         public float total_cost;
         public int pixels_burnt;
         public Vector3 wind_dir;
-        public double humidity_percentage;
-        public double temperature;
+        public float humidity_percentage;
+        public float temperature;
         public int max_span; // Maximum timespan simulated
     }
 
@@ -100,8 +100,8 @@ public class FireMapsPreparation : MonoBehaviour {
 
             int x_ini = UnityEngine.Random.Range(0, actual_map.width);
             int y_ini = UnityEngine.Random.Range(0, actual_map.height);
-            double humidity = UnityEngine.Random.Range(min_humidity, max_humidity);
-            double temperature = UnityEngine.Random.Range(min_temp, max_temp);
+            float humidity = UnityEngine.Random.Range(min_humidity, max_humidity);
+            float temperature = UnityEngine.Random.Range(min_temp, max_temp);
 
             fire_sim = new FireSimulator(mappings, wind, humidity, temperature);
             List<int> init = fire_sim.InitRandomFire(actual_map, map_material);

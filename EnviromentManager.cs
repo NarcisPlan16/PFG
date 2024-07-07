@@ -27,7 +27,7 @@ public class EnviromentManager : MonoBehaviour {
 
     void Start() {
         Academy.Instance.AutomaticSteppingEnabled = false;
-        Preprocessing();
+        //Preprocessing();
     }
 
     public void AddAgent() {

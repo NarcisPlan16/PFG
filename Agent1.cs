@@ -40,7 +40,8 @@ public class Agent1 : Agent {
         map_material = enviroment_manager.MapMaterial();
         plane.GetComponent<MeshRenderer>().sharedMaterial = map_material;
 
-        WaitEnviromentInit(); // Wait for enviroment manager to finish preprocessing
+        //WaitEnviromentInit(); // TODO: Wait for enviroment manager to finish preprocessing
+        enviroment_manager.Preprocessing();
 
         mappings_dict = enviroment_manager.ObtainEditorMappingsDict();
         map = enviroment_manager.VegetationMapTexture();
@@ -65,7 +66,7 @@ public class Agent1 : Agent {
     }
 
     private void WaitEnviromentInit() {
-        while(!enviroment_manager.PreprocessingDone());
+        while(!enviroment_manager.PreprocessingDone()); // TODO
     }
 
     private void GetFiresData() {
@@ -86,7 +87,8 @@ public class Agent1 : Agent {
 
     public override void CollectObservations(VectorSensor sensor) {
 
-        //sensor.AddObservation();
+        float distance_to_fire = CalcFireOriginDistance();
+        sensor.AddObservation(distance_to_fire);
 
     }
 
@@ -159,9 +161,23 @@ public class Agent1 : Agent {
 
         float penalization = fire_simulation.GetReward();
         float max_pen = fires_data[4].total_cost;
-        float total_reward = 1 - (penalization / max_pen);
+        float fire_reward = 1 - (penalization / max_pen);
 
+        int total_opp = fire_simulation.TotalOpportunities();
+        int spent_opp = fire_simulation.SpentOpportunities(); 
+        float opportunities_reward = 1 - (spent_opp / total_opp);
+
+        float total_reward = 0.5f*fire_reward + 0.5f*opportunities_reward;
         AddReward(total_reward);
+    }
+
+    private float CalcFireOriginDistance() {
+
+        float res = 0.0f;
+
+        // TODO: Calculate ditance between firetrench and fire origin
+
+        return res;
     }
     
 }
