@@ -26,7 +26,7 @@ public class Agent1 : Agent {
     private Color FIRETRENCH_COLOR = new Color(1.0f, 1.0f, 1.0f);
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
-    private const int MAX_FIRE_SPAN = 9000;
+    private const int MAX_FIRE_SPAN = 4000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;

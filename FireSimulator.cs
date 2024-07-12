@@ -63,7 +63,7 @@ public class FireSimulator {
         reward += CalcReward(random_x, random_y, map);
 
         pixels_burning.Add(new Cell(random_x, random_y, opportunities));
-        map.SetPixel(random_x, random_y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
+        map.SetPixel(random_x, random_y, RED_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
         map.Apply();
 
         if (debug) Debug.Log("Init -- X: " + res[0] + " Y: " + res[1]);
@@ -84,7 +84,7 @@ public class FireSimulator {
         reward += CalcReward((int)res.x, (int)res.y, map);
 
         pixels_burning.Add(new Cell((int)res.x, (int)res.y, opportunities));
-        map.SetPixel((int)res.x, (int)res.y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
+        map.SetPixel((int)res.x, (int)res.y, RED_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
         map.Apply();
 
         if (debug) Debug.Log("Init -- X: " + res.x + " Y: " + res.y);
@@ -115,7 +115,10 @@ public class FireSimulator {
     }
 
     public bool NotBurned(int x, int y, Texture2D map) {
-        return map.GetPixel(x, y) != BLACK_COLOR;
+
+        Color pixel_color =  map.GetPixel(x, y);
+
+        return pixel_color != BLACK_COLOR && pixel_color != RED_COLOR;
     }
 
     public bool ExpandFire(int max_span, Texture2D heightmap, Texture2D map, Material map_material) { 
@@ -139,11 +142,14 @@ public class FireSimulator {
                     foreach (Cell neigh in neighbors) {
 
                         float expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
-                        if (expand_prob > 0.2) {  
+                        float dice = random.Next(0, 100) / 100.0f;
+
+                        if (dice <= expand_prob) {  // 0.2
+                            // if expand prob is 0.87, the dice has 87/100 chanches. So the dice must be between 0 and 87 in order to expand.
 
                             reward += CalcReward(neigh.x, neigh.y, map);
 
-                            map.SetPixel(neigh.x, neigh.y, BLACK_COLOR);
+                            map.SetPixel(neigh.x, neigh.y, RED_COLOR);
                             pixels_burning.Add(neigh);
                             expanded = true;
                             
@@ -172,7 +178,7 @@ public class FireSimulator {
                 }
 
                 //---------DEBUG ONLY---------//
-                if (pixels_burnt >= max_span) {
+                if (spent_opportunities >= max_span) {
                     fire_ended = true;
                     break;
                 }
@@ -236,9 +242,10 @@ public class FireSimulator {
 
     private void AddPixelToBurntOnes(int cell_index, Texture2D map) {
 
+        Cell origin_cell = pixels_burning[cell_index];
+        map.SetPixel(origin_cell.x, origin_cell.y, BLACK_COLOR);
+
         pixels_burning.RemoveAt(cell_index); // Remove origin_cell
-        //Cell origin_cell = pixels_burning[cell_index];
-        //map.SetPixel(origin_cell.x, origin_cell.y, BLACK_COLOR);
         pixels_burnt += 1;
     }
 
@@ -248,7 +255,7 @@ public class FireSimulator {
         // TODO: Fer funció amb paràmetre que calculi la probabilitat necessària per expandir a aquella casella (segons vent, altura...)
 
         float probability = 0.0f;
-        if (hum_on && CalcHumidityProbability() < 0.3) probability = 1.0f;
+        if (hum_on && CalcHumidityProbability() > 0.7) probability = 1.0f;
         else {
             
             Color pixel_color = map.GetPixel(target_pixel.x, target_pixel.y);
@@ -261,12 +268,12 @@ public class FireSimulator {
                 int hum_enable = hum_on? 1 : 0;
                 int temp_enable = temp_on? 1 : 0;
 
-                float alfa_weight = 0.30f*veg_enable; // Weight or the expand_coefficient
-                float h_weight = 0.10f*height_enable; // Weight for the height coefficient
-                float w_weight = 0.35f*wind_enable; // Wheight for the wind coefficient
-                float hum_weight = 0.10f*hum_enable; // Wheight for the humidity coefficient
-                float temp_weight = 0.10f*temp_enable; // Wheight for the temperature coefficient
-                float rand_weight = 0.25f * (1 - (alfa_weight + h_weight + w_weight + hum_weight + temp_weight));
+                float alfa_weight = 0.20f*veg_enable; // Weight or the expand_coefficient. Initially was 0.3
+                float h_weight = 0.15f*height_enable; // Weight for the height coefficient. Initially was 0.1
+                float w_weight = 0.30f*wind_enable; // Wheight for the wind coefficient. Initially was 0.3
+                float hum_weight = 0.15f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
+                float temp_weight = 0.15f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
+                float rand_weight = 1 - (alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
 
                 float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight + rand_weight; 
                 // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
@@ -284,6 +291,8 @@ public class FireSimulator {
 
                 probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight + temp*temp_weight + rand*rand_weight;
                 probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
+
+                List<float> probs = new List<float>{alfa*alfa_weight, h*h_weight, w*w_weight, hum*hum_weight, temp*temp_weight, rand*rand_weight};
 
             }
 
@@ -368,9 +377,9 @@ public class FireSimulator {
         if (color_mappings.ContainsKey(pixel_color))  mapping = color_mappings[pixel_color];
         else mapping = mapper.FindClosestMapping(pixel_color);
 
-        int opportunities = 0; // All colors with code 4XX
-        if (mapping.ICGC_id < 200 && mapping.ICGC_id >= 100) opportunities = 2; // All colors with code 1XX
-        else if (mapping.ICGC_id < 400 && mapping.ICGC_id >= 200) opportunities = 3; // All colors with code 2XX or 3XX
+        int opportunities = 0; // All colors with code 4XX, 0 opportunities
+        if (mapping.ICGC_id < 200 && mapping.ICGC_id >= 100) opportunities = 2; // All colors with code 1XX, 2 opportunities
+        else if (mapping.ICGC_id < 400 && mapping.ICGC_id >= 200) opportunities = 3; // All colors with code 2XX or 3XX, 3 opportunities
 
         return opportunities;
     }
