@@ -60,8 +60,8 @@ public class EnviromentManager : MonoBehaviour {
         preprocessing_done = true;
     }
 
-    public bool PreprocessingDone() {
-        return preprocessing_done;
+    public void WaitEnviromentInit() {
+        while (!preprocessing_done);
     }
 
     public Texture2D HeightMap() {

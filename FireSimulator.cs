@@ -27,6 +27,7 @@ public class FireSimulator {
     private bool debug;
     private System.Random random = new System.Random();
     private readonly Color BLACK_COLOR = Color.black; // Unity no permet colors constants, posem readonly que fa la mateixa funció
+    private readonly Color RED_COLOR = Color.red;
     private float reward; // Accumulated reward
     private int total_opportunities; // Total cell opportunities that could have been spent on this fire
     private int spent_opportunities; // Actual spent opportunities on this fire
@@ -70,23 +71,25 @@ public class FireSimulator {
         return res;
     }
 
-    public void InitFireWithData(FireMapsPreparation.FireData fire_data, Texture2D map, Material map_material) {
+    public Vector2 InitFireWithData(FireMapsPreparation.FireData fire_data, Texture2D map, Material map_material) {
         // Returns where the fire was originated
 
-        int init_x = fire_data.init_x;
-        int init_y = fire_data.init_y;
-        int opportunities = CalcOpportunities(init_x, init_y, map);  
+        Vector2 res = new Vector2();
+        res.x = fire_data.init_x;
+        res.y = fire_data.init_y;
+        int opportunities = CalcOpportunities((int)res.x, (int)res.y, map);  
         this.total_opportunities += opportunities;
 
         reward = 0;
-        reward += CalcReward(init_x, init_y, map);
+        reward += CalcReward((int)res.x, (int)res.y, map);
 
-        pixels_burning.Add(new Cell(init_x, init_y, opportunities));
-        map.SetPixel(init_x, init_y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
+        pixels_burning.Add(new Cell((int)res.x, (int)res.y, opportunities));
+        map.SetPixel((int)res.x, (int)res.y, BLACK_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
         map.Apply();
 
-        if (debug) Debug.Log("Init -- X: " + init_x + " Y: " + init_y);
+        if (debug) Debug.Log("Init -- X: " + res.x + " Y: " + res.y);
 
+        return res;
     }
 
     public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map) {
@@ -95,11 +98,18 @@ public class FireSimulator {
         int x = cell.x;
         int y = cell.y;
 
+        // The next code gets all the neighbor pixels (8) including diagonals
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
+                if (x >= 0 && y >= 0 && x < map.width && y < map.height && NotBurned(i, j, map)) res.Add(new Cell(i, j, CalcOpportunities(i, j, map)));
+            }
+        }
+
         // Expand to the 4 adjacent cells 
-        if (x - 1 >= 0 && NotBurned(x - 1, y, map)) res.Add(new Cell(x-1, y, CalcOpportunities(x-1, y, map))); // North neighbor
-        if (y - 1 >= 0 && NotBurned(x, y - 1, map)) res.Add(new Cell(x, y-1, CalcOpportunities(x, y-1, map))); // West neighbor
-        if (y + 1 < map.width && NotBurned(x, y + 1, map)) res.Add(new Cell(x, y+1, CalcOpportunities(x, y+1, map))); // East neighbor
-        if (x + 1 < map.height && NotBurned(x + 1, y, map)) res.Add(new Cell(x+1, y, CalcOpportunities(x+1, y, map))); // South neighbor
+        //if (x - 1 >= 0 && NotBurned(x - 1, y, map)) res.Add(new Cell(x-1, y, CalcOpportunities(x-1, y, map))); // North neighbor
+        //if (y - 1 >= 0 && NotBurned(x, y - 1, map)) res.Add(new Cell(x, y-1, CalcOpportunities(x, y-1, map))); // West neighbor
+        //if (y + 1 < map.width && NotBurned(x, y + 1, map)) res.Add(new Cell(x, y+1, CalcOpportunities(x, y+1, map))); // East neighbor
+        //if (x + 1 < map.height && NotBurned(x + 1, y, map)) res.Add(new Cell(x+1, y, CalcOpportunities(x+1, y, map))); // South neighbor
 
         return res;
     }
@@ -129,11 +139,7 @@ public class FireSimulator {
                     foreach (Cell neigh in neighbors) {
 
                         float expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
-                        float prob = random.Next(0, 100) / 100.0f;
-
-                        if (prob <= expand_prob) { 
-                            // Throw a dice (prob), if prob <= expand_prob, expand. For example if expand_prob is 0.7, 
-                            // prob should be between 0 and 0.7 in order to expand, meaning a 70% chance to expand.
+                        if (expand_prob > 0.2) {  
 
                             reward += CalcReward(neigh.x, neigh.y, map);
 
@@ -145,19 +151,19 @@ public class FireSimulator {
 
                     }
 
-                    if (expanded) AddPixelToBurntOnes(rand_pixel);
+                    if (expanded) AddPixelToBurntOnes(rand_pixel, map);
                     else {
 
                         origin_cell.opportunities -= 1;
                         pixels_burning[rand_pixel] = origin_cell;
                         this.spent_opportunities += 1;
 
-                        if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel);
+                        if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel, map);
 
                     }                   
 
                 }
-                else AddPixelToBurntOnes(rand_pixel);
+                else AddPixelToBurntOnes(rand_pixel, map);
                 
                 if (pixels_burning.Count == 0) {
                     Debug.Log("The fire has ended");
@@ -228,9 +234,11 @@ public class FireSimulator {
         return mapping;
     }
 
-    private void AddPixelToBurntOnes(int cell_index) {
+    private void AddPixelToBurntOnes(int cell_index, Texture2D map) {
 
         pixels_burning.RemoveAt(cell_index); // Remove origin_cell
+        //Cell origin_cell = pixels_burning[cell_index];
+        //map.SetPixel(origin_cell.x, origin_cell.y, BLACK_COLOR);
         pixels_burnt += 1;
     }
 
@@ -255,11 +263,12 @@ public class FireSimulator {
 
                 float alfa_weight = 0.30f*veg_enable; // Weight or the expand_coefficient
                 float h_weight = 0.10f*height_enable; // Weight for the height coefficient
-                float w_weight = 0.40f*wind_enable; // Wheight for the wind coefficient
+                float w_weight = 0.35f*wind_enable; // Wheight for the wind coefficient
                 float hum_weight = 0.10f*hum_enable; // Wheight for the humidity coefficient
                 float temp_weight = 0.10f*temp_enable; // Wheight for the temperature coefficient
+                float rand_weight = 0.25f * (1 - (alfa_weight + h_weight + w_weight + hum_weight + temp_weight));
 
-                float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight; 
+                float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight + rand_weight; 
                 // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
                 // P.E: 0.3+0.5 = 0.8. Thus we could only have values between 0 and 0.75 because the other coefficients are
                 //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
@@ -271,8 +280,9 @@ public class FireSimulator {
                 float h = CalcHeightProbability(origin_pixel, target_pixel, heightmap);
                 float hum = CalcHumidityProbability();
                 float temp = CalcTemperatureProbanility();
+                float rand = random.Next(0, 100) / 100.0f;
 
-                probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight + temp*temp_weight;
+                probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight + temp*temp_weight + rand*rand_weight;
                 probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
 
             }
@@ -291,12 +301,12 @@ public class FireSimulator {
         float scalar_prod = Vector3.Dot(wind_direction.normalized, vec_displacement_norm); // Scalar product
         
         float modul = wind_direction.magnitude;
-        if (modul < 3) scalar_prod *= 0.05f;
-        else if (modul < 10) scalar_prod *= 0.1f;
-        else if (modul < 15) scalar_prod *= 0.2f;
-        else if (modul < 30) scalar_prod *= 0.3f;
-        else if (modul < 50) scalar_prod *= 0.4f;
-        else if (modul > 50) scalar_prod *= 0.5f;
+        if (modul < 3) scalar_prod  *= 0.1f;
+        else if (modul < 10) scalar_prod *= 0.2f;
+        else if (modul < 15) scalar_prod *= 0.3f;
+        else if (modul < 30) scalar_prod *= 0.5f;
+        else if (modul < 50) scalar_prod *= 0.7f;
+        else if (modul > 50) scalar_prod *= 1.0f;
 
         return scalar_prod;
     }

@@ -26,10 +26,13 @@ public class Agent1 : Agent {
     private Color FIRETRENCH_COLOR = new Color(1.0f, 1.0f, 1.0f);
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
-    private const int MAX_FIRE_SPAN = 1000;
+    private const int MAX_FIRE_SPAN = 9000;
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
+    private Vector2 org_firetrench;
+    private Vector2 dest_firetrench;
+    private Vector2 fire_init;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -40,7 +43,7 @@ public class Agent1 : Agent {
         map_material = enviroment_manager.MapMaterial();
         plane.GetComponent<MeshRenderer>().sharedMaterial = map_material;
 
-        //WaitEnviromentInit(); // TODO: Wait for enviroment manager to finish preprocessing
+        //enviroment_manager.WaitEnviromentInit(); // TODO: Wait for enviroment manager to finish preprocessing
         enviroment_manager.Preprocessing();
 
         mappings_dict = enviroment_manager.ObtainEditorMappingsDict();
@@ -65,10 +68,6 @@ public class Agent1 : Agent {
         
     }
 
-    private void WaitEnviromentInit() {
-        while(!enviroment_manager.PreprocessingDone()); // TODO
-    }
-
     private void GetFiresData() {
 
         string[] files = Directory.GetFiles(JSON_Dir + "SampleMaps");
@@ -87,27 +86,24 @@ public class Agent1 : Agent {
 
     public override void CollectObservations(VectorSensor sensor) {
 
-        float distance_to_fire = CalcFireOriginDistance();
-        sensor.AddObservation(distance_to_fire);
+        //float distance_to_fire = CalcFireOriginDistance();
+        //Debug.Log("Obs: " + distance_to_fire);
+        //sensor.AddObservation(distance_to_fire);
 
     }
 
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        Vector2 origin = new Vector2();
-        origin.x = actions.DiscreteActions[0];
-        origin.y = actions.DiscreteActions[1];
+        org_firetrench.x = actions.DiscreteActions[0];
+        org_firetrench.y = actions.DiscreteActions[1];
 
-        Vector2 destination = new Vector2();
-        destination.x = actions.DiscreteActions[2];
-        destination.y = actions.DiscreteActions[3];
+        dest_firetrench.x = actions.DiscreteActions[2];
+        dest_firetrench.y = actions.DiscreteActions[3];
 
         Color color = FIRETRENCH_COLOR;
         LineDrawer line_drawer = new LineDrawer();
-
-        line_drawer.DrawLine(origin, destination, color, map);
-        //Debug.Log(origin.x + ", " + origin.y + " ----> " + destination.x + ", " + destination.y);
+        line_drawer.DrawLine(org_firetrench, dest_firetrench, color, map);
 
         FinishEpoch();
     }
@@ -148,7 +144,7 @@ public class Agent1 : Agent {
     private IEnumerator SimulateFire() {
 
         bool fire_ended = false;
-        fire_simulation.InitFireWithData(fires_data[4], map, map_material);
+        fire_init = fire_simulation.InitFireWithData(fires_data[4], map, map_material);
         while (!fire_ended) {
             fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, 
                                                     enviroment_manager.HeightMap(), 
@@ -170,14 +166,28 @@ public class Agent1 : Agent {
         float total_reward = 0.5f*fire_reward + 0.5f*opportunities_reward;
         AddReward(total_reward);
     }
-
+    
+    // Funció per calcular la distància entre un punt i una recta
     private float CalcFireOriginDistance() {
 
-        float res = 0.0f;
+        // Calculate ditance between firetrench and fire origin
+        Vector2 origin = new Vector2(); // Actual firetrench origin
+        Vector2 destination = new Vector2(); // Actual firetrench destination
 
-        // TODO: Calculate ditance between firetrench and fire origin
+        // Get the A, B and C coefficients from the line to use the formula ditance between point and line
+        GetLineCoefficients(origin, destination, out float A, out float B, out float C); 
+        float numerator = Mathf.Abs(A * fire_init.x + B * fire_init.y + C);
+        float denominator = Mathf.Sqrt(A * A + B * B);
+        
+        return numerator / denominator;
+    }
 
-        return res;
+    public static void GetLineCoefficients(Vector2 origin, Vector2 destination, out float A, out float B, out float C) {
+        // Returns A, B and C coefficients from the line that connects origin and destination
+
+        A = destination.y - origin.y;
+        B = origin.x - destination.x;
+        C = destination.x * origin.y - origin.x * destination.y;
     }
     
 }
