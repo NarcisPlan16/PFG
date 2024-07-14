@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.IO;
 
 using Unity.MLAgents;
 using UnityEngine;
@@ -17,7 +18,6 @@ public class EnviromentManager : MonoBehaviour {
     public int n_enviroments = 1;
 
     private Texture2D preprocessed_map;
-    private Color[] map_pixels;
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private const string JSON_Dir = "./Assets/Resources/JSON/";
     private MapPreprocessing map_preprocessing = new MapPreprocessing();
@@ -27,7 +27,6 @@ public class EnviromentManager : MonoBehaviour {
 
     void Start() {
         Academy.Instance.AutomaticSteppingEnabled = false;
-        //Preprocessing();
     }
 
     public void AddAgent() {
@@ -55,8 +54,22 @@ public class EnviromentManager : MonoBehaviour {
         map_preprocessing.CalculateColorMappings();
 
         preprocessed_map = map_preprocessing.ObtainProcessedMap();
-        map_pixels = preprocessed_map.GetPixels(); // Save the original so we can restore the map
+        // map_pixels = preprocessed_map.GetPixels(); // Save the original so we can restore the map
         
+        ColorArrayWrapper colors_wrapper = new ColorArrayWrapper();
+
+        colors_wrapper.colors = preprocessed_map.GetPixels();
+        colors_wrapper.width = preprocessed_map.width;
+        colors_wrapper.height = preprocessed_map.height;
+        string json = JsonUtility.ToJson(colors_wrapper, true);
+        File.WriteAllText(JSON_Dir + "processed_map.json", json);
+
+        /*
+        colors_wrapper.colors = map_pixels;
+        json = JsonUtility.ToJson(colors_wrapper, true);
+        File.WriteAllText(JSON_Dir + "original_map.json", json);
+        */
+
         preprocessing_done = true;
     }
 
@@ -77,8 +90,12 @@ public class EnviromentManager : MonoBehaviour {
     }
 
     public Texture2D VegetationMapTexture() {
-        Texture2D new_tex = new Texture2D(preprocessed_map.width, preprocessed_map.height, TextureFormat.RGBA32, false);
-        new_tex.SetPixels(preprocessed_map.GetPixels());
+
+        string json = File.ReadAllText(JSON_Dir + "processed_map.json");
+        ColorArrayWrapper map_wrapper = JsonUtility.FromJson<ColorArrayWrapper>(json);
+
+        Texture2D new_tex = new Texture2D(map_wrapper.width, map_wrapper.height, TextureFormat.RGBA32, false);
+        new_tex.SetPixels(map_wrapper.colors);
         new_tex.Apply();
 
         return new_tex;
@@ -118,6 +135,13 @@ public class EnviromentManager : MonoBehaviour {
 
         mappings = mappings_dict.Values.ToList();
     }
+
+    [System.Serializable]
+    public class ColorArrayWrapper {
+        public Color[] colors;
+        public int width;
+        public int height;
+    }
 }
 
 [CustomEditor(typeof(EnviromentManager))]
@@ -126,15 +150,10 @@ public class EnviromentManagerEditor : Editor {
         DrawDefaultInspector();
 
         EnviromentManager myScript = (EnviromentManager)target;
-        if (GUILayout.Button("Calculate Color Mappings")) {
-            myScript.CalculateColorMappings();
-        }
-        if (GUILayout.Button("Save mappings")) {
-            myScript.StoreMappings();
-        }
-        if (GUILayout.Button("Load mappings")) {
-            myScript.LoadMappings();
-        }
+        if (GUILayout.Button("Calculate Color Mappings")) myScript.CalculateColorMappings();
+        if (GUILayout.Button("Save mappings")) myScript.StoreMappings();
+        if (GUILayout.Button("Load mappings")) myScript.LoadMappings();
+        if (GUILayout.Button("Preprocess map")) myScript.Preprocessing();
     }
 
 }

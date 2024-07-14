@@ -43,9 +43,6 @@ public class Agent1 : Agent {
         map_material = enviroment_manager.MapMaterial();
         plane.GetComponent<MeshRenderer>().sharedMaterial = map_material;
 
-        //enviroment_manager.WaitEnviromentInit(); // TODO: Wait for enviroment manager to finish preprocessing
-        enviroment_manager.Preprocessing();
-
         mappings_dict = enviroment_manager.ObtainEditorMappingsDict();
         map = enviroment_manager.VegetationMapTexture();
         map_material.mainTexture = map;
