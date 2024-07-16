@@ -101,7 +101,11 @@ public class FireSimulator {
         // The next code gets all the neighbor pixels (8) including diagonals
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                if (x >= 0 && y >= 0 && x < map.width && y < map.height && NotBurned(i, j, map)) res.Add(new Cell(i, j, CalcOpportunities(i, j, map)));
+                if (x >= 0 && y >= 0 && x < map.width && y < map.height && NotBurned(i, j, map)) {
+
+                    int opportunities = CalcOpportunities(i, j, map);
+                    if (opportunities > 0) res.Add(new Cell(i, j, opportunities));
+                }
             }
         }
 

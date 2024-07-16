@@ -48,7 +48,7 @@ public class Agent1 : Agent {
         ColorToVegetation white_mapping = new ColorToVegetation();
         white_mapping.color = FIRETRENCH_COLOR;
         white_mapping.ICGC_id = -1;
-        white_mapping.expandCoefficient = 0.1f;
+        white_mapping.expandCoefficient = 0f;
         white_mapping.burnPriority = 1;
 
         mappings_dict.Add(FIRETRENCH_COLOR, white_mapping);
