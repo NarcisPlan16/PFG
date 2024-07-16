@@ -23,7 +23,7 @@ public class Agent1 : Agent {
     private Texture2D map;
     private Material map_material;
     private const string JSON_Dir = "./Assets/Resources/JSON/";
-    private Color FIRETRENCH_COLOR = new Color(1.0f, 1.0f, 1.0f);
+    private Color FIRETRENCH_COLOR = Color.white;
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
     private const int MAX_FIRE_SPAN = 4000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
@@ -99,8 +99,15 @@ public class Agent1 : Agent {
         dest_firetrench.y = actions.DiscreteActions[3];
 
         Color color = FIRETRENCH_COLOR;
-        LineDrawer line_drawer = new LineDrawer();
-        line_drawer.DrawLine(org_firetrench, dest_firetrench, color, map);
+        Drawer drawer = new Drawer(2);
+        //drawer.DrawLine(org_firetrench, dest_firetrench, color, map);
+
+        List<Vector2> points = new List<Vector2>();
+        for (int i = 0; i < actions.DiscreteActions.Count(); i += 2) {
+            points.Add(new Vector2(actions.DiscreteActions[i], actions.DiscreteActions[i+1]));
+        }
+        //drawer.DrawCatmullRomSpline(points, color, map, 0.005f);
+        drawer.DrawBezierCurve(points, color, map, 0.005f);
 
         FinishEpoch();
     }
