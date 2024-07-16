@@ -30,8 +30,6 @@ public class Agent1 : Agent {
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
-    private Vector2 org_firetrench;
-    private Vector2 dest_firetrench;
     private Vector2 fire_init;
 
     // Called when the Agent is initialized (only one time)
@@ -92,22 +90,18 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        org_firetrench.x = actions.DiscreteActions[0];
-        org_firetrench.y = actions.DiscreteActions[1];
-
-        dest_firetrench.x = actions.DiscreteActions[2];
-        dest_firetrench.y = actions.DiscreteActions[3];
-
         Color color = FIRETRENCH_COLOR;
         Drawer drawer = new Drawer(2);
-        //drawer.DrawLine(org_firetrench, dest_firetrench, color, map);
 
         List<Vector2> points = new List<Vector2>();
+        //int n_points =  actions.DiscreteActions[actions.DiscreteActions.Count() - 1] // The last element is the number of points to use
         for (int i = 0; i < actions.DiscreteActions.Count(); i += 2) {
             points.Add(new Vector2(actions.DiscreteActions[i], actions.DiscreteActions[i+1]));
-        }
+        }        
+        //drawer.DrawLine(points[0], points[1], color, map);
         //drawer.DrawCatmullRomSpline(points, color, map, 0.005f);
         drawer.DrawBezierCurve(points, color, map, 0.005f);
+
 
         FinishEpoch();
     }
