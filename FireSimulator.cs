@@ -144,7 +144,7 @@ public class FireSimulator {
                         float expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
                         float dice = random.Next(0, 100) / 100.0f;
 
-                        if (map.GetPixel(neigh.x, neigh.y) == Color.white) Debug.Log("Prob: " + expand_prob " | Dice: " + dice);
+                        if (map.GetPixel(neigh.x, neigh.y) == Color.white) Debug.Log("Prob: " + expand_prob + " | Dice: " + dice);
 
                         if (dice <= expand_prob) {  // 0.2
                             // if expand prob is 0.87, the dice has 87/100 chanches. So the dice must be between 0 and 87 in order to expand.
