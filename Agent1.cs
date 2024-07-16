@@ -48,7 +48,7 @@ public class Agent1 : Agent {
         ColorToVegetation white_mapping = new ColorToVegetation();
         white_mapping.color = FIRETRENCH_COLOR;
         white_mapping.ICGC_id = -1;
-        white_mapping.expandCoefficient = 0f;
+        white_mapping.expandCoefficient = -0.1f;
         white_mapping.burnPriority = 1;
 
         mappings_dict.Add(FIRETRENCH_COLOR, white_mapping);
@@ -91,7 +91,7 @@ public class Agent1 : Agent {
     public override void OnActionReceived(ActionBuffers actions) {
 
         Color color = FIRETRENCH_COLOR;
-        Drawer drawer = new Drawer(2);
+        Drawer drawer = new Drawer(1);
 
         List<Vector2> points = new List<Vector2>();
         //int n_points =  actions.DiscreteActions[actions.DiscreteActions.Count() - 1] // The last element is the number of points to use
@@ -109,7 +109,7 @@ public class Agent1 : Agent {
     // Called when the Agent resets. Here is where we reset everything after the reward is given
     public override void OnEpisodeBegin() {
 
-        Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
+        //Debug.Log("-----------------------------EPOCH " + Academy.Instance.EpisodeCount + "-----------------------------");
         //Debug.Log("REWARD: " + + GetCumulativeReward()); // DEBUG
 
     }
@@ -134,7 +134,7 @@ public class Agent1 : Agent {
         map = enviroment_manager.VegetationMapTexture();
         map_material.mainTexture = map;
 
-        Debug.Log("REWARD: " + GetCumulativeReward());
+        //Debug.Log("REWARD: " + GetCumulativeReward());
         enviroment_manager.AddAgentReady();
 
     }

@@ -66,6 +66,7 @@ public class Drawer {
             }
         }
 
+        map.Apply();
     }
 
     public Vector2 CatmullRom(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t) {
@@ -95,6 +96,8 @@ public class Drawer {
                 previousPoint = point;
             }
         }
+
+        map.Apply();
     }
 
     public Vector2 Bezier(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t) {
@@ -120,6 +123,7 @@ public class Drawer {
             }
         }
 
+        map.Apply();
     }
 
 }
