@@ -272,11 +272,11 @@ public class FireSimulator {
                 int hum_enable = hum_on? 1 : 0;
                 int temp_enable = temp_on? 1 : 0;
 
-                float alfa_weight = 0.23f*veg_enable; // Weight or the expand_coefficient. Initially was 0.3
+                float alfa_weight = 0.25f*veg_enable; // Weight or the expand_coefficient. Initially was 0.3
                 float h_weight = 0.12f*height_enable; // Weight for the height coefficient. Initially was 0.1
                 float w_weight = 0.32f*wind_enable; // Wheight for the wind coefficient. Initially was 0.3
-                float hum_weight = 0.14f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
-                float temp_weight = 0.14f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
+                float hum_weight = 0.13f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
+                float temp_weight = 0.13f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
                 float rand_weight = 1 - (alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
 
                 float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight + rand_weight; 
@@ -296,12 +296,12 @@ public class FireSimulator {
                 probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight + temp*temp_weight + rand*rand_weight;
                 probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
 
-                List<float> probs = new List<float>{alfa*alfa_weight, h*h_weight, w*w_weight, hum*hum_weight, temp*temp_weight, rand*rand_weight};
+                /*List<float> probs = new List<float>{alfa*alfa_weight, h*h_weight, w*w_weight, hum*hum_weight, temp*temp_weight, rand*rand_weight};
                 if (map.GetPixel(target_pixel.x, target_pixel.y) == Color.white) {
                     foreach (float prob in probs) Debug.Log(prob);
                     Debug.Log("Prob: " + probability);
                     Debug.Log("------------------------");
-                }
+                }*/
 
             }
 

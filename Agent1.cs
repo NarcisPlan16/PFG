@@ -31,6 +31,8 @@ public class Agent1 : Agent {
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
     private Vector2 fire_init;
+    private float opportunities_reward = 0;
+    private float fire_reward = 0;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -48,7 +50,7 @@ public class Agent1 : Agent {
         ColorToVegetation white_mapping = new ColorToVegetation();
         white_mapping.color = FIRETRENCH_COLOR;
         white_mapping.ICGC_id = -1;
-        white_mapping.expandCoefficient = -0.1f;
+        white_mapping.expandCoefficient = -1.0f;
         white_mapping.burnPriority = 1;
 
         mappings_dict.Add(FIRETRENCH_COLOR, white_mapping);
@@ -84,6 +86,9 @@ public class Agent1 : Agent {
         //float distance_to_fire = CalcFireOriginDistance();
         //Debug.Log("Obs: " + distance_to_fire);
         //sensor.AddObservation(distance_to_fire);
+
+        sensor.AddObservation(opportunities_reward);
+        sensor.AddObservation(fire_reward);
 
     }
 
@@ -155,11 +160,11 @@ public class Agent1 : Agent {
 
         float penalization = fire_simulation.GetReward();
         float max_pen = fires_data[4].total_cost;
-        float fire_reward = 1 - (penalization / max_pen);
+        fire_reward = 1 - (penalization / max_pen);
 
         int total_opp = fire_simulation.TotalOpportunities();
         int spent_opp = fire_simulation.SpentOpportunities(); 
-        float opportunities_reward = 1 - (spent_opp / total_opp);
+        opportunities_reward = 1 - (spent_opp / total_opp);
 
         float total_reward = 0.5f*fire_reward + 0.5f*opportunities_reward;
         AddReward(total_reward);
@@ -176,6 +181,9 @@ public class Agent1 : Agent {
         GetLineCoefficients(origin, destination, out float A, out float B, out float C); 
         float numerator = Mathf.Abs(A * fire_init.x + B * fire_init.y + C);
         float denominator = Mathf.Sqrt(A * A + B * B);
+
+        Debug.Log("numer: " + numerator);
+        Debug.Log("denom: " + denominator);
         
         return numerator / denominator;
     }

@@ -23,7 +23,7 @@ behaviors:
         gamma: 0.88
     max_steps: 5e5
     threaded: true
-    summary_freq: 300
+    summary_freq: 500
     time_horizon: 64 # Number of time steps to collect data from the environment before performing an update to the neural network.
-    checkpoint_interval: 1200
+    checkpoint_interval: 2000
     keep_checkpoints: 5
