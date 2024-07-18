@@ -96,7 +96,7 @@ public class Agent1 : Agent {
     public override void OnActionReceived(ActionBuffers actions) {
 
         Color color = FIRETRENCH_COLOR;
-        Drawer drawer = new Drawer(1);
+        Drawer drawer = new Drawer(2);
 
         List<Vector2> points = new List<Vector2>();
         //int n_points =  actions.DiscreteActions[actions.DiscreteActions.Count() - 1] // The last element is the number of points to use
@@ -164,7 +164,7 @@ public class Agent1 : Agent {
 
         int total_opp = fire_simulation.TotalOpportunities();
         int spent_opp = fire_simulation.SpentOpportunities(); 
-        opportunities_reward = 1 - (spent_opp / total_opp);
+        opportunities_reward = 1 - (spent_opp / total_opp); // Substituir per el nou càlcul (marta)
 
         float total_reward = 0.5f*fire_reward + 0.5f*opportunities_reward;
         AddReward(total_reward);

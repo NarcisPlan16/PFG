@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 using UnityEngine;
 using UnityEditor;
@@ -12,11 +13,14 @@ public class VegetationGenerator : MonoBehaviour {
     private List<List<bool>> entityPositions = new List<List<bool>>(); // Matrix of existing entity positions
     private Terrain terrain; // Active terrain
     private ColorVegetationMapper colorToVegMapper = new ColorVegetationMapper();
+    private const string JSON_Dir = "./Assets/Resources/JSON/";
+    private Dictionary<Color, ColorToVegetation> mappings_dict = new Dictionary<Color, ColorToVegetation>(); // List to map colors to vegetation prefabs
 
-    public Texture2D vegetationMap; // Assign JPG file
+    public string mappings_filename;
+    public Texture2D vegetation_map; // Assign JPG file
     public float threshold = 0.2877f; // Threshold for considering colors the same
     public int minSeparation = 1; // Density of vegetation (how close the vegetation is generated with eachother)
-    public Dictionary<Color, ColorToVegetation> colorVegetationMappings = new Dictionary<Color, ColorToVegetation>(); // List to map colors to vegetation prefabs
+    public List<ColorToVegetation> mappings;
 
     void Start() {
         
@@ -28,6 +32,11 @@ public class VegetationGenerator : MonoBehaviour {
             return;
         }
         
+        MapPreprocessing map_preprocessing = new MapPreprocessing();
+        map_preprocessing.Start(vegetation_map);
+        map_preprocessing.CalculateColorMappings();
+
+        vegetation_map = map_preprocessing.ObtainProcessedMap();
     }
 
     void OnEnable() {
@@ -35,26 +44,29 @@ public class VegetationGenerator : MonoBehaviour {
     }
 
     public void CalculateColorMappings() {
-        if (vegetationMap != null) {
-            colorToVegMapper.ExtractColorMappings(vegetationMap);
-            colorVegetationMappings = colorToVegMapper.ObtainMappings();
+        if (vegetation_map != null) {
+            colorToVegMapper.ExtractColorMappings(vegetation_map);
+            mappings_dict = colorToVegMapper.ObtainMappings();
         }
 
     }
 
     public void GenerateVegetation() {
+
+        colorToVegMapper.mappings = mappings_dict;
+        Debug.Log(mappings_dict.Count);
         
         ClearVegetation(); // Clear existing vegetation
         InitEntityPositions();
 
-        int width = vegetationMap.width;
-        int height = vegetationMap.height;
+        int width = vegetation_map.width;
+        int height = vegetation_map.height;
 
         for (int x = 0; x < width; x++) { 
             for (int z = 0; z < height; z++) { 
 
-                Color pixelColor = vegetationMap.GetPixel(x, z);
-                ColorToVegetation mapping = colorToVegMapper.GetColorMapping(pixelColor);
+                Color pixelColor = vegetation_map.GetPixel(x, z);
+                ColorToVegetation mapping = colorToVegMapper.FindClosestMapping(pixelColor);
 
                 if (mapping.vegetationPrefab != null) { // Check if vegetationPrefab is not null
 
@@ -80,10 +92,10 @@ public class VegetationGenerator : MonoBehaviour {
 
         entityPositions.Clear();
 
-        for (int i = 0; i < vegetationMap.width; i++) {
+        for (int i = 0; i < vegetation_map.width; i++) {
 
             List<bool> new_col = new List<bool>();
-            for (int j = 0; j < vegetationMap.height; j++) new_col.Add(false);
+            for (int j = 0; j < vegetation_map.height; j++) new_col.Add(false);
             entityPositions.Add(new_col);
 
         }
@@ -94,9 +106,9 @@ public class VegetationGenerator : MonoBehaviour {
 
         bool res = true;
 
-        for (int i = x - minSeparation; i <= x + minSeparation && i < vegetationMap.width; i++) {
+        for (int i = x - minSeparation; i <= x + minSeparation && i < vegetation_map.width; i++) {
             if (i >= 0) {
-                for (int j = y - minSeparation; j <= y + minSeparation && j < vegetationMap.height; j++) {
+                for (int j = y - minSeparation; j <= y + minSeparation && j < vegetation_map.height; j++) {
                     if (j >= 0 && entityPositions[i][j]) return false;
                 }
             }
@@ -118,32 +130,30 @@ public class VegetationGenerator : MonoBehaviour {
 
     }
 
+    public void LoadMappings() {
 
+        MapManager map_manager = new MapManager();
+
+        map_manager.LoadMappings(JSON_Dir + mappings_filename);
+        mappings_dict = map_manager.GetMappings();
+
+        mappings = mappings_dict.Values.ToList();
+    }
 
 }
 
 [CustomEditor(typeof(VegetationGenerator))]
 public class VegetationGeneratorEditor : Editor {
-    public override void OnInspectorGUI()
-    {
+    public override void OnInspectorGUI() {
         DrawDefaultInspector();
 
         VegetationGenerator myScript = (VegetationGenerator)target;
 
-        if (GUILayout.Button("Generate Vegetation"))
-        {
-            myScript.GenerateVegetation();
-        }
-
-        if (GUILayout.Button("Clear Vegetation"))
-        {
-            myScript.ClearVegetation();
-        }
-
-        if (GUILayout.Button("Recalculate Color Mappings"))
-        {
-            myScript.CalculateColorMappings();
-        }
+        if (GUILayout.Button("Generate Vegetation")) myScript.GenerateVegetation();
+        if (GUILayout.Button("Clear Vegetation")) myScript.ClearVegetation();
+        if (GUILayout.Button("Load mappings")) myScript.LoadMappings();
+        
+        
     }
 }
 

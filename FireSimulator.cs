@@ -355,7 +355,7 @@ public class FireSimulator {
 
     private float CalcTemperatureProbanility() {
 
-        float probability = 1 - (temperature_coeff / 100.0f); 
+        float probability = temperature_coeff / 100.0f; 
 
         if (temperature_coeff > 30 && temperature_coeff <= 40) probability *= 0.7f;
         else if (temperature_coeff < 30) probability *= 0.6f;
