@@ -83,7 +83,7 @@ public class Drawer {
 
     public void DrawBezierCurve(List<Vector2> points, Color color, Texture2D map, float step, bool x_first) {
 
-        points.Sort(comparePoints); // TODO: Sort
+        points.Sort(comparePoints); // TODO: Sort with x_first
         for (int i = 0; i < points.Count - 1; i += 3) {
             Vector2 p0 = points[i];
             Vector2 p1 = points[Mathf.Min(i + 1, points.Count - 1)];
@@ -101,7 +101,7 @@ public class Drawer {
         map.Apply();
     }
 
-    public int comparePoints(Vector2 a, Vector2 b, bool x_first) {
+    public int comparePoints(Vector2 a, Vector2 b) {
 
         if (x_first) {
             // Compare by x first
