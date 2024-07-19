@@ -81,8 +81,9 @@ public class Drawer {
         return a0 * p0 + a1 * p1 + a2 * p2 + a3 * p3;
     }
 
-    public void DrawBezierCurve(List<Vector2> points, Color color, Texture2D map, float step) {
+    public void DrawBezierCurve(List<Vector2> points, Color color, Texture2D map, float step, bool x_first) {
 
+        points.Sort(comparePoints); // TODO: Sort
         for (int i = 0; i < points.Count - 1; i += 3) {
             Vector2 p0 = points[i];
             Vector2 p1 = points[Mathf.Min(i + 1, points.Count - 1)];
@@ -98,6 +99,31 @@ public class Drawer {
         }
 
         map.Apply();
+    }
+
+    public int comparePoints(Vector2 a, Vector2 b, bool x_first) {
+
+        if (x_first) {
+            // Compare by x first
+            if (a.x < b.x) return -1;
+            else if (a.x > b.x) return 1;
+
+            // If x is equal, compare by y
+            if (a.y < b.y) return -1;
+            else if (a.y > b.y) return 1;
+        }
+        else {
+            // Compare by y first
+            if (a.y < b.y) return -1;
+            else if (a.y > b.y) return 1;
+
+            // If y is equal, compare by x
+            if (a.x < b.x) return -1;
+            else if(a.x > b.x) return 1;
+        }
+
+        // If both x and y are equal
+        return 0;
     }
 
     public Vector2 Bezier(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t) {

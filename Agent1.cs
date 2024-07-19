@@ -100,13 +100,17 @@ public class Agent1 : Agent {
 
         List<Vector2> points = new List<Vector2>();
         //int n_points =  actions.DiscreteActions[actions.DiscreteActions.Count() - 1] // The last element is the number of points to use
-        for (int i = 0; i < actions.DiscreteActions.Count(); i += 2) {
+        int n_parameters = actions.DiscreteActions.Count();
+        for (int i = 0; i < n_parameters - 1; i += 2) { // n_parameters - 1 because the last paraeter is 0 or 1 (compare by x or by y the points)
             points.Add(new Vector2(actions.DiscreteActions[i], actions.DiscreteActions[i+1]));
-        }        
+        }       
+
+        bool x_first = true;
+        if (actions.DiscreteActions[n_parameters-1] == 0) x_first = false;
+
         //drawer.DrawLine(points[0], points[1], color, map);
         //drawer.DrawCatmullRomSpline(points, color, map, 0.005f);
-        drawer.DrawBezierCurve(points, color, map, 0.005f);
-
+        drawer.DrawBezierCurve(points, color, map, 0.005f, x_first);
 
         FinishEpoch();
     }
