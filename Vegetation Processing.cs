@@ -20,6 +20,7 @@ public class VegetationGenerator : MonoBehaviour {
     public Texture2D vegetation_map; // Assign JPG file
     public float threshold = 0.2877f; // Threshold for considering colors the same
     public int minSeparation = 1; // Density of vegetation (how close the vegetation is generated with eachother)
+    public float prefab_size = 1.0f;
     public List<ColorToVegetation> mappings;
 
     void Start() {
@@ -37,46 +38,37 @@ public class VegetationGenerator : MonoBehaviour {
         map_preprocessing.CalculateColorMappings();
 
         vegetation_map = map_preprocessing.ObtainProcessedMap();
-    }
-
-    void OnEnable() {
-
-    }
-
-    public void CalculateColorMappings() {
-        if (vegetation_map != null) {
-            colorToVegMapper.ExtractColorMappings(vegetation_map);
-            mappings_dict = colorToVegMapper.ObtainMappings();
-        }
+        GenerateVegetation();
 
     }
 
     public void GenerateVegetation() {
 
         colorToVegMapper.mappings = mappings_dict;
-        Debug.Log(mappings_dict.Count);
         
         ClearVegetation(); // Clear existing vegetation
         InitEntityPositions();
 
-        int width = vegetation_map.width;
-        int height = vegetation_map.height;
+        int veg_width = vegetation_map.width;
+        int veg_height = vegetation_map.height;
+        float terrain_width = terrain.terrainData.size.x;
+        float terrain_height =  terrain.terrainData.size.z;
 
-        for (int x = 0; x < width; x++) { 
-            for (int z = 0; z < height; z++) { 
+        for (int x = 0; x < veg_width; x++) { 
+            for (int z = 0; z < veg_height; z++) { 
 
                 Color pixelColor = vegetation_map.GetPixel(x, z);
                 ColorToVegetation mapping = colorToVegMapper.FindClosestMapping(pixelColor);
 
                 if (mapping.vegetationPrefab != null) { // Check if vegetationPrefab is not null
 
-                    float y = terrain.terrainData.GetHeight(x / 2, z / 2); // Divide by 2 as the size of the vegetation map is 2048x2048 and the size pof the terrain is 1024x1024
-                    Vector3 position = new Vector3(x / (float)width * terrain.terrainData.size.x, y, z / (float)height * terrain.terrainData.size.z);
+                    float y = terrain.terrainData.GetHeight(x * 2, z * 2); // Multiply by 2, vegetation map is 512 and the size pof the terrain is 1024x1024
+                    Vector3 position = new Vector3(x / (float)veg_width * terrain_width, y, z / (float)veg_height * terrain_height);
 
-                    //float randomValue = Random.Range(0f, 1f);
-                    if (/*randomValue < mapping.spawnChance &&*/ NoNearbyEntity(x, z)) {
+                    if (NoNearbyEntity(x, z)) {
                         GameObject vegetation = Instantiate(mapping.vegetationPrefab, position, Quaternion.identity);
                         vegetation.transform.parent = terrain.transform;
+                        vegetation.transform.localScale = new Vector3(prefab_size, prefab_size, prefab_size);
                         entityPositions[x][z] = true;
                     }
 

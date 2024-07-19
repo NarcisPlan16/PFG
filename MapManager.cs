@@ -54,6 +54,12 @@ public class MapManager {
 
     public void StoreMappings(string file_path) {
 
+        ColorToVegetation burned_mapping = new ColorToVegetation();
+        burned_mapping.ICGC_id = 231;
+        burned_mapping.expandCoefficient = 0;
+        burned_mapping.burnPriority = 0;
+        mappings.Add(Color.black, burned_mapping);
+
         ColorToVegetationListWrapper list_w = new ColorToVegetationListWrapper(mappings); 
 
         string json_content = JsonUtility.ToJson(list_w);

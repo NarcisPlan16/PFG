@@ -400,7 +400,7 @@ public class FireSimulator {
 
         int opportunities = 0; // All colors with code 4XX, 0 opportunities
         if (mapping.ICGC_id < 200 && mapping.ICGC_id >= 100) opportunities = 2; // All colors with code 1XX, 2 opportunities
-        else if (mapping.ICGC_id < 400 && mapping.ICGC_id >= 200) opportunities = 3; // All colors with code 2XX or 3XX, 3 opportunities
+        else if (mapping.ICGC_id < 400 && mapping.ICGC_id >= 200 && mapping.ICGC_id != 231) opportunities = 3; // All colors with code 2XX or 3XX not burnt (code 231), 3 opportunities
         else if (mapping.ICGC_id == -1) opportunities = 1; // Firetrench ID
 
         return opportunities;
