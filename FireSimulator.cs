@@ -31,6 +31,7 @@ public class FireSimulator {
     private float reward; // Accumulated reward
     private int total_opportunities; // Total cell opportunities that could have been spent on this fire
     private int spent_opportunities; // Actual spent opportunities on this fire
+    private int firetrench_spent_opps; // Spent opportunities trying to burn and expand firetrench pixels
 
     public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), float humidity = 0.0f, float temperature = 0.0f, bool debug = false) {
 
@@ -45,6 +46,7 @@ public class FireSimulator {
         this.reward = 0;
         this.total_opportunities = 0;
         this.spent_opportunities = 0;
+        this.firetrench_spent_opps = 0;
     }
 
     public List<int> InitRandomFire(Texture2D map, Material map_material) {
@@ -158,6 +160,7 @@ public class FireSimulator {
                             expanded = true;
                             
                         }
+                        else if (IsFiretrench(neigh, map)) this.firetrench_spent_opps += 1;
 
                     }
 
@@ -167,6 +170,7 @@ public class FireSimulator {
                         origin_cell.opportunities -= 1;
                         pixels_burning[rand_pixel] = origin_cell;
                         this.spent_opportunities += 1;
+                        if (IsFiretrench(origin_cell, map)) this.firetrench_spent_opps += 1;
 
                         if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel, map);
 
@@ -202,6 +206,10 @@ public class FireSimulator {
         return fire_ended;
     }
 
+    public bool IsFiretrench(Cell cell, Texture2D map) {
+        return map.GetPixel(cell.x, cell.y) == Color.white;
+    }
+
     public float CalcReward(int x, int y, Texture2D map) {
 
         Color pixel_color = map.GetPixel(x, y);
@@ -224,6 +232,10 @@ public class FireSimulator {
 
     public int TotalPixelsBurnt() {
         return pixels_burnt;
+    }
+
+    public int FiretrenchSpentOpportunities() {
+        return this.firetrench_spent_opps;
     }
 
     private ColorToVegetation ObtainMapping(Color color) {

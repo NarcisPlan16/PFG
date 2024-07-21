@@ -166,11 +166,11 @@ public class Agent1 : Agent {
         float max_pen = fires_data[4].total_cost;
         fire_reward = 1 - (penalization / max_pen);
 
-        int total_opp = fire_simulation.TotalOpportunities();
-        int spent_opp = fire_simulation.SpentOpportunities(); 
-        opportunities_reward = 1 - (spent_opp / total_opp); // Substituir per el nou càlcul (marta)
+        int firetrench_spent_opps = fire_simulation.FiretrenchSpentOpportunities();
+        int spent_opportunities = fire_simulation.SpentOpportunities();
+        opportunities_reward = firetrench_spent_opps / spent_opportunities;
 
-        float total_reward = 0.5f*fire_reward + 0.5f*opportunities_reward;
+        float total_reward = 0.4f*fire_reward + 0.6f*opportunities_reward;
         AddReward(total_reward);
     }
     

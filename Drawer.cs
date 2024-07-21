@@ -6,9 +6,11 @@ using UnityEngine;
 public class Drawer {
 
     private int _width;
+    private bool _x_first;
 
     public Drawer(int w) {
         this._width = w;
+        this._x_first = true;
     }
 
     public void DrawLine(Vector2 origin, Vector2 destination, Color color, Texture2D map) {
@@ -83,6 +85,7 @@ public class Drawer {
 
     public void DrawBezierCurve(List<Vector2> points, Color color, Texture2D map, float step, bool x_first) {
 
+        this._x_first = x_first;
         points.Sort(comparePoints); // TODO: Sort with x_first
         for (int i = 0; i < points.Count - 1; i += 3) {
             Vector2 p0 = points[i];
@@ -103,7 +106,7 @@ public class Drawer {
 
     public int comparePoints(Vector2 a, Vector2 b) {
 
-        if (x_first) {
+        if (this._x_first) {
             // Compare by x first
             if (a.x < b.x) return -1;
             else if (a.x > b.x) return 1;
