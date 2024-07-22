@@ -26,7 +26,7 @@ public class Agent1 : Agent {
     private Color FIRETRENCH_COLOR = Color.white;
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
-    private const int MAX_FIRE_SPAN = 4000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
+    private const int MAX_FIRE_SPAN = 6000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
@@ -71,7 +71,7 @@ public class Agent1 : Agent {
         
         for (int i = 0; i < (int) files.Length / 2; i++) {
 
-            string json_content = File.ReadAllText(JSON_Dir + "SampleMaps/fire_" + i);
+            string json_content = File.ReadAllText(JSON_Dir + "SampleMaps/fire_"+i+".json");
             FireMapsPreparation.FireData fire_data = JsonUtility.FromJson<FireMapsPreparation.FireData>(json_content);
 
             fires_data.Add(i, fire_data);
@@ -96,7 +96,7 @@ public class Agent1 : Agent {
     public override void OnActionReceived(ActionBuffers actions) {
 
         Color color = FIRETRENCH_COLOR;
-        Drawer drawer = new Drawer(2);
+        Drawer drawer = new Drawer(1);
 
         List<Vector2> points = new List<Vector2>();
         //int n_points =  actions.DiscreteActions[actions.DiscreteActions.Count() - 1] // The last element is the number of points to use
@@ -132,9 +132,9 @@ public class Agent1 : Agent {
     public IEnumerator SimulateFireAndCalcReward() {
 
         fire_simulation = new FireSimulator(mappings_dict, 
-                                            fires_data[4].wind_dir, 
-                                            fires_data[4].humidity_percentage, 
-                                            fires_data[4].temperature
+                                            fires_data[11].wind_dir, 
+                                            fires_data[11].humidity_percentage, 
+                                            fires_data[11].temperature
                                             );
 
         yield return StartCoroutine(SimulateFire());
@@ -151,7 +151,7 @@ public class Agent1 : Agent {
     private IEnumerator SimulateFire() {
 
         bool fire_ended = false;
-        fire_init = fire_simulation.InitFireWithData(fires_data[4], map, map_material);
+        fire_init = fire_simulation.InitFireWithData(fires_data[11], map, map_material); // Fer que per UN TALLAFOC, que provi el 25% de tots els focs simulats
         while (!fire_ended) {
             fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, 
                                                     enviroment_manager.HeightMap(), 
@@ -163,7 +163,7 @@ public class Agent1 : Agent {
 
 
         float penalization = fire_simulation.GetReward();
-        float max_pen = fires_data[4].total_cost;
+        float max_pen = fires_data[11].total_cost;
         fire_reward = 1 - (penalization / max_pen);
 
         int firetrench_spent_opps = fire_simulation.FiretrenchSpentOpportunities();

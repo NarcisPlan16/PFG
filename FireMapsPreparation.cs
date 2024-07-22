@@ -121,7 +121,7 @@ public class FireMapsPreparation : MonoBehaviour {
                                               fire_sim.TotalPixelsBurnt());
 
             string jsonData = JsonUtility.ToJson(fire_data);
-            System.IO.File.WriteAllText(JSON_Dir+"SampleMaps/fire_"+i, jsonData);
+            System.IO.File.WriteAllText(JSON_Dir+"SampleMaps/fire_"+i+".json", jsonData);
 
             map_manager.ResetMap();
             actual_map = map_manager.GetMap();
@@ -135,7 +135,7 @@ public class FireMapsPreparation : MonoBehaviour {
 
         map_material = plane.GetComponent<MeshRenderer>().sharedMaterial;
         map_manager.plane = plane;
-        mappings = map_manager.Preprocessing(input_vegetation_map); // TODO: Paralelitzar per fer-lo més ràpid
+        mappings = map_manager.Preprocessing(input_vegetation_map);
 
         actual_map = map_manager.GetMap();
 

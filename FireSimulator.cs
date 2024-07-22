@@ -150,14 +150,23 @@ public class FireSimulator {
                         float expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
                         float dice = random.Next(0, 100) / 100.0f;
 
-                        if (dice <= expand_prob) {  // 0.2
+                        if (dice <= expand_prob) {  // 221 i 225 tenen pins --> pinyes
                             // if expand prob is 0.87, the dice has 87/100 chanches. So the dice must be between 0 and 87 in order to expand.
 
-                            reward += CalcReward(neigh.x, neigh.y, map);
+                            bool burnt = true;
+                            if (IsFiretrench(neigh, map)) {
+                                float dice2 = random.Next(0, 100) / 100.0f;
+                                float dice3 = random.Next(0, 100) / 100.0f;
+                                if (dice2 > expand_prob || dice3 > expand_prob) burnt = false;
+                            }
 
-                            map.SetPixel(neigh.x, neigh.y, RED_COLOR);
-                            pixels_burning.Add(neigh);
-                            expanded = true;
+                            if (burnt) {
+                                reward += CalcReward(neigh.x, neigh.y, map);
+
+                                map.SetPixel(neigh.x, neigh.y, RED_COLOR);
+                                pixels_burning.Add(neigh);
+                                expanded = true;
+                            }
                             
                         }
                         else if (IsFiretrench(neigh, map)) this.firetrench_spent_opps += 1;
@@ -286,10 +295,10 @@ public class FireSimulator {
 
                 float alfa_weight = 0.25f*veg_enable; // Weight or the expand_coefficient. Initially was 0.3
                 float h_weight = 0.12f*height_enable; // Weight for the height coefficient. Initially was 0.1
-                float w_weight = 0.32f*wind_enable; // Wheight for the wind coefficient. Initially was 0.3
-                float hum_weight = 0.13f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
-                float temp_weight = 0.13f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
-                float rand_weight = 1 - (alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
+                float w_weight = 0.38f*wind_enable; // Wheight for the wind coefficient. Initially was 0.3
+                float hum_weight = 0.10f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
+                float temp_weight = 0.10f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
+                float rand_weight = 0.05f * (alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
 
                 float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight + rand_weight; 
                 // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
@@ -336,7 +345,7 @@ public class FireSimulator {
         else if (modul < 15) scalar_prod *= 0.3f;
         else if (modul < 30) scalar_prod *= 0.5f;
         else if (modul < 50) scalar_prod *= 0.7f;
-        else if (modul > 50) scalar_prod *= 1.0f;
+        else scalar_prod *= 1.0f; // modul > 50
 
         return scalar_prod;
     }
