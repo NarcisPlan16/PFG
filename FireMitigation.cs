@@ -23,7 +23,7 @@ public class FireMitigation : MonoBehaviour {
         public int init_x;
         public int init_y;
         public float temperature;
-        public float himudity;
+        public float humidity;
         public Vector3 wind;
         public List<Vector2> firetrench_points;
 
