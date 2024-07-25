@@ -17,6 +17,7 @@ public class FireMitigation : MonoBehaviour {
     private Texture2D _map;
     private Material _map_material;
     private bool _sim_running;
+    private bool _load_points = false;
 
     public GameObject _plane;
     public int _init_x;
@@ -63,7 +64,11 @@ public class FireMitigation : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        if (!this._sim_running) StartCoroutine(FireSimulation());
+        if (!this._sim_running) {
+            this._sim_running = true;
+            StartCoroutine(FireSimulation());
+            this._sim_running = false;
+        }
     }
 
     public IEnumerator FireSimulation() {
@@ -110,6 +115,8 @@ public class FireMitigation : MonoBehaviour {
     }
 
     public void LoadFiretrenchPoints() {
+
+        this._load_points = true;
 
         string json_content = File.ReadAllText(JSON_Dir + "FiretrenchPoints.json");
         FiretrenchPointsWrapper data = JsonUtility.FromJson<FiretrenchPointsWrapper>(json_content);
