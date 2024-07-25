@@ -32,6 +32,7 @@ public class FireSimulator {
     private int total_opportunities; // Total cell opportunities that could have been spent on this fire
     private int spent_opportunities; // Actual spent opportunities on this fire
     private int firetrench_spent_opps; // Spent opportunities trying to burn and expand firetrench pixels
+    private int _sim_speed;
 
     public FireSimulator(Dictionary<Color, ColorToVegetation> mappings, Vector3 wind = new Vector3(), float humidity = 0.0f, float temperature = 0.0f, bool debug = false) {
 
@@ -47,6 +48,7 @@ public class FireSimulator {
         this.total_opportunities = 0;
         this.spent_opportunities = 0;
         this.firetrench_spent_opps = 0;
+        this._sim_speed = 10;
     }
 
     public List<int> InitRandomFire(Texture2D map, Material map_material) {
@@ -73,25 +75,26 @@ public class FireSimulator {
         return res;
     }
 
-    public Vector2 InitFireWithData(FireMapsPreparation.FireData fire_data, Texture2D map, Material map_material) {
+    public Vector2 InitFireAt(int x, int y, Texture2D map, Material map_material) {
         // Returns where the fire was originated
 
-        Vector2 res = new Vector2();
-        res.x = fire_data.init_x;
-        res.y = fire_data.init_y;
-        int opportunities = CalcOpportunities((int)res.x, (int)res.y, map);  
+        int opportunities = CalcOpportunities(x, y, map);  
         this.total_opportunities += opportunities;
 
         reward = 0;
-        reward += CalcReward((int)res.x, (int)res.y, map);
+        reward += CalcReward(x, y, map);
 
-        pixels_burning.Add(new Cell((int)res.x, (int)res.y, opportunities));
-        map.SetPixel((int)res.x, (int)res.y, RED_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
+        pixels_burning.Add(new Cell(x, y, opportunities));
+        map.SetPixel(x, y, RED_COLOR); // Set the piel to "Black" as it ois the "fire/burned" color
         map.Apply();
 
-        if (debug) Debug.Log("Init -- X: " + res.x + " Y: " + res.y);
+        if (debug) Debug.Log("Init -- X: " + x + " Y: " + y);
 
-        return res;
+        return new Vector2(x, y);
+    }
+
+    public void SetSimSpeed(int speed) {
+        this._sim_speed = speed;
     }
 
     public List<Cell> ObtainNeighborsUnburned(Cell cell, Texture2D map) {
@@ -133,7 +136,7 @@ public class FireSimulator {
 
         if (pixels_burning.Count > 0) {
 
-            int rand_expand_pixels = random.Next(0, 10); // number of pixels tu expand this iteration. Maximum of 10
+            int rand_expand_pixels = random.Next(0, this._sim_speed); // number of pixels tu expand this iteration. Maximum of 10
             for (int i = 0; i < rand_expand_pixels; i++) {
 
                 // expand the fire to its neighbors (to all or to only some of them)

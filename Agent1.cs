@@ -23,7 +23,7 @@ public class Agent1 : Agent {
     private Texture2D map;
     private Material map_material;
     private const string JSON_Dir = "./Assets/Resources/JSON/";
-    private Color FIRETRENCH_COLOR = Color.white;
+    private Color WHITE_COLOR = Color.white;
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
     private const int MAX_FIRE_SPAN = 6000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
@@ -48,12 +48,12 @@ public class Agent1 : Agent {
         map_material.mainTexture = map;
 
         ColorToVegetation white_mapping = new ColorToVegetation();
-        white_mapping.color = FIRETRENCH_COLOR;
+        white_mapping.color = WHITE_COLOR;
         white_mapping.ICGC_id = -1;
         white_mapping.expandCoefficient = -1.0f;
         white_mapping.burnPriority = 1;
 
-        mappings_dict.Add(FIRETRENCH_COLOR, white_mapping);
+        mappings_dict.Add(WHITE_COLOR, white_mapping);
 
         fires_data = new Dictionary<int, FireMapsPreparation.FireData>();
         GetFiresData();
@@ -69,7 +69,7 @@ public class Agent1 : Agent {
 
         string[] files = Directory.GetFiles(JSON_Dir + "SampleMaps");
         
-        for (int i = 0; i < (int) files.Length / 2; i++) {
+        for (int i = 0; i < Mathf.Floor(files.Length / 2); i++) {
 
             string json_content = File.ReadAllText(JSON_Dir + "SampleMaps/fire_"+i+".json");
             FireMapsPreparation.FireData fire_data = JsonUtility.FromJson<FireMapsPreparation.FireData>(json_content);
@@ -95,7 +95,7 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        Color color = FIRETRENCH_COLOR;
+        Color color = WHITE_COLOR;
         Drawer drawer = new Drawer(1);
 
         List<Vector2> points = new List<Vector2>();
@@ -151,7 +151,8 @@ public class Agent1 : Agent {
     private IEnumerator SimulateFire() {
 
         bool fire_ended = false;
-        fire_init = fire_simulation.InitFireWithData(fires_data[11], map, map_material); // Fer que per UN TALLAFOC, que provi el 25% de tots els focs simulats
+        FireMapsPreparation.FireData fire_data = fires_data[11];
+        fire_init = fire_simulation.InitFireAt(fire_data.init_x, fire_data.init_y, map, map_material); // Fer que per UN TALLAFOC, que provi el 25% de tots els focs simulats
         while (!fire_ended) {
             fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, 
                                                     enviroment_manager.HeightMap(), 

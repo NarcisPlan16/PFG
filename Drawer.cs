@@ -13,6 +13,14 @@ public class Drawer {
         this._x_first = true;
     }
 
+    public void DrawJointPointsPoligonal(List<Vector2> points, Color color, Texture2D map) {
+
+        for (int i = 0; i < points.Count - 1; i++) {
+            DrawLine(points[i], points[i+1], color, map);
+        }
+
+    }
+
     public void DrawLine(Vector2 origin, Vector2 destination, Color color, Texture2D map) {
         // Draw a line from origin (x0, y0) to destination (x1, y1)
 
@@ -62,7 +70,7 @@ public class Drawer {
             Vector2 p2 = points[i + 1];
             Vector2 p3 = points[Mathf.Min(i + 2, points.Count - 1)];
             
-            for (float t = 0; t < 1.0f; t += step) { // lower t if we want a smother line. lower it to make it a dashed line.
+            for (float t = 0; t < 1.0f; t += step) { // lower t if we want a smother line. Higher it to make it a dashed line.
                 Vector2 point = CatmullRom(p0, p1, p2, p3, t);
                 DrawPixelWithWidth(map, (int)point.x, (int)point.y, color);
             }

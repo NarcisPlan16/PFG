@@ -113,7 +113,7 @@ public class EnviromentManager : MonoBehaviour {
 
     public void CalculateColorMappings() {
 
-        Preprocessing(); // TODO: Paralelitzar per fer-lo més ràpid
+        Preprocessing(); 
         mappings = map_preprocessing.ObtainMappingsAsList();
 
     }
