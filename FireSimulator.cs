@@ -156,13 +156,7 @@ public class FireSimulator {
                         if (dice <= expand_prob) {  // 221 i 225 tenen pins --> pinyes
                             // if expand prob is 0.87, the dice has 87/100 chanches. So the dice must be between 0 and 87 in order to expand.
 
-                            bool burnt = true;
-                            if (IsFiretrench(neigh, map)) {
-                                float dice2 = random.Next(0, 100) / 100.0f;
-                                float dice3 = random.Next(0, 100) / 100.0f;
-                                if (dice2 > expand_prob || dice3 > expand_prob) burnt = false;
-                            }
-
+                            bool burnt = CheckFiretrench(neigh, expand_prob, map);
                             if (burnt) {
                                 reward += CalcReward(neigh.x, neigh.y, map);
 
@@ -197,12 +191,12 @@ public class FireSimulator {
                     break; // Break the for loop
                 }
 
-                //---------DEBUG ONLY---------//
+                //---------LIMIT SIMULATION SPAN---------//
                 if (spent_opportunities >= max_span) {
                     fire_ended = true;
                     break;
                 }
-                //---------DEBUG ONLY---------//
+                //---------LIMIT SIMULATION SPAN---------//
 
             }
 
@@ -216,6 +210,23 @@ public class FireSimulator {
         }
 
         return fire_ended;
+    }
+
+    public bool CheckFiretrench(Cell neigh, float expand_prob, Texture2D map) {
+        bool burnt = true;
+
+        if (IsFiretrench(neigh, map)) {
+
+            float dice2 = random.Next(0, 100) / 100.0f;
+            float dice3 = random.Next(0, 100) / 100.0f;
+            if (dice2 > expand_prob) {
+                if (dice3 > expand_prob) burnt = false;
+                else this.firetrench_spent_opps += 1;
+            }
+            else this.firetrench_spent_opps += 1;
+        }
+
+        return burnt;
     }
 
     public bool IsFiretrench(Cell cell, Texture2D map) {

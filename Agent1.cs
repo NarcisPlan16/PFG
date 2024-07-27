@@ -26,13 +26,14 @@ public class Agent1 : Agent {
     private Color WHITE_COLOR = Color.white;
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
-    private const int MAX_FIRE_SPAN = 6000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
+    private const int MAX_FIRE_SPAN = 1000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
     private Vector2 fire_init;
     private float opportunities_reward = 0;
     private float fire_reward = 0;
+    private int n_fire_test_files = 0;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
@@ -68,8 +69,9 @@ public class Agent1 : Agent {
     private void GetFiresData() {
 
         string[] files = Directory.GetFiles(JSON_Dir + "SampleMaps");
+        this.n_fire_test_files = (int) Mathf.Floor(files.Length / 2);
         
-        for (int i = 0; i < Mathf.Floor(files.Length / 2); i++) {
+        for (int i = 0; i < this.n_fire_test_files; i++) {
 
             string json_content = File.ReadAllText(JSON_Dir + "SampleMaps/fire_"+i+".json");
             FireMapsPreparation.FireData fire_data = JsonUtility.FromJson<FireMapsPreparation.FireData>(json_content);
@@ -95,7 +97,6 @@ public class Agent1 : Agent {
     // Called when the Agent requests a decision
     public override void OnActionReceived(ActionBuffers actions) {
 
-        Color color = WHITE_COLOR;
         Drawer drawer = new Drawer(1);
 
         List<Vector2> points = new List<Vector2>();
@@ -108,11 +109,11 @@ public class Agent1 : Agent {
         bool x_first = true;
         if (actions.DiscreteActions[n_parameters-1] == 0) x_first = false;
 
-        //drawer.DrawLine(points[0], points[1], color, map);
-        //drawer.DrawCatmullRomSpline(points, color, map, 0.005f);
-        drawer.DrawBezierCurve(points, color, map, 0.005f, x_first);
+        //drawer.DrawLine(points[0], points[1], WHITE_COLOR, map);
+        //drawer.DrawCatmullRomSpline(points, WHITE_COLOR, map, 0.005f);
+        drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first);
 
-        FinishEpoch();
+        FinishEpoch(points, x_first);
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
@@ -123,21 +124,36 @@ public class Agent1 : Agent {
 
     }
 
-    public void FinishEpoch() {
+    public void FinishEpoch(List<Vector2> points, bool x_first) {
 
         // TOOD: A l'enviroment manager, que faci que s'esperi a que tots els agents acabin per llavors fer el next step. I eliminar-lo d'aqui
-        StartCoroutine(SimulateFireAndCalcReward());
+        StartCoroutine(SimulateFireAndCalcReward(points, x_first));
     }
 
-    public IEnumerator SimulateFireAndCalcReward() {
+    public IEnumerator SimulateFireAndCalcReward(List<Vector2> points, bool x_first) {
 
-        fire_simulation = new FireSimulator(mappings_dict, 
-                                            fires_data[11].wind_dir, 
-                                            fires_data[11].humidity_percentage, 
-                                            fires_data[11].temperature
-                                            );
+        HashSet<int> tested_fires = new HashSet<int>();
+        for (int i = 0; i < 10; i++) { // Test with 10 fire example files
 
-        yield return StartCoroutine(SimulateFire());
+            int n_file = random.Next(0, this.n_fire_test_files);
+            while(tested_fires.Contains(n_file)) n_file = random.Next(0, this.n_fire_test_files);
+
+            tested_fires.Add(n_file);
+            fire_simulation = new FireSimulator(mappings_dict, 
+                                                fires_data[n_file].wind_dir, 
+                                                fires_data[n_file].humidity_percentage, 
+                                                fires_data[n_file].temperature
+                                                );
+
+            yield return StartCoroutine(SimulateFire(n_file));
+
+            // Reset the map
+            map = enviroment_manager.VegetationMapTexture();
+            map_material.mainTexture = map;
+
+            Drawer drawer = new Drawer(1);
+            drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first);
+        }
 
         // Reset the map
         map = enviroment_manager.VegetationMapTexture();
@@ -148,11 +164,11 @@ public class Agent1 : Agent {
 
     }
 
-    private IEnumerator SimulateFire() {
+    private IEnumerator SimulateFire(int n_file) {
 
         bool fire_ended = false;
-        FireMapsPreparation.FireData fire_data = fires_data[11];
-        fire_init = fire_simulation.InitFireAt(fire_data.init_x, fire_data.init_y, map, map_material); // Fer que per UN TALLAFOC, que provi el 25% de tots els focs simulats
+        FireMapsPreparation.FireData fire_data = fires_data[n_file];
+        fire_init = fire_simulation.InitFireAt(fire_data.init_x, fire_data.init_y, map, map_material);
         while (!fire_ended) {
             fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, 
                                                     enviroment_manager.HeightMap(), 
@@ -164,7 +180,7 @@ public class Agent1 : Agent {
 
 
         float penalization = fire_simulation.GetReward();
-        float max_pen = fires_data[11].total_cost;
+        float max_pen = fires_data[n_file].total_cost;
         fire_reward = 1 - (penalization / max_pen);
 
         int firetrench_spent_opps = fire_simulation.FiretrenchSpentOpportunities();
