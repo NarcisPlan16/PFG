@@ -67,8 +67,8 @@ public class FireMapsPreparation : MonoBehaviour {
 
         LoadMappings();
 
-        int n_extreme_cases = (int) Mathf.Round(n_normal_fires * 0.02f);
-        n_extreme_cases = (int) Mathf.Clamp(n_extreme_cases, 1f, n_normal_fires * 0.02f); // Ensure at least 1
+        int n_extreme_cases = (int) Mathf.Round(n_normal_fires * 0.01f);
+        n_extreme_cases = (int) Mathf.Clamp(n_extreme_cases, 1f, n_normal_fires * 0.01f); // Ensure at least 1
         Debug.Log("AAAAAA: " + n_extreme_cases);
         (int, int)[] humidity_values = new (int, int)[] {(0, 30), (50, 100)}; // normality range: (30, 50)
         (int, int)[] temperature_values = new (int, int)[] {(0, 30), (40, 60)}; // normality range: (30, 40)
