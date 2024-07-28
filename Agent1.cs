@@ -144,6 +144,7 @@ public class Agent1 : Agent {
                                                 fires_data[n_file].humidity_percentage, 
                                                 fires_data[n_file].temperature
                                                 );
+            fire_simulation.SetSimSpeed(10);
 
             yield return StartCoroutine(SimulateFire(n_file));
 

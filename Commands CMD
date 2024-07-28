@@ -1,4 +1,4 @@
-mlagents-learn --timeout-wait 160 --force ./Assets/Scripts/PFG/config.yaml
+mlagents-learn --timeout-wait 300 --force ./Assets/Scripts/PFG/config.yaml
 
 
 tensorboard --logdir results
