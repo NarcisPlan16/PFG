@@ -4,6 +4,7 @@ using System.IO;
 
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class FireMitigation : MonoBehaviour {
 
@@ -32,33 +33,7 @@ public class FireMitigation : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-
-        this._sim_running = false;
-        this._enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
-
-        // Prevent modifying the same material as the other agents
-        this._map_material = this._enviroment_manager.MapMaterial();
-        this._plane.GetComponent<MeshRenderer>().sharedMaterial = this._map_material;
-
-        this._mappings_dict = this._enviroment_manager.ObtainEditorMappingsDict();
-        this._map = this._enviroment_manager.VegetationMapTexture();
-        this._map_material.mainTexture = this._map;
-
-        ColorToVegetation white_mapping = new ColorToVegetation(); // Firetrench mapping
-        white_mapping.color = WHITE_COLOR;
-        white_mapping.ICGC_id = -1;
-        white_mapping.expandCoefficient = -1.0f;
-        white_mapping.burnPriority = 1;
-
-        this._mappings_dict.Add(WHITE_COLOR, white_mapping);
-        this._fire_sim = new FireSimulator(this._mappings_dict, this._wind, this._humidity, (float)this._temperature);
-
-        this._fire_sim.InitFireAt(this._init_x, this._init_y, this._map, this._map_material);
-        this._fire_sim.SetSimSpeed(SIMULATION_SPEED);
-
-        Drawer drawer = new Drawer(1);
-        if (!this._poligonal) drawer.DrawCatmullRomSpline(this._firetrench_points, WHITE_COLOR, this._map, 0.0005f);
-        else drawer.DrawJointPointsPoligonal(this._firetrench_points, WHITE_COLOR, this._map);   
+        InitFireData();   
     }
 
     // Update is called once per frame
@@ -86,10 +61,78 @@ public class FireMitigation : MonoBehaviour {
 
     }
 
+    public void InitFireData() {
+
+        this._enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
+        SetTextData();
+
+        this._map_material = this._enviroment_manager.MapMaterial();
+        this._plane.GetComponent<MeshRenderer>().sharedMaterial = this._map_material;
+
+        this._mappings_dict = this._enviroment_manager.ObtainEditorMappingsDict();
+        this._map = this._enviroment_manager.VegetationMapTexture();
+        this._map_material.mainTexture = this._map;
+
+        ColorToVegetation white_mapping = new ColorToVegetation(); // Firetrench mapping
+        white_mapping.color = WHITE_COLOR;
+        white_mapping.ICGC_id = -1;
+        white_mapping.expandCoefficient = -1.0f;
+        white_mapping.burnPriority = 1;
+
+        this._mappings_dict.Add(WHITE_COLOR, white_mapping);
+        this._fire_sim = new FireSimulator(this._mappings_dict, this._wind, this._humidity, (float)this._temperature);
+
+        this._fire_sim.InitFireAt(this._init_x, this._init_y, this._map, this._map_material);
+        this._fire_sim.SetSimSpeed(SIMULATION_SPEED);
+
+        Drawer drawer = new Drawer(1);
+        if (!this._poligonal) drawer.DrawCatmullRomSpline(this._firetrench_points, WHITE_COLOR, this._map, 0.0005f);
+        else drawer.DrawJointPointsPoligonal(this._firetrench_points, WHITE_COLOR, this._map);
+
+    }
+
+    public void SetTextData() {
+
+        TextMesh init_fire_text = GameObject.Find("InitFireText").GetComponent<TextMesh>();
+        init_fire_text.text = "Fire Init x:  "+this._init_x+"\n"
+                            + "Fire Init y:  "+this._init_y;
+
+        TextMesh temperature_text = GameObject.Find("TemperatureText").GetComponent<TextMesh>();
+        temperature_text.text = "Temperature (ºC):  "+this._temperature;
+
+        TextMesh humidity_text = GameObject.Find("HumidityText").GetComponent<TextMesh>();
+        humidity_text.text = "Humidity (%):  "+this._humidity;
+
+        float wind_magnitude = this._wind.magnitude;
+        TextMesh windspeed_text = GameObject.Find("WindSpeedText").GetComponent<TextMesh>();
+        windspeed_text.text = "Wind speed (km/h):  "+wind_magnitude.ToString("F1");
+
+        GameObject wind_arrow = GameObject.Find("Arrow");
+        float wind_speed = Mathf.Clamp(wind_magnitude, 0f, 50f);
+        float size = Mathf.Clamp(0.45f + wind_speed*0.015f, 0.5f, 1.2f);
+        wind_arrow.transform.localScale = new Vector3(size, size, 1);
+
+        Vector3 vec_disp = new Vector3(this._wind.x, 0, -this._wind.z);
+        float angle = Mathf.Atan2(vec_disp.z, vec_disp.x) * Mathf.Rad2Deg; // Calculate the angle in degrees from the combined vector
+
+        wind_arrow.transform.rotation = Quaternion.Euler(90, 0, -angle);
+
+        //wind_arrow.transform.rotation = Quaternion.Euler(new Vector3(90, 0, angle));
+    
+    }
+
     public void DisplayData() {
+        InitFireData();
+    }
 
-        
+    public void ClearData() {
+        this._enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
 
+        this._map_material = this._enviroment_manager.MapMaterial();
+        this._plane.GetComponent<MeshRenderer>().sharedMaterial = this._map_material;
+
+        this._map = this._enviroment_manager.VegetationMapTexture();
+        this._map_material.mainTexture = this._map;
     }
 
     public void LoadFireAndFiretrenchData() {
@@ -145,6 +188,7 @@ public class FireMitigationEditor : Editor {
         if (GUILayout.Button("Load firetrench points")) myScript.LoadFiretrenchPoints();
         if (GUILayout.Button("Store firetrench points")) myScript.StoreFiretrenchPoints();
         if (GUILayout.Button("Display data")) myScript.DisplayData();
+        if (GUILayout.Button("Clear data")) myScript.ClearData();
         
     }
 }
