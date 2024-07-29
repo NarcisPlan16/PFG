@@ -16,6 +16,7 @@ public class EnviromentManager : MonoBehaviour {
     public Texture2D height_map;
     public Texture2D vegetation_map;
     public int n_enviroments = 1;
+    public int MAX_FIRE_SPAN = 3000;
 
     private Texture2D preprocessed_map;
     private Dictionary<Color, ColorToVegetation> mappings_dict;
@@ -87,6 +88,10 @@ public class EnviromentManager : MonoBehaviour {
 
     public Color GetPixel(int x, int y) {
         return preprocessed_map.GetPixel(x, y);
+    }
+
+    public int MaxFireSpan() {
+        return MAX_FIRE_SPAN;
     }
 
     public Texture2D VegetationMapTexture() {

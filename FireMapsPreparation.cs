@@ -18,7 +18,7 @@ public class FireMapsPreparation : MonoBehaviour {
     public Texture2D height_map;
     public GameObject plane; // Reference to the terrain object
     public Material plane_material;
-    public const int MAX_FIRE_SPAN = 3000;
+    public int MAX_FIRE_SPAN = 3000;
     public Dictionary<Color, ColorToVegetation> mappings;
     public string mappings_filename;
     public int n_normal_fires = 2;
@@ -67,8 +67,8 @@ public class FireMapsPreparation : MonoBehaviour {
 
         LoadMappings();
 
-        int n_extreme_cases = (int) Mathf.Round(n_normal_fires * 0.01f);
-        n_extreme_cases = (int) Mathf.Clamp(n_extreme_cases, 1f, n_normal_fires * 0.01f); // Ensure at least 1
+        int n_extreme_cases = (int) Mathf.Round(n_normal_fires * 0.02f);
+        n_extreme_cases = (int) Mathf.Clamp(n_extreme_cases, 1f, n_normal_fires * 0.02f); // Ensure at least 1
         Debug.Log("AAAAAA: " + n_extreme_cases);
         (int, int)[] humidity_values = new (int, int)[] {(0, 30), (50, 100)}; // normality range: (30, 50)
         (int, int)[] temperature_values = new (int, int)[] {(0, 30), (40, 60)}; // normality range: (30, 40)

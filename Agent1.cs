@@ -26,19 +26,20 @@ public class Agent1 : Agent {
     private Color WHITE_COLOR = Color.white;
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
-    private const int MAX_FIRE_SPAN = 1000; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
+    private int MAX_FIRE_SPAN; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
     private Vector2 fire_init;
-    private float opportunities_reward = 0;
-    private float fire_reward = 0;
+    private float action_opportunities_reward = 0;
+    private float action_fire_reward = 0;
     private int n_fire_test_files = 0;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
         enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
+        this.MAX_FIRE_SPAN = enviroment_manager.MaxFireSpan();
 
         // Prevent modifying the same material as the other agents
         map_material = enviroment_manager.MapMaterial();
@@ -89,8 +90,8 @@ public class Agent1 : Agent {
         //Debug.Log("Obs: " + distance_to_fire);
         //sensor.AddObservation(distance_to_fire);
 
-        sensor.AddObservation(opportunities_reward);
-        sensor.AddObservation(fire_reward);
+        sensor.AddObservation(action_opportunities_reward);
+        sensor.AddObservation(action_fire_reward);
 
     }
 
@@ -113,6 +114,8 @@ public class Agent1 : Agent {
         //drawer.DrawCatmullRomSpline(points, WHITE_COLOR, map, 0.005f);
         drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first);
 
+        this.action_opportunities_reward = 0;
+        this.action_fire_reward = 0;
         FinishEpoch(points, x_first);
     }
 
@@ -182,40 +185,16 @@ public class Agent1 : Agent {
 
         float penalization = fire_simulation.GetReward();
         float max_pen = fires_data[n_file].total_cost;
-        fire_reward = 1 - (penalization / max_pen);
+        float fire_reward = 1 - (penalization / max_pen);
+        this.action_fire_reward += fire_reward;
 
         int firetrench_spent_opps = fire_simulation.FiretrenchSpentOpportunities();
         int spent_opportunities = fire_simulation.SpentOpportunities();
-        opportunities_reward = firetrench_spent_opps / spent_opportunities;
+        float opportunities_reward = firetrench_spent_opps * 1 + (1 - (spent_opportunities / MAX_FIRE_SPAN));
+        this.action_opportunities_reward += opportunities_reward;
 
         float total_reward = 0.4f*fire_reward + 0.6f*opportunities_reward;
         AddReward(total_reward);
-    }
-    
-    // Funció per calcular la distància entre un punt i una recta
-    private float CalcFireOriginDistance() {
-
-        // Calculate ditance between firetrench and fire origin
-        Vector2 origin = new Vector2(); // Actual firetrench origin
-        Vector2 destination = new Vector2(); // Actual firetrench destination
-
-        // Get the A, B and C coefficients from the line to use the formula ditance between point and line
-        GetLineCoefficients(origin, destination, out float A, out float B, out float C); 
-        float numerator = Mathf.Abs(A * fire_init.x + B * fire_init.y + C);
-        float denominator = Mathf.Sqrt(A * A + B * B);
-
-        Debug.Log("numer: " + numerator);
-        Debug.Log("denom: " + denominator);
-        
-        return numerator / denominator;
-    }
-
-    public static void GetLineCoefficients(Vector2 origin, Vector2 destination, out float A, out float B, out float C) {
-        // Returns A, B and C coefficients from the line that connects origin and destination
-
-        A = destination.y - origin.y;
-        B = origin.x - destination.x;
-        C = destination.x * origin.y - origin.x * destination.y;
     }
     
 }

@@ -175,13 +175,13 @@ public class FireSimulator {
 
                         origin_cell.opportunities -= 1;
                         pixels_burning[rand_pixel] = origin_cell;
-                        this.spent_opportunities += 1;
                         if (IsFiretrench(origin_cell, map)) this.firetrench_spent_opps += 1;
 
                         if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel, map);
 
                     }                   
 
+                    this.spent_opportunities += 1;
                 }
                 else AddPixelToBurntOnes(rand_pixel, map);
                 
