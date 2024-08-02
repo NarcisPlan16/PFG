@@ -1,5 +1,6 @@
 mlagents-learn --timeout-wait=600 --run-id=Firetrench_Agent ./Assets/Scripts/PFG/config.yaml
+mlagents-learn --timeout-wait=600 --run-id=Firetrench_Agent --resume ./Assets/Scripts/PFG/config.yaml
 
-mlagents-learn --timeout-wait=600 --run-id=Firetrench_Agent2 --initialize-from=Firetrench_Agent ./Assets/Scripts/PFG/config.yaml
+mlagents-learn --timeout-wait=600 --run-id=Firetrench_Agent --initialize-from=Firetrench_Agent ./Assets/Scripts/PFG/config.yaml
 
 tensorboard --logdir results
