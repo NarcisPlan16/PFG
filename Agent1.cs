@@ -108,11 +108,13 @@ public class Agent1 : Agent {
         }       
 
         bool x_first = true;
+        /* Uncomment when usign bezier or Catmullrom
         if (actions.DiscreteActions[n_parameters-1] == 0) x_first = false;
+        */
 
-        //drawer.DrawLine(points[0], points[1], WHITE_COLOR, map);
+        drawer.DrawLine(points[0], points[1], WHITE_COLOR, map); // 4 discrete actions, 2 for each point
         //drawer.DrawCatmullRomSpline(points, WHITE_COLOR, map, 0.005f);
-        drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first);
+        //drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first); // 9 discrete actions, 8 for points, 1 for x_first 
 
         this.action_opportunities_reward = 0;
         this.action_fire_reward = 0;
@@ -156,7 +158,8 @@ public class Agent1 : Agent {
             map_material.mainTexture = map;
 
             Drawer drawer = new Drawer(1);
-            drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first);
+            drawer.DrawLine(points[0], points[1], WHITE_COLOR, map);
+            //drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first);
         }
 
         // Reset the map
