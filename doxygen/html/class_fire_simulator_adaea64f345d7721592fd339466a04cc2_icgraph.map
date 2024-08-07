@@ -1,0 +1,11 @@
+<map id="FireSimulator.FiretrenchSpentOpportunities" name="FireSimulator.FiretrenchSpentOpportunities">
+<area shape="rect" id="Node000001" title=" " alt="" coords="836,5,996,48"/>
+<area shape="rect" id="Node000002" href="$class_agent1.html#a0c4fe529e4607ba5a3451f027bf3c1c1" title=" " alt="" coords="648,13,788,40"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="820,29,788,29,788,24,820,24"/>
+<area shape="rect" id="Node000003" href="$class_agent1.html#abee2f5805ec4a5959ab4a748038a8bdd" title=" " alt="" coords="412,5,600,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="633,29,601,29,601,24,633,24"/>
+<area shape="rect" id="Node000004" href="$class_agent1.html#a8baf2418882af04f4859e6d6fbff91a9" title=" " alt="" coords="226,13,364,40"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="396,29,364,29,364,24,396,24"/>
+<area shape="rect" id="Node000005" href="$class_agent1.html#ad3910f939ebbbad2431db4948b369ad5" title=" " alt="" coords="5,13,178,40"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="210,29,178,29,178,24,210,24"/>
+</map>

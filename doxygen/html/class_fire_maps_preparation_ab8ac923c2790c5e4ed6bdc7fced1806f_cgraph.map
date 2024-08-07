@@ -1,0 +1,9 @@
+<map id="FireMapsPreparation.LoadMappings" name="FireMapsPreparation.LoadMappings">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,23,179,65"/>
+<area shape="rect" id="Node000002" href="$class_map_manager.html#ae870ec7c457d345bcce9414836f0f670" title=" " alt="" coords="230,5,408,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,32,214,28,215,33,179,37"/>
+<area shape="rect" id="Node000003" href="$class_map_manager.html#a1530d84b018f15926a4c93013a4f2665" title=" " alt="" coords="227,56,411,83"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="179,51,211,55,211,60,178,56"/>
+<area shape="rect" id="Node000004" href="$class_color_to_vegetation_list_wrapper.html#ac84ab50d2f55d60907fee80e579aeff1" title=" " alt="" coords="459,48,660,91"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="412,67,443,67,443,72,412,72"/>
+</map>

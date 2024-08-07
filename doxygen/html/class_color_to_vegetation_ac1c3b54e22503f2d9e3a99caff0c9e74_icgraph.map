@@ -1,0 +1,22 @@
+<map id="ColorToVegetation.Contains" name="ColorToVegetation.Contains">
+<area shape="rect" id="Node000001" title=" " alt="" coords="986,131,1168,157"/>
+<area shape="rect" id="Node000002" href="$class_map_preprocessing.html#a955b93397c3d264056ec4a6110e6ff2b" title=" " alt="" coords="750,123,938,165"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="970,147,938,147,938,141,970,141"/>
+<area shape="rect" id="Node000003" href="$class_enviroment_manager.html#a48e244b0410f62462583bd3a749638d7" title=" " alt="" coords="480,72,702,99"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="735,121,652,102,653,97,736,116"/>
+<area shape="rect" id="Node000006" href="$class_map_manager.html#abdbf7c74c548fd8ceaf71961617d568d" title=" " alt="" coords="500,131,683,157"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="735,147,683,147,683,141,735,141"/>
+<area shape="rect" id="Node000010" href="$class_vegetation_generator.html#a5c7e497cbd87ae74ee12c87608de1744" title=" " alt="" coords="505,181,677,208"/>
+<area shape="poly" id="edge10_Node000002_Node000010" title=" " alt="" coords="735,168,662,183,661,178,734,163"/>
+<area shape="rect" id="Node000004" href="$class_enviroment_manager.html#a86437c0e1b8fe6510d3bd1a19f29bb99" title=" " alt="" coords="236,5,429,48"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="514,71,429,51,430,46,515,65"/>
+<area shape="rect" id="Node000005" href="$class_enviroment_manager_editor.html#a823b52d1c7f3d6579c275e5149810e81" title=" " alt="" coords="8,35,182,77"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="464,81,182,64,182,58,465,75"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="221,43,182,48,182,43,220,38"/>
+<area shape="rect" id="Node000007" href="$class_fire_maps_preparation.html#aa9413dc1588604ed8b7e62be244b89ad" title=" " alt="" coords="233,123,432,165"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="484,147,432,147,432,141,484,141"/>
+<area shape="rect" id="Node000008" href="$class_fire_maps_preparation.html#ae22d57ed7e7218de705f4baa45d9633d" title=" " alt="" coords="237,189,428,232"/>
+<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="513,164,481,172,409,191,408,186,479,167,512,159"/>
+<area shape="rect" id="Node000009" href="$class_fire_maps_preparation_editor.html#af2f87d131d3d5a80e6ad7b8c230f1541" title=" " alt="" coords="5,189,185,232"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="221,213,185,213,185,208,221,208"/>
+</map>

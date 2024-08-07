@@ -1,0 +1,17 @@
+<map id="MapManager.GetMappings" name="MapManager.GetMappings">
+<area shape="rect" id="Node000001" title=" " alt="" coords="742,80,920,107"/>
+<area shape="rect" id="Node000002" href="$class_enviroment_manager.html#a9ea2ebe0260da172ce8a57c0593009c5" title=" " alt="" coords="471,17,694,44"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="760,78,638,47,639,42,761,73"/>
+<area shape="rect" id="Node000004" href="$class_fire_maps_preparation.html#ab8ac923c2790c5e4ed6bdc7fced1806f" title=" " alt="" coords="496,72,669,115"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="727,96,670,96,670,91,727,91"/>
+<area shape="rect" id="Node000007" href="$class_vegetation_generator.html#a7907d63d1ef2697b2466fcf6e1646905" title=" " alt="" coords="496,139,669,181"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="764,114,666,141,664,135,763,109"/>
+<area shape="rect" id="Node000003" href="$class_enviroment_manager_editor.html#a823b52d1c7f3d6579c275e5149810e81" title=" " alt="" coords="241,5,414,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="455,31,415,31,415,25,455,26"/>
+<area shape="rect" id="Node000005" href="$class_fire_maps_preparation.html#ae22d57ed7e7218de705f4baa45d9633d" title=" " alt="" coords="233,72,423,115"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="481,96,423,96,423,91,481,91"/>
+<area shape="rect" id="Node000006" href="$class_fire_maps_preparation_editor.html#af2f87d131d3d5a80e6ad7b8c230f1541" title=" " alt="" coords="5,72,185,115"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="217,96,185,96,185,91,217,91"/>
+<area shape="rect" id="Node000008" href="$class_vegetation_generator_editor.html#abfe40f3e24794654e7642d9e773b304c" title=" " alt="" coords="239,139,417,181"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="481,163,417,163,417,157,481,157"/>
+</map>

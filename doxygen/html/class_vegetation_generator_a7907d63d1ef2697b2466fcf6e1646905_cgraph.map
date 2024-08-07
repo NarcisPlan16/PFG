@@ -1,0 +1,9 @@
+<map id="VegetationGenerator.LoadMappings" name="VegetationGenerator.LoadMappings">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,23,178,65"/>
+<area shape="rect" id="Node000002" href="$class_map_manager.html#ae870ec7c457d345bcce9414836f0f670" title=" " alt="" coords="229,5,406,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,32,213,28,214,33,178,37"/>
+<area shape="rect" id="Node000003" href="$class_map_manager.html#a1530d84b018f15926a4c93013a4f2665" title=" " alt="" coords="226,56,410,83"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="178,51,210,55,210,60,178,56"/>
+<area shape="rect" id="Node000004" href="$class_color_to_vegetation_list_wrapper.html#ac84ab50d2f55d60907fee80e579aeff1" title=" " alt="" coords="458,48,659,91"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="411,67,442,67,442,72,411,72"/>
+</map>

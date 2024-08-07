@@ -1,0 +1,7 @@
+<map id="ColorVegetationMapper.AddColorMapping" name="ColorVegetationMapper.AddColorMapping">
+<area shape="rect" id="Node000001" title=" " alt="" coords="267,39,450,81"/>
+<area shape="rect" id="Node000002" href="$class_color_vegetation_mapper.html#a956e67448601544a47f1b3bf554953d7" title=" " alt="" coords="11,5,213,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="251,48,213,43,214,38,252,43"/>
+<area shape="rect" id="Node000003" href="$class_color_vegetation_mapper.html#aebf0117b54b4ecc66badbe6eddea07f4" title=" " alt="" coords="5,72,219,115"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="252,77,219,82,219,76,251,72"/>
+</map>

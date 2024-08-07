@@ -1,0 +1,7 @@
+<map id="FireMapsPreparation.ObtainMapping" name="FireMapsPreparation.ObtainMapping">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,189,48"/>
+<area shape="rect" id="Node000002" href="$class_color_vegetation_mapper.html#aa14df469450548cf27d0d1a90f6c72f0" title=" " alt="" coords="237,5,422,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="189,24,221,24,221,29,189,29"/>
+<area shape="rect" id="Node000003" href="$class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c" title=" " alt="" coords="470,5,660,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="422,24,454,24,454,29,422,29"/>
+</map>

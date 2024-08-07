@@ -1,0 +1,21 @@
+<map id="FireSimulator.ExpandFire" name="FireSimulator.ExpandFire">
+<area shape="rect" id="Node000001" title=" " alt="" coords="930,64,1098,91"/>
+<area shape="rect" id="Node000002" href="$class_fire_mitigation.html#a615c9919e60ae7a29a1db5bedd40d005" title=" " alt="" coords="693,5,880,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="944,62,840,35,842,30,945,57"/>
+<area shape="rect" id="Node000004" href="$class_fire_maps_preparation.html#a6736f5b9e12ef4c2804cdd8f932deff0" title=" " alt="" coords="691,56,882,99"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="914,80,882,80,882,75,914,75"/>
+<area shape="rect" id="Node000007" href="$class_agent1.html#a0c4fe529e4607ba5a3451f027bf3c1c1" title=" " alt="" coords="717,127,856,153"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="949,98,839,129,837,123,947,93"/>
+<area shape="rect" id="Node000003" href="$class_fire_mitigation.html#a11c2b47d2b9a5ed9e8a9679c351995c5" title=" " alt="" coords="476,5,620,32"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="677,21,621,21,621,16,677,16"/>
+<area shape="rect" id="Node000005" href="$class_fire_maps_preparation.html#ae22d57ed7e7218de705f4baa45d9633d" title=" " alt="" coords="453,56,643,99"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="676,80,644,80,644,75,676,75"/>
+<area shape="rect" id="Node000006" href="$class_fire_maps_preparation_editor.html#af2f87d131d3d5a80e6ad7b8c230f1541" title=" " alt="" coords="226,56,405,99"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="438,80,406,80,406,75,438,75"/>
+<area shape="rect" id="Node000008" href="$class_agent1.html#abee2f5805ec4a5959ab4a748038a8bdd" title=" " alt="" coords="454,123,642,165"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="702,144,643,145,643,140,701,139"/>
+<area shape="rect" id="Node000009" href="$class_agent1.html#a8baf2418882af04f4859e6d6fbff91a9" title=" " alt="" coords="246,131,384,157"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="439,147,385,147,385,141,439,141"/>
+<area shape="rect" id="Node000010" href="$class_agent1.html#ad3910f939ebbbad2431db4948b369ad5" title=" " alt="" coords="5,131,178,157"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="231,147,178,147,178,141,231,141"/>
+</map>

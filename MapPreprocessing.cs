@@ -9,30 +9,32 @@ using UnityEngine;
 
 public class MapPreprocessing {
 
-    private ColorVegetationMapper colorVegMapper = new ColorVegetationMapper();
+    private ColorVegetationMapper color_veg_mapper = new ColorVegetationMapper();
     private Texture2D work_map;
-    private Dictionary<Color, ColorToVegetation> colorVegetationMappings = new Dictionary<Color, ColorToVegetation>();
-    private Texture2D vegetationMap; 
+    private Dictionary<Color, ColorToVegetation> color_vegetation_mappings = new Dictionary<Color, ColorToVegetation>();
+    private Texture2D vegetation_map; 
 
     public void Start(Texture2D input_map) {
-        colorVegMapper = new ColorVegetationMapper();
-        vegetationMap = input_map;
+        color_veg_mapper = new ColorVegetationMapper();
+        vegetation_map = input_map;
     }
 
     public void CalculateColorMappings() {
 
-        colorVegetationMappings.Clear();
-        ObtainColorsFromJSON("Assets/Resources/JSON/unique_colors.json"); // Stores the colors into the colorVegetationMappings
-        colorVegMapper.MapToTargetColors(colorVegetationMappings, vegetationMap);
-        colorVegetationMappings = colorVegMapper.ObtainMappings();
+        color_vegetation_mappings.Clear();
+        ObtainColorsFromJSON("Assets/Resources/JSON/unique_colors.json"); // Store the unique colors into the color_vegetation_mappings attribute
 
-        Texture2D new_map = new Texture2D(vegetationMap.width, vegetationMap.height); // Create a new Texture2D to store the new Texture2D with the mapped colors
+        // Map the colors to its closes unique mapping 
+        color_veg_mapper.MapToTargetColors(color_vegetation_mappings, vegetation_map);
+        color_vegetation_mappings = color_veg_mapper.ObtainMappings();
 
-        for (int i = 0; i < vegetationMap.width; i++) {
-            for (int j = 0; j < vegetationMap.height; j++) {
+        Texture2D new_map = new Texture2D(vegetation_map.width, vegetation_map.height); // Create a new Texture2D to store the new Texture2D with the mapped colors
 
-                Color original_color = vegetationMap.GetPixel(i, j);
-                foreach (ColorToVegetation mapping in colorVegetationMappings.Values) {
+        for (int i = 0; i < vegetation_map.width; i++) {
+            for (int j = 0; j < vegetation_map.height; j++) {
+
+                Color original_color = vegetation_map.GetPixel(i, j);
+                foreach (ColorToVegetation mapping in color_vegetation_mappings.Values) {
                     if (mapping.Contains(original_color)) {
                         new_map.SetPixel(i, j, mapping.color); // Replace the original color with the mapped color
                         break; // Exit the foreach loop once a mapping is found
@@ -43,7 +45,6 @@ public class MapPreprocessing {
             }
         }
         new_map.Apply();
-
         work_map = new_map;
 
         // Uncomment to see the readen file texture to check that the texture is stored correctly
@@ -57,7 +58,7 @@ public class MapPreprocessing {
         /*
         Texture2D aux_map = new Texture2D(370, 30);
         int i_aux = 0;
-        foreach (ColorToVegetation mapping in colorVegetationMappings) {
+        foreach (ColorToVegetation mapping in color_vegetation_mappings) {
             for (int j = i_aux*10; j < i_aux*10 + 10; j++) {
                 for (int k = 0; k < 30; k++) {
                     aux_map.SetPixel(j, k, mapping.color);
@@ -86,7 +87,7 @@ public class MapPreprocessing {
                 ColorToVegetation aux = new ColorToVegetation() {color = new_color};
                 aux.AddToMappedColors(new_color);
 
-                colorVegetationMappings.Add(new_color, aux);
+                color_vegetation_mappings.Add(new_color, aux);
             }
 
         }
@@ -117,11 +118,11 @@ public class MapPreprocessing {
     }
 
     public Dictionary<Color, ColorToVegetation> ObtainMappings() {
-        return colorVegetationMappings;
+        return color_vegetation_mappings;
     }
 
     public List<ColorToVegetation> ObtainMappingsAsList() {
-        return colorVegetationMappings.Values.ToList();
+        return color_vegetation_mappings.Values.ToList();
     }
 
 }

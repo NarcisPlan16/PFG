@@ -1,0 +1,25 @@
+<map id="VegetationGeneratorEditor.OnInspectorGUI" name="VegetationGeneratorEditor.OnInspectorGUI">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,93,184,136"/>
+<area shape="rect" id="Node000002" href="$class_vegetation_generator.html#af83f704f917a064883fab0c0c0e2b4a2" title=" " alt="" coords="490,5,665,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,90,231,79,357,56,474,38,475,43,358,61,232,84,181,95"/>
+<area shape="rect" id="Node000004" href="$class_vegetation_generator.html#a68228048c914076cc1a0cbd0c6b4a1e6" title=" " alt="" coords="232,93,429,136"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="184,112,216,112,216,117,184,117"/>
+<area shape="rect" id="Node000008" href="$class_vegetation_generator.html#a7907d63d1ef2697b2466fcf6e1646905" title=" " alt="" coords="244,248,416,291"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="130,134,285,237,282,241,127,139"/>
+<area shape="rect" id="Node000003" href="$class_vegetation_generator.html#a35bf5f267b4b32515b252825a125bfd0" title=" " alt="" coords="746,31,908,73"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="666,33,732,40,731,45,665,38"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="392,90,501,51,502,56,394,95"/>
+<area shape="poly" id="edge7_Node000004_Node000003" title=" " alt="" coords="429,100,730,61,731,67,430,105"/>
+<area shape="rect" id="Node000005" href="$class_color_vegetation_mapper.html#aa14df469450548cf27d0d1a90f6c72f0" title=" " alt="" coords="485,123,670,165"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="430,124,470,129,469,134,429,129"/>
+<area shape="rect" id="Node000007" href="$class_vegetation_generator.html#a3f607439ed1125c8cec59d08f3b50a25" title=" " alt="" coords="477,189,678,232"/>
+<area shape="poly" id="edge8_Node000004_Node000007" title=" " alt="" coords="381,134,478,175,496,181,494,186,476,180,379,139"/>
+<area shape="rect" id="Node000006" href="$class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c" title=" " alt="" coords="732,123,922,165"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="671,141,716,141,716,147,671,147"/>
+<area shape="rect" id="Node000009" href="$class_map_manager.html#ae870ec7c457d345bcce9414836f0f670" title=" " alt="" coords="489,256,666,283"/>
+<area shape="poly" id="edge10_Node000008_Node000009" title=" " alt="" coords="417,267,474,267,474,272,417,272"/>
+<area shape="rect" id="Node000010" href="$class_map_manager.html#a1530d84b018f15926a4c93013a4f2665" title=" " alt="" coords="486,307,670,333"/>
+<area shape="poly" id="edge11_Node000008_Node000010" title=" " alt="" coords="417,284,495,300,493,306,416,290"/>
+<area shape="rect" id="Node000011" href="$class_color_to_vegetation_list_wrapper.html#ac84ab50d2f55d60907fee80e579aeff1" title=" " alt="" coords="726,299,928,341"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="670,317,711,317,711,323,670,323"/>
+</map>

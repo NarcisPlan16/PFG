@@ -1,0 +1,5 @@
+<map id="VegetationGenerator.ClearVegetation" name="VegetationGenerator.ClearVegetation">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,180,48"/>
+<area shape="rect" id="Node000002" href="$class_vegetation_generator.html#a35bf5f267b4b32515b252825a125bfd0" title=" " alt="" coords="228,5,389,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="180,24,212,24,212,29,180,29"/>
+</map>

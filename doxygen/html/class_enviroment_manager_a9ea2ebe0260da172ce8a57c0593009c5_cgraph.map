@@ -1,0 +1,9 @@
+<map id="EnviromentManager.LoadMappings" name="EnviromentManager.LoadMappings">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,229,57"/>
+<area shape="rect" id="Node000002" href="$class_map_manager.html#ae870ec7c457d345bcce9414836f0f670" title=" " alt="" coords="280,5,458,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="229,30,264,26,265,32,229,35"/>
+<area shape="rect" id="Node000003" href="$class_map_manager.html#a1530d84b018f15926a4c93013a4f2665" title=" " alt="" coords="277,56,461,83"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="229,53,261,56,261,61,229,58"/>
+<area shape="rect" id="Node000004" href="$class_color_to_vegetation_list_wrapper.html#ac84ab50d2f55d60907fee80e579aeff1" title=" " alt="" coords="509,48,710,91"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="462,67,493,67,493,72,462,72"/>
+</map>

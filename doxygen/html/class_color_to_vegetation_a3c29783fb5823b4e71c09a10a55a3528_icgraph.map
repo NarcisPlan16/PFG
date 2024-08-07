@@ -1,0 +1,33 @@
+<map id="ColorToVegetation.AddToMappedColors" name="ColorToVegetation.AddToMappedColors">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1268,105,1482,148"/>
+<area shape="rect" id="Node000002" href="$class_color_vegetation_mapper.html#acfa3ba76697399db676643691e3ddf14" title=" " alt="" coords="1024,39,1208,81"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1274,103,1201,85,1202,79,1275,98"/>
+<area shape="rect" id="Node000005" href="$class_color_vegetation_mapper.html#aba54ca2bc505daf821aeedb577920e32" title=" " alt="" coords="1023,105,1208,148"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1252,129,1209,129,1209,124,1252,124"/>
+<area shape="rect" id="Node000015" href="$class_map_preprocessing.html#a0d80a0a8d8c1b7754a5c9e869380dca5" title=" " alt="" coords="1012,172,1220,215"/>
+<area shape="poly" id="edge15_Node000001_Node000015" title=" " alt="" coords="1275,155,1202,174,1201,169,1274,150"/>
+<area shape="rect" id="Node000003" href="$class_color_vegetation_mapper.html#a956e67448601544a47f1b3bf554953d7" title=" " alt="" coords="756,5,958,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1008,49,958,42,959,37,1009,44"/>
+<area shape="rect" id="Node000004" href="$class_color_vegetation_mapper.html#aebf0117b54b4ecc66badbe6eddea07f4" title=" " alt="" coords="750,72,964,115"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1009,76,965,82,964,77,1008,71"/>
+<area shape="rect" id="Node000006" href="$class_map_preprocessing.html#a955b93397c3d264056ec4a6110e6ff2b" title=" " alt="" coords="763,155,951,197"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="1008,150,952,161,951,156,1007,145"/>
+<area shape="rect" id="Node000007" href="$class_enviroment_manager.html#a48e244b0410f62462583bd3a749638d7" title=" " alt="" coords="480,104,702,131"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="747,155,655,134,656,129,749,149"/>
+<area shape="rect" id="Node000010" href="$class_map_manager.html#abdbf7c74c548fd8ceaf71961617d568d" title=" " alt="" coords="500,163,683,189"/>
+<area shape="poly" id="edge10_Node000006_Node000010" title=" " alt="" coords="748,179,683,179,683,173,748,173"/>
+<area shape="rect" id="Node000014" href="$class_vegetation_generator.html#a5c7e497cbd87ae74ee12c87608de1744" title=" " alt="" coords="505,213,677,240"/>
+<area shape="poly" id="edge14_Node000006_Node000014" title=" " alt="" coords="749,199,666,215,665,210,747,194"/>
+<area shape="rect" id="Node000008" href="$class_enviroment_manager.html#a86437c0e1b8fe6510d3bd1a19f29bb99" title=" " alt="" coords="236,37,429,80"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="514,103,429,83,430,78,515,97"/>
+<area shape="rect" id="Node000009" href="$class_enviroment_manager_editor.html#a823b52d1c7f3d6579c275e5149810e81" title=" " alt="" coords="8,67,182,109"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="464,113,182,96,182,90,465,107"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="221,75,182,80,182,75,220,70"/>
+<area shape="rect" id="Node000011" href="$class_fire_maps_preparation.html#aa9413dc1588604ed8b7e62be244b89ad" title=" " alt="" coords="233,155,432,197"/>
+<area shape="poly" id="edge11_Node000010_Node000011" title=" " alt="" coords="484,179,432,179,432,173,484,173"/>
+<area shape="rect" id="Node000012" href="$class_fire_maps_preparation.html#ae22d57ed7e7218de705f4baa45d9633d" title=" " alt="" coords="237,221,428,264"/>
+<area shape="poly" id="edge12_Node000010_Node000012" title=" " alt="" coords="513,196,481,204,409,223,408,218,479,199,512,191"/>
+<area shape="rect" id="Node000013" href="$class_fire_maps_preparation_editor.html#af2f87d131d3d5a80e6ad7b8c230f1541" title=" " alt="" coords="5,221,185,264"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="221,245,185,245,185,240,221,240"/>
+<area shape="poly" id="edge16_Node000015_Node000006" title=" " alt="" coords="996,188,951,185,951,180,996,183"/>
+</map>
