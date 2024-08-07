@@ -17,6 +17,7 @@ public class EnviromentManager : MonoBehaviour {
     public Texture2D vegetation_map;
     public int n_enviroments = 1;
     public int MAX_FIRE_SPAN = 3000;
+    public int n_file = 0;
 
     private Texture2D preprocessed_map;
     private Dictionary<Color, ColorToVegetation> mappings_dict;

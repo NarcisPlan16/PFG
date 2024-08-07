@@ -34,12 +34,14 @@ public class Agent1 : Agent {
     private float action_opportunities_reward = 0;
     private float action_fire_reward = 0;
     private int n_fire_test_files = 0;
+    private int n_file = 0;
 
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
         enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
         this.MAX_FIRE_SPAN = enviroment_manager.MaxFireSpan();
+        this.n_file = enviroment_manager.n_file;
 
         // Prevent modifying the same material as the other agents
         map_material = enviroment_manager.MapMaterial();
@@ -118,7 +120,7 @@ public class Agent1 : Agent {
 
         this.action_opportunities_reward = 0;
         this.action_fire_reward = 0;
-        FinishEpoch(points, x_first);
+        FinishEpoch();
     }
 
     // Called when the Agent resets. Here is where we reset everything after the reward is given
@@ -129,38 +131,22 @@ public class Agent1 : Agent {
 
     }
 
-    public void FinishEpoch(List<Vector2> points, bool x_first) {
+    public void FinishEpoch() {
 
         // TOOD: A l'enviroment manager, que faci que s'esperi a que tots els agents acabin per llavors fer el next step. I eliminar-lo d'aqui
-        StartCoroutine(SimulateFireAndCalcReward(points, x_first));
+        StartCoroutine(SimulateFireAndCalcReward());
     }
 
-    public IEnumerator SimulateFireAndCalcReward(List<Vector2> points, bool x_first) {
+    public IEnumerator SimulateFireAndCalcReward() {
 
-        HashSet<int> tested_fires = new HashSet<int>();
-        for (int i = 0; i < 10; i++) { // Test with 10 fire example files
+        fire_simulation = new FireSimulator(mappings_dict, 
+                                            fires_data[n_file].wind_dir, 
+                                            fires_data[n_file].humidity_percentage, 
+                                            fires_data[n_file].temperature
+                                            );
+        fire_simulation.SetSimSpeed(10);
 
-            int n_file = random.Next(0, this.n_fire_test_files);
-            while(tested_fires.Contains(n_file)) n_file = random.Next(0, this.n_fire_test_files);
-
-            tested_fires.Add(n_file);
-            fire_simulation = new FireSimulator(mappings_dict, 
-                                                fires_data[n_file].wind_dir, 
-                                                fires_data[n_file].humidity_percentage, 
-                                                fires_data[n_file].temperature
-                                                );
-            fire_simulation.SetSimSpeed(10);
-
-            yield return StartCoroutine(SimulateFire(n_file));
-
-            // Reset the map
-            map = enviroment_manager.VegetationMapTexture();
-            map_material.mainTexture = map;
-
-            Drawer drawer = new Drawer(1);
-            drawer.DrawLine(points[0], points[1], WHITE_COLOR, map);
-            //drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first);
-        }
+        yield return StartCoroutine(SimulateFire());
 
         // Reset the map
         map = enviroment_manager.VegetationMapTexture();
@@ -171,7 +157,7 @@ public class Agent1 : Agent {
 
     }
 
-    private IEnumerator SimulateFire(int n_file) {
+    private IEnumerator SimulateFire() {
 
         bool fire_ended = false;
         FireMapsPreparation.FireData fire_data = fires_data[n_file];
