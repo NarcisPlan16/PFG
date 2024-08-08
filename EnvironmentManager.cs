@@ -8,7 +8,7 @@ using Unity.MLAgents;
 using UnityEngine;
 using UnityEditor;
 
-public class EnviromentManager : MonoBehaviour {
+public class EnvironmentManager : MonoBehaviour {
 
     public List<ColorToVegetation> mappings;
     public Material plane_material;
@@ -150,12 +150,12 @@ public class EnviromentManager : MonoBehaviour {
     }
 }
 
-[CustomEditor(typeof(EnviromentManager))]
+[CustomEditor(typeof(EnvironmentManager))]
 public class EnviromentManagerEditor : Editor {
     public override void OnInspectorGUI() {
         DrawDefaultInspector();
 
-        EnviromentManager myScript = (EnviromentManager)target;
+        EnvironmentManager myScript = (EnvironmentManager)target;
         if (GUILayout.Button("Calculate Color Mappings")) myScript.CalculateColorMappings();
         if (GUILayout.Button("Save mappings")) myScript.StoreMappings();
         if (GUILayout.Button("Load mappings")) myScript.LoadMappings();

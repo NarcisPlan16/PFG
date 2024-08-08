@@ -106,7 +106,7 @@ public class FireMapsPreparation : MonoBehaviour {
             float temperature = UnityEngine.Random.Range(min_temp, max_temp);
 
             fire_sim = new FireSimulator(mappings, wind, humidity, temperature);
-            List<int> init = fire_sim.InitRandomFire(actual_map, map_material);
+            Vector2 init = fire_sim.InitRandomFire(actual_map, map_material);
 
             bool fire_ended = false;
             while (!fire_ended) {

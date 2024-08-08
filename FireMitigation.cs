@@ -13,7 +13,7 @@ public class FireMitigation : MonoBehaviour {
     private readonly Color WHITE_COLOR = Color.white; // Unity no permet colors constants, posem readonly que fa la mateixa funció
     private readonly Color RED_COLOR = Color.red;
     private FireSimulator _fire_sim;
-    private EnviromentManager _enviroment_manager;
+    private EnvironmentManager _enviroment_manager;
     private Dictionary<Color, ColorToVegetation> _mappings_dict;
     private Texture2D _map;
     private Material _map_material;
@@ -63,7 +63,7 @@ public class FireMitigation : MonoBehaviour {
 
     public void InitFireData() {
 
-        this._enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
+        this._enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnvironmentManager>();
         SetTextData();
 
         this._map_material = this._enviroment_manager.MapMaterial();
@@ -126,7 +126,7 @@ public class FireMitigation : MonoBehaviour {
     }
 
     public void ClearData() {
-        this._enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
+        this._enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnvironmentManager>();
 
         this._map_material = this._enviroment_manager.MapMaterial();
         this._plane.GetComponent<MeshRenderer>().sharedMaterial = this._map_material;

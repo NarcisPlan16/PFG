@@ -18,7 +18,7 @@ using Unity.MLAgents.Sensors;
 public class Agent1 : Agent {
 
     public GameObject plane; // Reference to the terrain object
-    private EnviromentManager enviroment_manager;
+    private EnvironmentManager enviroment_manager;
     private FireSimulator fire_simulation;
     private Texture2D map;
     private Material map_material;
@@ -39,7 +39,7 @@ public class Agent1 : Agent {
     // Called when the Agent is initialized (only one time)
     public override void Initialize() {
 
-        enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnviromentManager>();
+        enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnvironmentManager>();
         this.MAX_FIRE_SPAN = enviroment_manager.MaxFireSpan();
         this.n_file = enviroment_manager.n_file;
 
