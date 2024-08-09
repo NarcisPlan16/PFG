@@ -61,7 +61,7 @@ public class FireSimulator {
         this.total_opportunities += opportunities;
         this.reward += CalcReward(random_x, random_y, map);
 
-        this.pixels_burning.Add(new Cell(random_x, random_y, opportunities));
+        this.pixels_burning.Add(new Cell(random_x, random_y, opportunities)); // Add to pixels burning
         map.SetPixel(random_x, random_y, RED_COLOR); // Set the piel to "Red" as it is the "fire burning" color
         map.Apply();
 
@@ -77,7 +77,7 @@ public class FireSimulator {
         this.total_opportunities += opportunities;
         this.reward += CalcReward(x, y, map);
 
-        this.pixels_burning.Add(new Cell(x, y, opportunities));
+        this.pixels_burning.Add(new Cell(x, y, opportunities)); // Add to pixels burning
         map.SetPixel(x, y, RED_COLOR); // Set the piel to "Red" as it is the "fire burning" color
         map.Apply();
 
@@ -232,36 +232,16 @@ public class FireSimulator {
         return mapping;
     }
 
-    private bool ExpandPixel(Cell origin_cell, List<Cell> neighbors, int rand_pixel, Texture2D heightmap, Texture2D map) {
+    private bool ExpandPixel(Cell origin_cell, List<Cell> targets, int rand_pixel, Texture2D heightmap, Texture2D map) {
 
         bool expanded = false;
-        foreach (Cell neigh in neighbors) {
-
-            float expand_prob = ExpandProbability(origin_cell, neigh, true, true, true, true, true, heightmap, map);
-            float dice = random.Next(0, 100) / 100.0f;
-
-            if (dice <= expand_prob) {
-                // if expand prob is 0.87, the dice has 87/100 chanches. So the dice must be between 0 and 87 in order to expand.
-
-                bool burnt = CheckFiretrench(neigh, expand_prob, map); // If its a firetrench, try to start a fire into it
-                if (burnt) {
-                    reward += CalcReward(neigh.x, neigh.y, map);
-
-                    map.SetPixel(neigh.x, neigh.y, RED_COLOR);
-                    this.pixels_burning.Add(neigh);
-                    expanded = true;
-                }
-                
-            }
-            else if (IsFiretrench(neigh, map)) this.firetrench_spent_opps += 1;
-
-        }
+        foreach (Cell cell in targets) expanded = ExpandToPixel(origin_cell, cell, heightmap, map);
 
         if (expanded) AddPixelToBurntOnes(rand_pixel, map);
         else {
 
             origin_cell.opportunities -= 1;
-            pixels_burning[rand_pixel] = origin_cell;
+            this.pixels_burning[rand_pixel] = origin_cell;
             if (IsFiretrench(origin_cell, map)) this.firetrench_spent_opps += 1;
 
             if (origin_cell.opportunities == 0) AddPixelToBurntOnes(rand_pixel, map);
@@ -269,6 +249,30 @@ public class FireSimulator {
         }                   
 
         this.spent_opportunities += 1;
+
+        return expanded;
+    }
+
+    private bool ExpandToPixel(Cell origin_cell, Cell target, Texture2D heightmap, Texture2D map) {
+
+        bool expanded = false;
+        float expand_prob = ExpandProbability(origin_cell, target, true, true, true, true, true, heightmap, map);
+        float dice = random.Next(0, 100) / 100.0f;
+
+        if (dice <= expand_prob) {
+            // if expand prob is 0.87, the dice has 87/100 chanches. So the dice must be between 0 and 87 in order to expand.
+
+            bool burnt = CheckFiretrench(target, expand_prob, map); // If its a firetrench, try to start a fire into it
+            if (burnt) {
+                reward += CalcReward(target.x, target.y, map);
+
+                map.SetPixel(target.x, target.y, RED_COLOR);
+                this.pixels_burning.Add(target);
+                expanded = true;
+            }
+            
+        }
+        else if (IsFiretrench(target, map)) this.firetrench_spent_opps += 1;
 
         return expanded;
     }
