@@ -235,7 +235,7 @@ public class FireSimulator {
     private bool ExpandPixel(Cell origin_cell, List<Cell> targets, int rand_pixel, Texture2D heightmap, Texture2D map) {
 
         bool expanded = false;
-        foreach (Cell cell in targets) expanded = ExpandToPixel(origin_cell, cell, heightmap, map);
+        foreach (Cell cell in targets) if (ExpandToPixel(origin_cell, cell, heightmap, map)) expanded = true;
 
         if (expanded) AddPixelToBurntOnes(rand_pixel, map);
         else {
