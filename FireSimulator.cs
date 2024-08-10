@@ -99,7 +99,7 @@ public class FireSimulator {
         // The next code gets all the neighbor pixels (8) including diagonals
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                if (x >= 0 && y >= 0 && x < map.width && y < map.height && NotBurned(i, j, map)) {
+                if (x >= 0 && y >= 0 && x < map.width && y < map.height && NotBurnt(i, j, map)) {
 
                     int opportunities = CalcOpportunities(i, j, map);
                     if (opportunities > 0) res.Add(new Cell(i, j, opportunities));
@@ -108,15 +108,15 @@ public class FireSimulator {
         }
 
         // Expand to the 4 adjacent cells 
-        //if (x - 1 >= 0 && NotBurned(x - 1, y, map)) res.Add(new Cell(x-1, y, CalcOpportunities(x-1, y, map))); // North neighbor
-        //if (y - 1 >= 0 && NotBurned(x, y - 1, map)) res.Add(new Cell(x, y-1, CalcOpportunities(x, y-1, map))); // West neighbor
-        //if (y + 1 < map.width && NotBurned(x, y + 1, map)) res.Add(new Cell(x, y+1, CalcOpportunities(x, y+1, map))); // East neighbor
-        //if (x + 1 < map.height && NotBurned(x + 1, y, map)) res.Add(new Cell(x+1, y, CalcOpportunities(x+1, y, map))); // South neighbor
+        //if (x - 1 >= 0 && NotBurnt(x - 1, y, map)) res.Add(new Cell(x-1, y, CalcOpportunities(x-1, y, map))); // North neighbor
+        //if (y - 1 >= 0 && NotBurnt(x, y - 1, map)) res.Add(new Cell(x, y-1, CalcOpportunities(x, y-1, map))); // West neighbor
+        //if (y + 1 < map.width && NotBurnt(x, y + 1, map)) res.Add(new Cell(x, y+1, CalcOpportunities(x, y+1, map))); // East neighbor
+        //if (x + 1 < map.height && NotBurnt(x + 1, y, map)) res.Add(new Cell(x+1, y, CalcOpportunities(x+1, y, map))); // South neighbor
 
         return res;
     }
 
-    public bool NotBurned(int x, int y, Texture2D map) {
+    public bool NotBurnt(int x, int y, Texture2D map) {
 
         Color pixel_color =  map.GetPixel(x, y);
 
@@ -259,7 +259,7 @@ public class FireSimulator {
         float expand_prob = ExpandProbability(origin_cell, target, true, true, true, true, true, heightmap, map);
         float dice = random.Next(0, 100) / 100.0f;
 
-        if (dice <= expand_prob) {
+        if (dice < expand_prob) {
             // if expand prob is 0.87, the dice has 87/100 chanches. So the dice must be between 0 and 87 in order to expand.
 
             bool burnt = CheckFiretrench(target, expand_prob, map); // If its a firetrench, try to start a fire into it
@@ -289,55 +289,40 @@ public class FireSimulator {
     private float ExpandProbability(Cell origin_pixel, Cell target_pixel, bool veg_coeff_on, bool height_on, bool wind_on, bool hum_on, 
                                     bool temp_on, Texture2D heightmap, Texture2D map) { 
 
-        // TODO: Fer funció amb paràmetre que calculi la probabilitat necessària per expandir a aquella casella (segons vent, altura...)
-
         float probability = 0.0f;
-        if (hum_on && CalcHumidityProbability() > 0.7) probability = 1.0f;
-        else {
-            
+        if (NotBurnt(target_pixel.x, target_pixel.y, map)) { // if the pixel is not bunt or not burning
+
+            // Store enable bits to multiply the coefficients (1 if true, 0 if false)
+            int veg_enable = veg_coeff_on? 1 : 0;
+            int height_enable = height_on? 1 : 0;
+            int wind_enable = wind_on? 1 : 0;
+            int hum_enable = hum_on? 1 : 0;
+            int temp_enable = temp_on? 1 : 0;
+
+            float alfa_weight = 0.25f*veg_enable; // Weight or the expand_coefficient. Initially was 0.3
+            float h_weight = 0.12f*height_enable; // Weight for the height coefficient. Initially was 0.1
+            float w_weight = 0.38f*wind_enable; // Wheight for the wind coefficient. Initially was 0.3
+            float hum_weight = 0.10f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
+            float temp_weight = 0.10f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
+            float rand_weight = 0.05f * (alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
+
+            float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight + rand_weight; 
+            // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
+            // P.E: 0.3+0.5 = 0.8. Thus we could only have values between 0 and 0.8 because the other coefficients are
+            //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
+
             Color pixel_color = map.GetPixel(target_pixel.x, target_pixel.y);
-            if (pixel_color != Color.black) { // if not burned
+            ColorToVegetation mapping = color_mappings[pixel_color];
 
-                // Store enable bits to multiply the coefficients (1 if true, 0 if false)
-                int veg_enable = veg_coeff_on? 1 : 0;
-                int height_enable = height_on? 1 : 0;
-                int wind_enable = wind_on? 1 : 0;
-                int hum_enable = hum_on? 1 : 0;
-                int temp_enable = temp_on? 1 : 0;
+            float alfa = mapping.expandCoefficient;
+            float w = CalcWindProbability(origin_pixel, target_pixel, heightmap); 
+            float h = CalcHeightProbability(origin_pixel, target_pixel, heightmap);
+            float hum = CalcHumidityProbability();
+            float temp = CalcTemperatureProbanility();
+            float rand = random.Next(0, 100) / 100.0f;
 
-                float alfa_weight = 0.25f*veg_enable; // Weight or the expand_coefficient. Initially was 0.3
-                float h_weight = 0.12f*height_enable; // Weight for the height coefficient. Initially was 0.1
-                float w_weight = 0.38f*wind_enable; // Wheight for the wind coefficient. Initially was 0.3
-                float hum_weight = 0.10f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
-                float temp_weight = 0.10f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
-                float rand_weight = 0.05f * (alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
-
-                float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight + rand_weight; 
-                // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
-                // P.E: 0.3+0.5 = 0.8. Thus we could only have values between 0 and 0.75 because the other coefficients are
-                //      not taken into account. So we will later need to "scale" the value to the range of 0 to 1.
-
-                ColorToVegetation mapping = color_mappings[pixel_color];
-
-                float alfa = mapping.expandCoefficient;
-                float w = CalcWindProbability(origin_pixel, target_pixel, heightmap); 
-                float h = CalcHeightProbability(origin_pixel, target_pixel, heightmap);
-                float hum = CalcHumidityProbability();
-                float temp = CalcTemperatureProbanility();
-                float rand = random.Next(0, 100) / 100.0f;
-
-                probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight + temp*temp_weight + rand*rand_weight;
-                probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
-
-                /*List<float> probs = new List<float>{alfa*alfa_weight, h*h_weight, w*w_weight, hum*hum_weight, temp*temp_weight, rand*rand_weight};
-                if (map.GetPixel(target_pixel.x, target_pixel.y) == Color.white) {
-                    foreach (float prob in probs) Debug.Log(prob);
-                    Debug.Log("Prob: " + probability);
-                    Debug.Log("------------------------");
-                }*/
-
-            }
-
+            probability = alfa*alfa_weight + h*h_weight + w*w_weight + hum*hum_weight + temp*temp_weight + rand*rand_weight;
+            probability = probability / max_probability; // Ensure that probability is between 0 and 1. 
         }
         
         return probability;
