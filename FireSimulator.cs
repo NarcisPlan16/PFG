@@ -304,7 +304,7 @@ public class FireSimulator {
             float w_weight = 0.38f*wind_enable; // Wheight for the wind coefficient. Initially was 0.3
             float hum_weight = 0.10f*hum_enable; // Wheight for the humidity coefficient. Initially was 0.1
             float temp_weight = 0.10f*temp_enable; // Wheight for the temperature coefficient. Initially was 0.1
-            float rand_weight = 0.05f * (alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
+            float rand_weight = 0.05f * (0.05f + alfa_weight + h_weight + w_weight + hum_weight + temp_weight); // Wheight for the random factor coefficient. Initially was none existent
 
             float max_probability = alfa_weight + h_weight + w_weight + hum_weight + temp_weight + rand_weight; 
             // max_probability will be >= 0 and <= 1. Represents the maximum value we can get from the selected coefficients. 
