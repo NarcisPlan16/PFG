@@ -26,7 +26,6 @@ public class Agent1 : Agent {
     private Color WHITE_COLOR = Color.white;
     private UnityEvent on_sim_end = new UnityEvent();
     private const int MAX_BURN_PRIO = 5;
-    private int MAX_FIRE_SPAN; // Maximum span of the fire to simulate. Number of opportunities to expand failed.
     private System.Random random = new System.Random();
     private Dictionary<Color, ColorToVegetation> mappings_dict;
     private Dictionary<int, FireMapsPreparation.FireData> fires_data;
@@ -40,7 +39,6 @@ public class Agent1 : Agent {
     public override void Initialize() {
 
         enviroment_manager = GameObject.Find("EnviromentManager").GetComponent<EnvironmentManager>();
-        this.MAX_FIRE_SPAN = enviroment_manager.MaxFireSpan();
         this.n_file = enviroment_manager.n_file;
 
         // Prevent modifying the same material as the other agents
@@ -163,7 +161,7 @@ public class Agent1 : Agent {
         FireMapsPreparation.FireData fire_data = fires_data[n_file];
         fire_init = fire_simulation.InitFireAt(fire_data.init_x, fire_data.init_y, map, map_material);
         while (!fire_ended) {
-            fire_ended = fire_simulation.ExpandFire(MAX_FIRE_SPAN, 
+            fire_ended = fire_simulation.ExpandFire(fires_data[n_file].max_span, 
                                                     enviroment_manager.HeightMap(), 
                                                     map, 
                                                     map_material
@@ -174,27 +172,22 @@ public class Agent1 : Agent {
 
         float penalization = fire_simulation.GetReward();
         float max_pen = fires_data[n_file].total_cost;
-        float fire_reward = 1 - (penalization / max_pen);
+        float fire_reward = 1 - (penalization / max_pen); // This way the rewaard can be positive as it decreases to 0 when "penalization" approaches to "max_pen"
         this.action_fire_reward += fire_reward;
 
         int firetrench_spent_opps = fire_simulation.FiretrenchSpentOpportunities();
         int spent_opportunities = fire_simulation.SpentOpportunities();
-        float opportunities_reward = firetrench_spent_opps * 1 + (1 - (spent_opportunities / MAX_FIRE_SPAN));
+        float opportunities_reward = firetrench_spent_opps * 1 + (1 - (spent_opportunities / fires_data[n_file].max_span)); 
+        // Opportunities reward is always positive as it grows when more opportunities are spent
         this.action_opportunities_reward += opportunities_reward;
 
-        float total_reward = 0.4f*fire_reward + 0.6f*opportunities_reward;
+        float total_reward = fire_reward + 0.1f*opportunities_reward;
+        
+
+        //Debug.Log("Fire reward: " + fire_reward + " | " + "Opps reward: " + 0.1f*opportunities_reward);
+        //Debug.Log("Penalization: " + penalization + " | " + "Max pen: " + max_pen);
+
         AddReward(total_reward);
     }
     
-}
-
-[CustomEditor(typeof(Agent1))]
-public class Agent1Editor : Editor {
-    public override void OnInspectorGUI() {
-        DrawDefaultInspector();
-
-        Agent1 myScript = (Agent1)target;
-
-    }
-
 }
