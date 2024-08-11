@@ -353,10 +353,10 @@ public class FireSimulator {
         Vector3 pointA = Get3DPointAt(origin_pixel, heightmap);
         Vector3 pointB = Get3DPointAt(target_pixel, heightmap);
 
-        Vector3 vec_displacement = pointB - pointA; // Vector fo displacement, normalized (-1 to 1);
-        Vector3 y_plane = new Vector3(0, 1, 0);
+        Vector3 vec_displacement = pointB - pointA; // Vector of displacement
+        Vector3 y_plane = new Vector3(0, 1, 0); // Vector of the normal of the flat ground (y plane)
 
-        float cos_alpha = Vector3.Dot(vec_displacement.normalized, y_plane.normalized); // Com que ens desplaçem només en N,S,E,W sí que és només el cosinus de l'algle. Sinó és el cosinus * un escalar
+        float cos_alpha = Vector3.Dot(vec_displacement.normalized, y_plane.normalized); // Scalar product
 
         return cos_alpha;
     }
