@@ -7,6 +7,6 @@ var searchData=
   ['getfiresdata_4',['GetFiresData',['../class_agent1.html#a0be08ea1648d62b93b5aacd3d77a7a2d',1,'Agent1']]],
   ['getmap_5',['GetMap',['../class_map_manager.html#a0b189787fe71cbbe13e330e69a483077',1,'MapManager']]],
   ['getmappings_6',['GetMappings',['../class_map_manager.html#ae870ec7c457d345bcce9414836f0f670',1,'MapManager']]],
-  ['getpixel_7',['GetPixel',['../class_enviroment_manager.html#a1b7a059574ac4c913a2795605bff8c6b',1,'EnviromentManager.GetPixel()'],['../class_map_manager.html#a512e9966eb09903faec538a3a203d268',1,'MapManager.GetPixel()']]],
+  ['getpixel_7',['GetPixel',['../class_environment_manager.html#a2cdac14632f9b7b6ad0bfd92800c749e',1,'EnvironmentManager.GetPixel()'],['../class_map_manager.html#a512e9966eb09903faec538a3a203d268',1,'MapManager.GetPixel()']]],
   ['getreward_8',['GetReward',['../class_fire_simulator.html#a89b4cb4b1c56b446cc643341df68ae3d',1,'FireSimulator']]]
 ];

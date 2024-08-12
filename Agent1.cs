@@ -113,6 +113,7 @@ public class Agent1 : Agent {
         */
 
         drawer.DrawLine(points[0], points[1], WHITE_COLOR, map); // 4 discrete actions, 2 for each point
+        //drawer.DrawJointPointsPoligonal(points, WHITE_COLOR, map);
         //drawer.DrawCatmullRomSpline(points, WHITE_COLOR, map, 0.005f);
         //drawer.DrawBezierCurve(points, WHITE_COLOR, map, 0.005f, x_first); // 9 discrete actions, 8 for points, 1 for x_first 
 
@@ -148,9 +149,7 @@ public class Agent1 : Agent {
         map = enviroment_manager.VegetationMapTexture();
         map_material.mainTexture = map;
 
-        //Debug.Log("REWARD: " + GetCumulativeReward());
         enviroment_manager.AddAgentReady();
-
     }
 
     private IEnumerator SimulateFire() {
@@ -164,7 +163,7 @@ public class Agent1 : Agent {
                                                     map, 
                                                     map_material
                                                     );
-            yield return null;
+            yield return null; // Prevent Unity freezing the frames
         }
 
 
@@ -175,7 +174,7 @@ public class Agent1 : Agent {
 
         int firetrench_spent_opps = fire_simulation.FiretrenchSpentOpportunities();
         int spent_opportunities = fire_simulation.SpentOpportunities();
-        float opportunities_reward = firetrench_spent_opps * 1 + (1 - (spent_opportunities / fires_data[n_file].max_span)); 
+        float opportunities_reward = firetrench_spent_opps + (1 - (spent_opportunities / fires_data[n_file].max_span)); 
         // Opportunities reward is always positive as it grows when more opportunities are spent
         this.action_opportunities_reward += opportunities_reward;
 

@@ -1,0 +1,31 @@
+<map id="FireSimulator.ExpandToPixel" name="FireSimulator.ExpandToPixel">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,89,195,116"/>
+<area shape="rect" id="Node000002" href="$class_fire_simulator.html#a59205bc218625fcbc0f3418253b6758a" title=" " alt="" coords="261,13,432,40"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="136,86,242,49,269,42,271,47,243,55,138,91"/>
+<area shape="rect" id="Node000006" href="$class_fire_simulator.html#a72230cd088278d57c0a282be6ae76556" title=" " alt="" coords="248,64,445,91"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="195,90,232,86,232,92,195,96"/>
+<area shape="rect" id="Node000007" href="$class_fire_simulator.html#a67757d26c36be75a2ffd132fca749b52" title=" " alt="" coords="522,64,693,91"/>
+<area shape="poly" id="edge15_Node000001_Node000007" title=" " alt="" coords="195,104,317,105,450,100,520,91,521,96,450,105,317,111,195,109"/>
+<area shape="rect" id="Node000008" href="$class_fire_simulator.html#a8546ee1cc8f63abfdf5dda4ad740aff4" title=" " alt="" coords="243,223,450,249"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="128,114,308,213,305,217,125,119"/>
+<area shape="rect" id="Node000003" href="$class_fire_simulator.html#a1c8e779a35a621643fa5d06402bda51e" title=" " alt="" coords="513,13,702,40"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="432,24,498,24,498,29,432,29"/>
+<area shape="rect" id="Node000004" href="$class_color_vegetation_mapper.html#aa14df469450548cf27d0d1a90f6c72f0" title=" " alt="" coords="765,5,951,48"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="703,24,749,24,749,29,703,29"/>
+<area shape="rect" id="Node000005" href="$class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c" title=" " alt="" coords="999,5,1189,48"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="951,24,983,24,983,29,951,29"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="445,75,507,75,507,80,445,80"/>
+<area shape="rect" id="Node000009" href="$class_fire_simulator.html#a0100923343acf268cd2a2b49d3ef487f" title=" " alt="" coords="525,115,690,157"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="375,220,497,167,515,160,517,165,499,172,377,225"/>
+<area shape="rect" id="Node000011" href="$class_fire_simulator.html#ae4a3c896ea4eac04c835b80c79227d57" title=" " alt="" coords="518,181,697,224"/>
+<area shape="poly" id="edge10_Node000008_Node000011" title=" " alt="" coords="450,220,502,213,503,219,451,225"/>
+<area shape="rect" id="Node000012" href="$class_fire_simulator.html#a9fb8524b1a046cbcd7b821deae86cc27" title=" " alt="" coords="508,248,708,291"/>
+<area shape="poly" id="edge11_Node000008_Node000012" title=" " alt="" coords="451,247,493,252,492,257,450,252"/>
+<area shape="rect" id="Node000013" href="$class_fire_simulator.html#a0c99501806e45a9323ce35ee076719a9" title=" " alt="" coords="498,315,717,341"/>
+<area shape="poly" id="edge12_Node000008_Node000013" title=" " alt="" coords="376,247,432,274,499,300,524,308,523,313,497,305,430,279,374,252"/>
+<area shape="rect" id="Node000014" href="$class_fire_simulator.html#a8824a2fc41bf5edb9134e070b518128d" title=" " alt="" coords="531,365,684,392"/>
+<area shape="poly" id="edge14_Node000008_Node000014" title=" " alt="" coords="363,248,419,299,458,327,499,351,518,359,516,363,497,356,455,331,416,303,359,252"/>
+<area shape="rect" id="Node000010" href="$class_fire_simulator.html#a8496dd8fde98b68504caedf02b291f0f" title=" " alt="" coords="767,219,949,245"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="685,155,718,167,816,209,814,214,716,172,684,160"/>
+<area shape="poly" id="edge13_Node000013_Node000010" title=" " alt="" coords="679,312,716,300,771,276,819,251,822,256,773,281,718,305,680,317"/>
+</map>

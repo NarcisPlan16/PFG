@@ -5,7 +5,7 @@ var searchData=
   ['calcopportunities_2',['CalcOpportunities',['../class_fire_simulator.html#a59c7ae2e9fecaba87d60454ef2567cf4',1,'FireSimulator']]],
   ['calcreward_3',['CalcReward',['../class_fire_simulator.html#a59205bc218625fcbc0f3418253b6758a',1,'FireSimulator']]],
   ['calctemperatureprobanility_4',['CalcTemperatureProbanility',['../class_fire_simulator.html#a9fb8524b1a046cbcd7b821deae86cc27',1,'FireSimulator']]],
-  ['calculatecolormappings_5',['CalculateColorMappings',['../class_enviroment_manager.html#a86437c0e1b8fe6510d3bd1a19f29bb99',1,'EnviromentManager.CalculateColorMappings()'],['../class_fire_maps_preparation.html#aa9413dc1588604ed8b7e62be244b89ad',1,'FireMapsPreparation.CalculateColorMappings()'],['../class_map_preprocessing.html#a955b93397c3d264056ec4a6110e6ff2b',1,'MapPreprocessing.CalculateColorMappings()']]],
+  ['calculatecolormappings_5',['CalculateColorMappings',['../class_environment_manager.html#a270048fac2d2370c15a3f365ef35d5a7',1,'EnvironmentManager.CalculateColorMappings()'],['../class_fire_maps_preparation.html#aa9413dc1588604ed8b7e62be244b89ad',1,'FireMapsPreparation.CalculateColorMappings()'],['../class_map_preprocessing.html#a955b93397c3d264056ec4a6110e6ff2b',1,'MapPreprocessing.CalculateColorMappings()']]],
   ['calcwindprobability_6',['CalcWindProbability',['../class_fire_simulator.html#a0c99501806e45a9323ce35ee076719a9',1,'FireSimulator']]],
   ['catmullrom_7',['CatmullRom',['../class_drawer.html#a7bed89c4063736397d8d6cd871d98387',1,'Drawer']]],
   ['cell_8',['Cell',['../struct_fire_simulator_1_1_cell.html#ab153359b03cee85ee54966a003eb081f',1,'FireSimulator::Cell']]],

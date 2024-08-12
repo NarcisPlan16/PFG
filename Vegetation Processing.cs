@@ -62,7 +62,7 @@ public class VegetationGenerator : MonoBehaviour {
 
                 if (mapping.vegetationPrefab != null) { // Check if vegetationPrefab is not null
 
-                    float y = terrain.terrainData.GetHeight(x * 2, z * 2); // Multiply by 2, vegetation map is 512 and the size pof the terrain is 1024x1024
+                    float y = terrain.terrainData.GetHeight(x * 2, z * 2); // Multiply by 2, vegetation map is 512 and the size of the terrain is 1024x1024
                     Vector3 position = new Vector3(x / (float)veg_width * terrain_width, y, z / (float)veg_height * terrain_height);
 
                     if (NoNearbyEntity(x, z)) {

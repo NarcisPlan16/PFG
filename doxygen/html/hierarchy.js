@@ -4,13 +4,12 @@ var hierarchy =
       [ "Agent1", "class_agent1.html", null ]
     ] ],
     [ "FireSimulator.Cell", "struct_fire_simulator_1_1_cell.html", null ],
-    [ "EnviromentManager.ColorArrayWrapper", "class_enviroment_manager_1_1_color_array_wrapper.html", null ],
+    [ "EnvironmentManager.ColorArrayWrapper", "class_environment_manager_1_1_color_array_wrapper.html", null ],
     [ "ColorToVegetation", "class_color_to_vegetation.html", null ],
     [ "ColorToVegetationListWrapper", "class_color_to_vegetation_list_wrapper.html", null ],
     [ "ColorVegetationMapper", "class_color_vegetation_mapper.html", null ],
     [ "Drawer", "class_drawer.html", null ],
     [ "Editor", null, [
-      [ "Agent1Editor", "class_agent1_editor.html", null ],
       [ "EnviromentManagerEditor", "class_enviroment_manager_editor.html", null ],
       [ "FireMapsPreparationEditor", "class_fire_maps_preparation_editor.html", null ],
       [ "FireMitigationEditor", "class_fire_mitigation_editor.html", null ],
@@ -23,7 +22,7 @@ var hierarchy =
     [ "MapManager", "class_map_manager.html", null ],
     [ "MapPreprocessing", "class_map_preprocessing.html", null ],
     [ "MonoBehaviour", null, [
-      [ "EnviromentManager", "class_enviroment_manager.html", null ],
+      [ "EnvironmentManager", "class_environment_manager.html", null ],
       [ "FireMapsPreparation", "class_fire_maps_preparation.html", null ],
       [ "FireMitigation", "class_fire_mitigation.html", null ],
       [ "VegetationGenerator", "class_vegetation_generator.html", null ]

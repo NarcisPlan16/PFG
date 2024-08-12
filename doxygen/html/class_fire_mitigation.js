@@ -11,7 +11,7 @@ var class_fire_mitigation =
     [ "StoreFireAndFiretrenchData", "class_fire_mitigation.html#a31891094c5d75bdf9f059706ad2ac1dc", null ],
     [ "StoreFiretrenchPoints", "class_fire_mitigation.html#af17ead669a55f6900c4da01c13a5f28c", null ],
     [ "Update", "class_fire_mitigation.html#a11c2b47d2b9a5ed9e8a9679c351995c5", null ],
-    [ "_enviroment_manager", "class_fire_mitigation.html#a027f8f3137e94b0f5223cbab5916a2e9", null ],
+    [ "_enviroment_manager", "class_fire_mitigation.html#aa968814d81613a2ecd53769b7e0caabc", null ],
     [ "_fire_sim", "class_fire_mitigation.html#ae5bc46c8a451b05989420f06fc65f506", null ],
     [ "_firetrench_points", "class_fire_mitigation.html#a67c8e3922241ad928fbff81d442d85a7", null ],
     [ "_humidity", "class_fire_mitigation.html#a68b7b70f8a507ba42d8a27ff6141e100", null ],

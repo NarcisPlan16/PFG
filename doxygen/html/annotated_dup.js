@@ -1,13 +1,12 @@
 var annotated_dup =
 [
     [ "Agent1", "class_agent1.html", "class_agent1" ],
-    [ "Agent1Editor", "class_agent1_editor.html", "class_agent1_editor" ],
     [ "ColorToVegetation", "class_color_to_vegetation.html", "class_color_to_vegetation" ],
     [ "ColorToVegetationListWrapper", "class_color_to_vegetation_list_wrapper.html", "class_color_to_vegetation_list_wrapper" ],
     [ "ColorVegetationMapper", "class_color_vegetation_mapper.html", "class_color_vegetation_mapper" ],
     [ "Drawer", "class_drawer.html", "class_drawer" ],
-    [ "EnviromentManager", "class_enviroment_manager.html", "class_enviroment_manager" ],
     [ "EnviromentManagerEditor", "class_enviroment_manager_editor.html", "class_enviroment_manager_editor" ],
+    [ "EnvironmentManager", "class_environment_manager.html", "class_environment_manager" ],
     [ "FireMapsPreparation", "class_fire_maps_preparation.html", "class_fire_maps_preparation" ],
     [ "FireMapsPreparationEditor", "class_fire_maps_preparation_editor.html", "class_fire_maps_preparation_editor" ],
     [ "FireMitigation", "class_fire_mitigation.html", "class_fire_mitigation" ],
