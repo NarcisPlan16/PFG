@@ -44,7 +44,7 @@ public class VegetationGenerator : MonoBehaviour {
 
     public void GenerateVegetation() {
 
-        colorToVegMapper.mappings = mappings_dict;
+        colorToVegMapper.mappings = this.mappings_dict;
         
         ClearVegetation(); // Clear existing vegetation
         InitEntityPositions();
@@ -60,22 +60,25 @@ public class VegetationGenerator : MonoBehaviour {
                 Color pixelColor = vegetation_map.GetPixel(x, z);
                 ColorToVegetation mapping = colorToVegMapper.FindClosestMapping(pixelColor);
 
-                if (mapping.vegetationPrefab != null) { // Check if vegetationPrefab is not null
-
-                    float y = terrain.terrainData.GetHeight(x * 2, z * 2); // Multiply by 2, vegetation map is 512 and the size of the terrain is 1024x1024
-                    Vector3 position = new Vector3(x / (float)veg_width * terrain_width, y, z / (float)veg_height * terrain_height);
-
-                    if (NoNearbyEntity(x, z)) {
-                        GameObject vegetation = Instantiate(mapping.vegetationPrefab, position, Quaternion.identity);
-                        vegetation.transform.parent = terrain.transform;
-                        vegetation.transform.localScale = new Vector3(prefab_size, prefab_size, prefab_size);
-                        entityPositions[x][z] = true;
-                    }
-
-                }
+                // if vegetationPrefab is not null
+                if (mapping.vegetationPrefab != null) InstantiatePrefab(x, z, mapping, veg_width, terrain_width, veg_height, terrain_height);
                 
             }
 
+        }
+
+    }
+
+    private void InstantiatePrefab(int x, int z, ColorToVegetation mapping, int veg_width, float terrain_width, int veg_height, float terrain_height) {
+
+        float y = terrain.terrainData.GetHeight(x * 2, z * 2); // Multiply by 2, vegetation map is 512 and the size of the terrain is 1024x1024
+        Vector3 position = new Vector3(x / (float)veg_width * terrain_width, y, z / (float)veg_height * terrain_height);
+
+        if (NoNearbyEntity(x, z)) {
+            GameObject vegetation = Instantiate(mapping.vegetationPrefab, position, Quaternion.identity);
+            vegetation.transform.parent = terrain.transform;
+            vegetation.transform.localScale = new Vector3(prefab_size, prefab_size, prefab_size);
+            entityPositions[x][z] = true;
         }
 
     }
