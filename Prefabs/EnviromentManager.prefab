@@ -1,0 +1,237 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6064106118700751322
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6984104997129418190}
+  - component: {fileID: 5157356912417549672}
+  m_Layer: 0
+  m_Name: EnviromentManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6984104997129418190
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6064106118700751322}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6549.109, y: -108.026855, z: 159.0055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5157356912417549672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6064106118700751322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15638bdfc25462241a2700be0d421cf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mappings:
+  - color: {r: 0, g: 0, b: 0.39215687, a: 1}
+    ICGC_id: 463
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 0
+  - color: {r: 0, g: 0, b: 0.8627451, a: 1}
+    ICGC_id: 462
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 0
+  - color: {r: 0, g: 1, b: 0.60784316, a: 1}
+    ICGC_id: 229
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 2
+  - color: {r: 0.05882353, g: 0.21568628, b: 0, a: 1}
+    ICGC_id: 346
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 1
+  - color: {r: 0.07058824, g: 0.27450982, b: 0.42745098, a: 1}
+    ICGC_id: 465
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 0
+  - color: {r: 0.09411765, g: 0.37254903, b: 0.5803922, a: 1}
+    ICGC_id: 464
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 0
+  - color: {r: 0.09803922, g: 0.9019608, b: 0.11764706, a: 1}
+    ICGC_id: 225
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.9
+    burnPriority: 5
+  - color: {r: 0.19607843, g: 0.5882353, b: 1, a: 1}
+    ICGC_id: 234
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 3
+  - color: {r: 0.2, g: 0.8, b: 0.2, a: 1}
+    ICGC_id: 221
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.9
+    burnPriority: 5
+  - color: {r: 0.2901961, g: 0.27450982, b: 0.43137255, a: 1}
+    ICGC_id: 354
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 0.2901961, g: 0.58431375, b: 0.58431375, a: 1}
+    ICGC_id: 349
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 0.38431373, g: 0, b: 0.76862746, a: 1}
+    ICGC_id: 348
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 0.4, g: 1, b: 0.2, a: 1}
+    ICGC_id: 222
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.3
+    burnPriority: 4
+  - color: {r: 0.40392157, g: 0.38431373, b: 0.6039216, a: 1}
+    ICGC_id: 353
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 0.40784314, g: 0.5647059, b: 0.09411765, a: 1}
+    ICGC_id: 223
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.2
+    burnPriority: 4
+  - color: {r: 0.43529412, g: 0.43529412, b: 1, a: 1}
+    ICGC_id: 461
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 0
+  - color: {r: 0.4509804, g: 0, b: 0.33333334, a: 1}
+    ICGC_id: 347
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 0.4745098, g: 0.4745098, b: 0.47843137, a: 1}
+    ICGC_id: 232
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 0
+  - color: {r: 0.5019608, g: 0.5019608, b: 0, a: 1}
+    ICGC_id: 114
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 1
+  - color: {r: 0.5882353, g: 0.49019608, b: 0.37254903, a: 1}
+    ICGC_id: 224
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 1
+    burnPriority: 2
+  - color: {r: 0.6666667, g: 0.64705884, b: 0, a: 1}
+    ICGC_id: 227
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.9
+    burnPriority: 3
+  - color: {r: 0.6784314, g: 0.6666667, b: 0.7921569, a: 1}
+    ICGC_id: 351
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 0.6862745, g: 0.35686275, b: 0.08235294, a: 1}
+    ICGC_id: 113
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 0
+  - color: {r: 0.7058824, g: 1, b: 0.60784316, a: 1}
+    ICGC_id: 226
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.2
+    burnPriority: 4
+  - color: {r: 0.7647059, g: 0.7647059, b: 0.627451, a: 1}
+    ICGC_id: 228
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 1
+    burnPriority: 2
+  - color: {r: 0.8, g: 1, b: 0.2, a: 1}
+    ICGC_id: 112
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.1
+    burnPriority: 2
+  - color: {r: 0.8039216, g: 0.8039216, b: 0, a: 1}
+    ICGC_id: 115
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.3
+    burnPriority: 3
+  - color: {r: 1, g: 0, b: 0.49019608, a: 1}
+    ICGC_id: 341
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 1, g: 0, b: 0.9411765, a: 1}
+    ICGC_id: 350
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 1, g: 0.3254902, b: 0.8039216, a: 1}
+    ICGC_id: 342
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 1, g: 0.5882353, b: 0.19607843, a: 1}
+    ICGC_id: 230
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.1
+    burnPriority: 4
+  - color: {r: 1, g: 0.6431373, b: 0.8862745, a: 1}
+    ICGC_id: 343
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 1, g: 0.7058824, b: 0.7058824, a: 1}
+    ICGC_id: 345
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 1, g: 0.78431374, b: 0.8862745, a: 1}
+    ICGC_id: 344
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 1, g: 0.9019608, b: 0.9019608, a: 1}
+    ICGC_id: 352
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 5
+  - color: {r: 1, g: 1, b: 0, a: 1}
+    ICGC_id: 111
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0
+    burnPriority: 1
+  - color: {r: 1, g: 1, b: 0.8, a: 1}
+    ICGC_id: 116
+    vegetationPrefab: {fileID: 0}
+    expandCoefficient: 0.1
+    burnPriority: 2
+  plane_material: {fileID: 2100000, guid: f794fba481e01c745b77dd05fe897645, type: 2}
+  mappings_filename: MAPPINGS_data
+  height_map: {fileID: 2800000, guid: bb967311db4b2eb42b36b0766759706d, type: 3}
+  vegetation_map: {fileID: 2800000, guid: 4d16f9c3ff0551640b1469f2713909f6, type: 3}
+  n_enviroments: 8
