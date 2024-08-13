@@ -153,6 +153,7 @@ public class Agent1 : Agent {
     }
 
     private IEnumerator SimulateFire() {
+        // If we want to test 1 firetrench vs some fires, add a for loop here and loop through some random files and reseting the texture at every step
 
         bool fire_ended = false;
         FireMapsPreparation.FireData fire_data = fires_data[n_file];
@@ -177,13 +178,8 @@ public class Agent1 : Agent {
         float opportunities_reward = firetrench_spent_opps + (1 - (spent_opportunities / fires_data[n_file].max_span)); 
         // Opportunities reward is always positive as it grows when more opportunities are spent
         this.action_opportunities_reward += opportunities_reward;
-
-        float total_reward = fire_reward + 0.1f*opportunities_reward;
         
-
-        //Debug.Log("Fire reward: " + fire_reward + " | " + "Opps reward: " + 0.1f*opportunities_reward);
-        //Debug.Log("Penalization: " + penalization + " | " + "Max pen: " + max_pen);
-
+        float total_reward = fire_reward + 0.1f*opportunities_reward;
         AddReward(total_reward);
     }
     
