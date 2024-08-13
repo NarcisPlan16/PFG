@@ -1,9 +1,0 @@
-<map id="FireSimulator.TotalPixelsBurnt" name="FireSimulator.TotalPixelsBurnt">
-<area shape="rect" id="Node000001" title=" " alt="" coords="709,5,876,48"/>
-<area shape="rect" id="Node000002" href="$class_fire_maps_preparation.html#a6736f5b9e12ef4c2804cdd8f932deff0" title=" " alt="" coords="471,5,661,48"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="694,29,662,29,662,24,694,24"/>
-<area shape="rect" id="Node000003" href="$class_fire_maps_preparation.html#ae22d57ed7e7218de705f4baa45d9633d" title=" " alt="" coords="233,5,423,48"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="455,29,423,29,423,24,455,24"/>
-<area shape="rect" id="Node000004" href="$class_fire_maps_preparation_editor.html#af2f87d131d3d5a80e6ad7b8c230f1541" title=" " alt="" coords="5,5,185,48"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="217,29,185,29,185,24,217,24"/>
-</map>

@@ -1,8 +1,0 @@
-<map id="EnvironmentManager.Preprocessing" name="EnvironmentManager.Preprocessing">
-<area shape="rect" id="Node000001" title=" " alt="" coords="475,43,704,69"/>
-<area shape="rect" id="Node000002" href="$class_environment_manager.html#a270048fac2d2370c15a3f365ef35d5a7" title=" " alt="" coords="227,5,427,48"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="459,44,427,41,428,35,460,39"/>
-<area shape="rect" id="Node000003" href="$class_enviroment_manager_editor.html#a823b52d1c7f3d6579c275e5149810e81" title=" " alt="" coords="5,35,179,77"/>
-<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="460,62,427,63,227,63,179,62,179,56,227,57,427,57,460,57"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="211,44,179,48,179,43,211,38"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="Drawer.DrawCatmullRomSpline" name="Drawer.DrawCatmullRomSpline">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,207,57"/>
-<area shape="rect" id="Node000002" href="$class_drawer.html#a7bed89c4063736397d8d6cd871d98387" title=" " alt="" coords="279,5,415,32"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="207,31,263,25,264,30,208,36"/>
-<area shape="rect" id="Node000003" href="$class_drawer.html#ad4a16739a8d6c18a4684587c5f467bfb" title=" " alt="" coords="255,56,439,83"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="208,52,239,55,239,61,207,57"/>
-</map>

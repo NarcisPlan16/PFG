@@ -1,9 +1,0 @@
-<map id="ColorVegetationMapper.MapToTargetColors" name="ColorVegetationMapper.MapToTargetColors">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,39,191,81"/>
-<area shape="rect" id="Node000002" href="$class_color_to_vegetation.html#a3c29783fb5823b4e71c09a10a55a3528" title=" " alt="" coords="239,5,453,48"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="191,45,223,41,224,46,192,50"/>
-<area shape="rect" id="Node000003" href="$class_color_vegetation_mapper.html#aa14df469450548cf27d0d1a90f6c72f0" title=" " alt="" coords="253,72,438,115"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="192,70,238,76,238,82,191,75"/>
-<area shape="rect" id="Node000004" href="$class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c" title=" " alt="" coords="501,72,691,115"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="439,91,485,91,485,96,439,96"/>
-</map>

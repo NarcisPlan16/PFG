@@ -1,9 +1,0 @@
-<map id="FireMitigation.InitFireData" name="FireMitigation.InitFireData">
-<area shape="rect" id="Node000001" title=" " alt="" coords="504,31,673,57"/>
-<area shape="rect" id="Node000002" href="$class_fire_mitigation.html#afca6e09c94705d5ee897789751871eba" title=" " alt="" coords="283,5,456,32"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="488,35,456,31,457,26,489,30"/>
-<area shape="rect" id="Node000004" href="$class_fire_mitigation.html#a23e7a1744c7d6474f38528aa85141867" title=" " alt="" coords="304,56,435,83"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="489,58,436,64,435,59,488,53"/>
-<area shape="rect" id="Node000003" href="$class_fire_mitigation_editor.html#a93e8ae670250d5d452f7f784088b2005" title=" " alt="" coords="5,5,235,32"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="267,21,235,21,235,16,267,16"/>
-</map>

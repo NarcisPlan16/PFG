@@ -1,5 +1,0 @@
-<map id="FireMitigation.FireSimulation" name="FireMitigation.FireSimulation">
-<area shape="rect" id="Node000001" title=" " alt="" coords="198,5,384,32"/>
-<area shape="rect" id="Node000002" href="$class_fire_mitigation.html#a11c2b47d2b9a5ed9e8a9679c351995c5" title=" " alt="" coords="5,5,150,32"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="182,21,150,21,150,16,182,16"/>
-</map>

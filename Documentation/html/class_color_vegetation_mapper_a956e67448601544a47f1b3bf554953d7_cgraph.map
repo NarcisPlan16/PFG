@@ -1,9 +1,0 @@
-<map id="ColorVegetationMapper.ExtractColorMappings" name="ColorVegetationMapper.ExtractColorMappings">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,39,208,81"/>
-<area shape="rect" id="Node000002" href="$class_color_vegetation_mapper.html#acfa3ba76697399db676643691e3ddf14" title=" " alt="" coords="256,39,439,81"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="208,57,240,57,240,63,208,63"/>
-<area shape="rect" id="Node000003" href="$class_color_to_vegetation.html#a3c29783fb5823b4e71c09a10a55a3528" title=" " alt="" coords="487,5,701,48"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="439,45,471,41,472,46,440,50"/>
-<area shape="rect" id="Node000004" href="$class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c" title=" " alt="" coords="499,72,689,115"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="440,70,484,76,483,81,439,75"/>
-</map>

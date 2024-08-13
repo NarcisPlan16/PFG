@@ -3,6 +3,7 @@ var class_vegetation_generator =
     [ "ClearVegetation", "class_vegetation_generator.html#af83f704f917a064883fab0c0c0e2b4a2", null ],
     [ "GenerateVegetation", "class_vegetation_generator.html#a68228048c914076cc1a0cbd0c6b4a1e6", null ],
     [ "InitEntityPositions", "class_vegetation_generator.html#a35bf5f267b4b32515b252825a125bfd0", null ],
+    [ "InstantiatePrefab", "class_vegetation_generator.html#acf685dbf2613a5b95437639b180b5b35", null ],
     [ "LoadMappings", "class_vegetation_generator.html#a7907d63d1ef2697b2466fcf6e1646905", null ],
     [ "NoNearbyEntity", "class_vegetation_generator.html#a3f607439ed1125c8cec59d08f3b50a25", null ],
     [ "Start", "class_vegetation_generator.html#a5c7e497cbd87ae74ee12c87608de1744", null ],
