@@ -167,7 +167,6 @@ public class Agent1 : Agent {
             yield return null; // Prevent Unity freezing the frames
         }
 
-
         float penalization = fire_simulation.GetReward();
         float max_pen = fires_data[n_file].total_cost;
         float fire_reward = 1 - (penalization / max_pen); // This way the rewaard can be positive as it decreases to 0 when "penalization" approaches to "max_pen"
