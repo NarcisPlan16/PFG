@@ -1,0 +1,22 @@
+<map id="EnvironmentManager.VegetationMapTexture" name="EnvironmentManager.VegetationMapTexture">
+<area shape="rect" id="Node000001" title=" " alt="" coords="740,73,949,116"/>
+<area shape="rect" id="Node000002" href="$class_fire_mitigation.html#a900864eca65d13c8aba1be2cb21e40b7" title=" " alt="" coords="289,5,450,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="773,70,692,47,565,29,450,22,450,17,565,24,693,41,775,65"/>
+<area shape="rect" id="Node000004" href="$class_fire_mitigation.html#a1285e245ddb72113c37f6fd54a923200" title=" " alt="" coords="514,56,683,83"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="724,85,683,81,684,75,725,80"/>
+<area shape="rect" id="Node000007" href="$class_agent1.html#a7bde40b6b39d8f098c43d0a02cd9f60b" title=" " alt="" coords="542,107,655,133"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="725,110,655,117,655,112,724,104"/>
+<area shape="rect" id="Node000008" href="$class_agent1.html#abee2f5805ec4a5959ab4a748038a8bdd" title=" " alt="" coords="504,157,692,200"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="766,124,664,159,662,154,765,119"/>
+<area shape="rect" id="Node000003" href="$class_fire_mitigation_editor.html#a93e8ae670250d5d452f7f784088b2005" title=" " alt="" coords="5,31,235,57"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="274,31,235,35,235,30,273,26"/>
+<area shape="rect" id="Node000005" href="$class_fire_mitigation.html#afca6e09c94705d5ee897789751871eba" title=" " alt="" coords="283,56,456,83"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="498,72,457,72,457,67,498,67"/>
+<area shape="rect" id="Node000006" href="$class_fire_mitigation.html#a23e7a1744c7d6474f38528aa85141867" title=" " alt="" coords="304,107,435,133"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="520,89,433,109,432,103,519,84"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="267,62,235,58,235,53,267,56"/>
+<area shape="rect" id="Node000009" href="$class_agent1.html#a8baf2418882af04f4859e6d6fbff91a9" title=" " alt="" coords="300,165,438,192"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="488,181,439,181,439,176,488,176"/>
+<area shape="rect" id="Node000010" href="$class_agent1.html#ad3910f939ebbbad2431db4948b369ad5" title=" " alt="" coords="34,165,206,192"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="285,181,207,181,207,176,285,176"/>
+</map>

@@ -1,0 +1,13 @@
+<map id="FireMapsPreparation" name="FireMapsPreparation">
+<area shape="rect" id="Node000001" title=" " alt="" coords="116,277,257,304"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,187,115,213"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,220,170,275,167,279,89,225"/>
+<area shape="rect" id="Node000003" href="$class_map_manager.html" title=" " alt="" coords="138,187,235,213"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="189,229,189,277,184,277,184,229"/>
+<area shape="rect" id="Node000004" href="$class_map_preprocessing.html" title=" " alt="" coords="122,96,251,123"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="189,138,189,186,184,186,184,138"/>
+<area shape="rect" id="Node000005" href="$class_color_vegetation_mapper.html" title=" " alt="" coords="108,5,265,32"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="189,48,189,95,184,95,184,48"/>
+<area shape="rect" id="Node000006" href="$class_fire_simulator.html" title=" " alt="" coords="259,187,357,213"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="300,229,281,255,260,269,238,279,236,274,257,265,277,251,296,226"/>
+</map>

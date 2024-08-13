@@ -1,0 +1,5 @@
+<map id="VegetationGenerator.InstantiatePrefab" name="VegetationGenerator.InstantiatePrefab">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,210,48"/>
+<area shape="rect" id="Node000002" href="$class_vegetation_generator.html#a3f607439ed1125c8cec59d08f3b50a25" title=" " alt="" coords="258,5,459,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,24,242,24,242,29,210,29"/>
+</map>

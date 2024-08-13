@@ -1,0 +1,28 @@
+var class_agent1 =
+[
+    [ "CollectObservations", "class_agent1.html#a573829f8a1ac777f8fa04d77e6f6ac3a", null ],
+    [ "FinishEpoch", "class_agent1.html#a8baf2418882af04f4859e6d6fbff91a9", null ],
+    [ "GetFiresData", "class_agent1.html#a0be08ea1648d62b93b5aacd3d77a7a2d", null ],
+    [ "Initialize", "class_agent1.html#a7bde40b6b39d8f098c43d0a02cd9f60b", null ],
+    [ "OnActionReceived", "class_agent1.html#ad3910f939ebbbad2431db4948b369ad5", null ],
+    [ "OnEpisodeBegin", "class_agent1.html#a80bf22a90fdc9e2c484aded3972e5fef", null ],
+    [ "SimulateFire", "class_agent1.html#a0c4fe529e4607ba5a3451f027bf3c1c1", null ],
+    [ "SimulateFireAndCalcReward", "class_agent1.html#abee2f5805ec4a5959ab4a748038a8bdd", null ],
+    [ "action_fire_reward", "class_agent1.html#a05a59da98986e366cb1b5d2324d3f71d", null ],
+    [ "action_opportunities_reward", "class_agent1.html#a470cb7ce63df6603eca302f5426c0828", null ],
+    [ "enviroment_manager", "class_agent1.html#a0c3428bc1bff484b236ab8a72df202ca", null ],
+    [ "fire_init", "class_agent1.html#a4097b92c90991dbb9f65720a5bdfb4b5", null ],
+    [ "fire_simulation", "class_agent1.html#a10350f75b9ebbbf8d5b029ef5d41a6c1", null ],
+    [ "fires_data", "class_agent1.html#a1fa9d14e65b05391e1cb71fc938fe602", null ],
+    [ "JSON_Dir", "class_agent1.html#afe6c9d1204b8a6546b63c5efa43a20e5", null ],
+    [ "map", "class_agent1.html#adff2120325fa1c000e8a60661b8b093a", null ],
+    [ "map_material", "class_agent1.html#aa53022b92b500e0bb639e4ee91505909", null ],
+    [ "mappings_dict", "class_agent1.html#a69d9ac838b9d57cd2f1c08a277dcd404", null ],
+    [ "MAX_BURN_PRIO", "class_agent1.html#a563893312f302acc9db27df40edc0888", null ],
+    [ "n_file", "class_agent1.html#ae23bffd875f2e4f1680d941db7376d57", null ],
+    [ "n_fire_test_files", "class_agent1.html#afa7b8a4feabd862b8e70c08808e9a95b", null ],
+    [ "on_sim_end", "class_agent1.html#ae0d87cb8ab25afd0cbb77cfb2322889a", null ],
+    [ "plane", "class_agent1.html#aae25cfe0ddf0532e93325d681b48d733", null ],
+    [ "random", "class_agent1.html#a493fd79d9c5f025323d74bf8e1d659aa", null ],
+    [ "WHITE_COLOR", "class_agent1.html#ac8c407bcee17c6285e2e86f9e4c252f3", null ]
+];

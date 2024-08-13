@@ -1,0 +1,11 @@
+<map id="Jerarquia Gràfica de la Classe" name="Jerarquia Gràfica de la Classe">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,81,61,108"/>
+<area shape="rect" id="Node000001" href="$class_enviroment_manager_editor.html" title=" " alt="" coords="112,5,281,32"/>
+<area shape="poly" id="edge2_Node000000_Node000001" title=" " alt="" coords="62,70,107,42,137,30,139,35,110,46,65,74"/>
+<area shape="rect" id="Node000002" href="$class_fire_maps_preparation_editor.html" title=" " alt="" coords="109,56,284,83"/>
+<area shape="poly" id="edge3_Node000000_Node000002" title=" " alt="" coords="76,85,108,80,109,86,77,91"/>
+<area shape="rect" id="Node000003" href="$class_fire_mitigation_editor.html" title=" " alt="" coords="130,107,263,133"/>
+<area shape="poly" id="edge4_Node000000_Node000003" title=" " alt="" coords="77,99,130,107,129,112,76,104"/>
+<area shape="rect" id="Node000004" href="$class_vegetation_generator_editor.html" title=" " alt="" coords="109,157,284,184"/>
+<area shape="poly" id="edge5_Node000000_Node000004" title=" " alt="" coords="65,115,110,143,139,154,137,159,107,148,62,120"/>
+</map>

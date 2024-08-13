@@ -1,0 +1,7 @@
+<map id="MapPreprocessing.ObtainColorsFromJSON" name="MapPreprocessing.ObtainColorsFromJSON">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,39,214,81"/>
+<area shape="rect" id="Node000002" href="$class_color_to_vegetation.html#a3c29783fb5823b4e71c09a10a55a3528" title=" " alt="" coords="262,5,476,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="214,44,246,40,246,45,214,49"/>
+<area shape="rect" id="Node000003" href="$class_map_preprocessing.html#aa1aba02198324efd39fde5c481b99292" title=" " alt="" coords="270,72,468,115"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="214,71,254,76,254,81,214,76"/>
+</map>

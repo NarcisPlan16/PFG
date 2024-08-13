@@ -1,0 +1,9 @@
+<map id="FireSimulator.CalcReward" name="FireSimulator.CalcReward">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,13,177,40"/>
+<area shape="rect" id="Node000002" href="$class_fire_simulator.html#a1c8e779a35a621643fa5d06402bda51e" title=" " alt="" coords="225,13,414,40"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="177,24,209,24,209,29,177,29"/>
+<area shape="rect" id="Node000003" href="$class_color_vegetation_mapper.html#aa14df469450548cf27d0d1a90f6c72f0" title=" " alt="" coords="462,5,647,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="415,24,447,24,447,29,415,29"/>
+<area shape="rect" id="Node000004" href="$class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c" title=" " alt="" coords="695,5,886,48"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="648,24,680,24,680,29,648,29"/>
+</map>

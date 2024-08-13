@@ -1,0 +1,5 @@
+<map id="FireSimulator.CheckFiretrench" name="FireSimulator.CheckFiretrench">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,203,32"/>
+<area shape="rect" id="Node000002" href="$class_fire_simulator.html#a67757d26c36be75a2ffd132fca749b52" title=" " alt="" coords="251,5,421,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="203,16,235,16,235,21,203,21"/>
+</map>

@@ -1,0 +1,20 @@
+<map id="MapPreprocessing.CalculateColorMappings" name="MapPreprocessing.CalculateColorMappings">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,89,193,132"/>
+<area shape="rect" id="Node000002" href="$class_color_to_vegetation.html#ac1c3b54e22503f2d9e3a99caff0c9e74" title=" " alt="" coords="254,5,436,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="139,86,187,63,240,41,263,34,265,39,242,47,189,68,142,91"/>
+<area shape="rect" id="Node000003" href="$class_color_vegetation_mapper.html#aba54ca2bc505daf821aeedb577920e32" title=" " alt="" coords="252,56,438,99"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="193,95,236,89,237,95,194,101"/>
+<area shape="rect" id="Node000007" href="$class_map_preprocessing.html#a0d80a0a8d8c1b7754a5c9e869380dca5" title=" " alt="" coords="241,123,449,165"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="194,121,225,125,225,130,193,126"/>
+<area shape="rect" id="Node000009" href="$class_color_vegetation_mapper.html#a7a07f9c9648c052f0ef83744b8617c3e" title=" " alt="" coords="246,189,444,232"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="144,130,242,175,258,181,257,186,240,180,142,135"/>
+<area shape="rect" id="Node000004" href="$class_color_to_vegetation.html#a3c29783fb5823b4e71c09a10a55a3528" title=" " alt="" coords="497,89,711,132"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="438,87,482,92,481,98,438,92"/>
+<area shape="rect" id="Node000005" href="$class_color_vegetation_mapper.html#aa14df469450548cf27d0d1a90f6c72f0" title=" " alt="" coords="512,23,697,65"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="438,63,496,55,496,61,438,68"/>
+<area shape="rect" id="Node000006" href="$class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c" title=" " alt="" coords="759,23,950,65"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="697,41,744,41,744,47,697,47"/>
+<area shape="poly" id="edge7_Node000007_Node000004" title=" " alt="" coords="449,128,481,124,482,129,450,133"/>
+<area shape="rect" id="Node000008" href="$class_map_preprocessing.html#aa1aba02198324efd39fde5c481b99292" title=" " alt="" coords="505,156,703,199"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="450,155,490,160,489,165,449,160"/>
+</map>

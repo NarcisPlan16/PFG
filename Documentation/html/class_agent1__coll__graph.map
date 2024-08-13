@@ -1,0 +1,15 @@
+<map id="Agent1" name="Agent1">
+<area shape="rect" id="Node000001" title=" " alt="" coords="119,277,182,304"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,187,61,213"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="64,221,135,275,132,279,60,225"/>
+<area shape="rect" id="Node000003" href="$class_environment_manager.html" title=" " alt="" coords="84,187,227,213"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="155,229,154,237,153,277,148,277,149,237,149,229"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="54,96,164,123"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="125,136,151,185,147,187,120,138"/>
+<area shape="rect" id="Node000005" href="$class_map_preprocessing.html" title=" " alt="" coords="188,96,318,123"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="230,135,171,188,168,184,226,131"/>
+<area shape="rect" id="Node000006" href="$class_color_vegetation_mapper.html" title=" " alt="" coords="175,5,331,32"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="256,48,256,95,250,95,250,48"/>
+<area shape="rect" id="Node000007" href="$class_fire_simulator.html" title=" " alt="" coords="254,187,353,213"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="296,229,288,243,276,255,254,269,229,279,182,289,181,284,227,274,251,265,273,251,283,240,292,226"/>
+</map>
