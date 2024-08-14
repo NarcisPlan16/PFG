@@ -1,0 +1,7 @@
+<map id="FireMitigation.ResetEnvironment" name="FireMitigation.ResetEnvironment">
+<area shape="rect" id="Node000001" title=" " alt="" coords="432,5,640,32"/>
+<area shape="rect" id="Node000002" href="$class_fire_mitigation.html#a615c9919e60ae7a29a1db5bedd40d005" title=" " alt="" coords="198,5,384,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="416,21,385,21,385,16,416,16"/>
+<area shape="rect" id="Node000003" href="$class_fire_mitigation.html#a11c2b47d2b9a5ed9e8a9679c351995c5" title=" " alt="" coords="5,5,150,32"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="182,21,150,21,150,16,182,16"/>
+</map>

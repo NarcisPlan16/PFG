@@ -6,6 +6,8 @@ var class_fire_mitigation =
     [ "InitFireData", "class_fire_mitigation.html#a1285e245ddb72113c37f6fd54a923200", null ],
     [ "LoadFireAndFiretrenchData", "class_fire_mitigation.html#a6e473c4e1c5d7d477509f70be11de529", null ],
     [ "LoadFiretrenchPoints", "class_fire_mitigation.html#ad529f0396f3b2efd2a3907e2f3604b8b", null ],
+    [ "ResetEnvironment", "class_fire_mitigation.html#a0e22e77b3e36cb7a7cf6d57dff33f5bd", null ],
+    [ "SaveResult", "class_fire_mitigation.html#ab3bbeec7ec344a74574219b139a68c60", null ],
     [ "SetTextData", "class_fire_mitigation.html#ac38c831697977843cd067420946ec687", null ],
     [ "Start", "class_fire_mitigation.html#a23e7a1744c7d6474f38528aa85141867", null ],
     [ "StoreFireAndFiretrenchData", "class_fire_mitigation.html#a31891094c5d75bdf9f059706ad2ac1dc", null ],
@@ -30,6 +32,7 @@ var class_fire_mitigation =
     [ "JSON_Dir", "class_fire_mitigation.html#a297f0185896694410b82ee6ea498ae2a", null ],
     [ "MAX_FIRE_SPAN", "class_fire_mitigation.html#aae7ed4d17106063bbdf1358eba85ab03", null ],
     [ "RED_COLOR", "class_fire_mitigation.html#af21c243a06d64d75f6bede924df6ad49", null ],
+    [ "RESULT_MAP_DIR", "class_fire_mitigation.html#ad6cfedcb55a09b5deaf1152611255b98", null ],
     [ "SIMULATION_SPEED", "class_fire_mitigation.html#afacd67530c6dc01ebfbea4abe9158646", null ],
     [ "WHITE_COLOR", "class_fire_mitigation.html#a0e86a98c1a2eca6b2c788af7a92a7dea", null ]
 ];

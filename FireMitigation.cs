@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class FireMitigation : MonoBehaviour {
 
+    private const string RESULT_MAP_DIR = "./Assets/Resources/Maps/ResultMap.png";
     private const string JSON_Dir = "./Assets/Resources/JSON/";
     private readonly Color BLACK_COLOR = Color.black; // Unity no permet colors constants, posem readonly que fa la mateixa funció
     private readonly Color WHITE_COLOR = Color.white; // Unity no permet colors constants, posem readonly que fa la mateixa funció
@@ -42,7 +43,6 @@ public class FireMitigation : MonoBehaviour {
         if (!this._sim_running) {
             this._sim_running = true;
             StartCoroutine(FireSimulation());
-            this._sim_running = false;
         }
     }
 
@@ -59,6 +59,8 @@ public class FireMitigation : MonoBehaviour {
             yield return null;
         }
 
+        SaveResult();
+        ResetEnvironment();
     }
 
     public void InitFireData() {
@@ -116,8 +118,6 @@ public class FireMitigation : MonoBehaviour {
         float angle = Mathf.Atan2(vec_disp.z, vec_disp.x) * Mathf.Rad2Deg; // Calculate the angle in degrees from the combined vector
 
         wind_arrow.transform.rotation = Quaternion.Euler(90, 0, -angle);
-
-        //wind_arrow.transform.rotation = Quaternion.Euler(new Vector3(90, 0, angle));
     
     }
 
@@ -173,6 +173,19 @@ public class FireMitigation : MonoBehaviour {
 
         string json_content = JsonUtility.ToJson(wrapper);
         File.WriteAllText(JSON_Dir + "FiretrenchPoints.json", json_content);
+    }
+
+    private void SaveResult() {
+         
+        byte[] bytes = this._map.EncodeToPNG(); // Convert the texture to a PNG byte array
+        File.WriteAllBytes(RESULT_MAP_DIR, bytes); 
+
+        Debug.Log("Texture saved to: " + RESULT_MAP_DIR);
+    }
+
+    private void ResetEnvironment() {
+        InitFireData();
+        this._sim_running = false;
     }
 }
 
