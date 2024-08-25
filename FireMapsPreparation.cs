@@ -97,7 +97,7 @@ public class FireMapsPreparation : MonoBehaviour {
 
             Vector3 wind = new Vector3();
             wind.x = UnityEngine.Random.Range(-60, 60);
-            wind.y = UnityEngine.Random.Range(-60, 60); // TODO: Does vertical (height) wind affect?
+            wind.y = 0; // TODO: vertical (height) wind will never happen?
             wind.z = UnityEngine.Random.Range(-60, 60);
 
             int x_ini = UnityEngine.Random.Range(0, actual_map.width);
