@@ -31,6 +31,7 @@ public class FireMitigation : MonoBehaviour {
     public int MAX_FIRE_SPAN = 1000;
     public int SIMULATION_SPEED = 2;
     public bool _poligonal = false; 
+    public int _Firetrench_width = 1;
 
     // Start is called before the first frame update
     void Start() {
@@ -87,7 +88,7 @@ public class FireMitigation : MonoBehaviour {
         this._fire_sim.InitFireAt(this._init_x, this._init_y, this._map, this._map_material);
         this._fire_sim.SetSimSpeed(SIMULATION_SPEED);
 
-        Drawer drawer = new Drawer(1);
+        Drawer drawer = new Drawer(_Firetrench_width);
         if (!this._poligonal) drawer.DrawCatmullRomSpline(this._firetrench_points, WHITE_COLOR, this._map, 0.0005f);
         else drawer.DrawJointPointsPoligonal(this._firetrench_points, WHITE_COLOR, this._map);
 
