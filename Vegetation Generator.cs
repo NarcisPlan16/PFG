@@ -12,7 +12,7 @@ public class VegetationGenerator : MonoBehaviour {
     
     private List<List<bool>> entity_positions = new List<List<bool>>(); // Matrix of existing entity positions
     private Terrain terrain; // Active terrain
-    private ColorVegetationMapper colorToVegMapper = new ColorVegetationMapper();
+    private ColorVegetationMapper color_veg_mapper = new ColorVegetationMapper();
     private const string JSON_Dir = "./Assets/Resources/JSON/";
     private Dictionary<Color, ColorToVegetation> mappings_dict = new Dictionary<Color, ColorToVegetation>(); // List to map colors to vegetation prefabs
 
@@ -26,7 +26,7 @@ public class VegetationGenerator : MonoBehaviour {
     void Start() {
         
         terrain = Terrain.activeTerrain;
-        colorToVegMapper = new ColorVegetationMapper() {colorThreshold = threshold};
+        color_veg_mapper = new ColorVegetationMapper() {colorThreshold = threshold};
 
         if (terrain == null) {
             Debug.LogError("No active terrain found.");
@@ -44,7 +44,7 @@ public class VegetationGenerator : MonoBehaviour {
 
     public void GenerateVegetation() {
 
-        colorToVegMapper.mappings = this.mappings_dict;
+        color_veg_mapper.mappings = this.mappings_dict;
         
         ClearVegetation(); // Clear existing vegetation
         Initentity_positions();
@@ -58,7 +58,7 @@ public class VegetationGenerator : MonoBehaviour {
             for (int z = 0; z < veg_height; z++) { 
 
                 Color pixelColor = vegetation_map.GetPixel(x, z);
-                ColorToVegetation mapping = colorToVegMapper.FindClosestMapping(pixelColor);
+                ColorToVegetation mapping = color_veg_mapper.FindClosestMapping(pixelColor);
 
                 // if vegetationPrefab is not null
                 if (mapping.vegetationPrefab != null) InstantiatePrefab(x, z, mapping, veg_width, terrain_width, veg_height, terrain_height);
