@@ -15,7 +15,7 @@ var searchData=
   ['collectobservations_12',['CollectObservations',['../class_agent1.html#a573829f8a1ac777f8fa04d77e6f6ac3a',1,'Agent1']]],
   ['color_13',['color',['../class_color_to_vegetation.html#acc0e0e892d3521bd74e3b73b6a6f60ff',1,'ColorToVegetation']]],
   ['color_5fmappings_14',['color_mappings',['../class_fire_simulator.html#a11a47ccaa2e161cff6b86f4c21abd706',1,'FireSimulator']]],
-  ['color_5fveg_5fmapper_15',['color_veg_mapper',['../class_map_preprocessing.html#a333fa9dddf37f31085b89f42fb419f62',1,'MapPreprocessing']]],
+  ['color_5fveg_5fmapper_15',['color_veg_mapper',['../class_map_preprocessing.html#a333fa9dddf37f31085b89f42fb419f62',1,'MapPreprocessing.color_veg_mapper'],['../class_vegetation_generator.html#a92b12bdcce018f9fb381fa6bf3ff8cdd',1,'VegetationGenerator.color_veg_mapper']]],
   ['color_5fvegetation_5fmappings_16',['color_vegetation_mappings',['../class_map_preprocessing.html#a647219373d22ab33a2194ca0f66598f3',1,'MapPreprocessing']]],
   ['colorarraywrapper_17',['ColorArrayWrapper',['../class_environment_manager_1_1_color_array_wrapper.html',1,'EnvironmentManager']]],
   ['colordistance_18',['ColorDistance',['../class_color_vegetation_mapper.html#a41f3e222dc35521db63dc0381ffffc5c',1,'ColorVegetationMapper']]],
@@ -24,10 +24,9 @@ var searchData=
   ['colortovegetation_21',['ColorToVegetation',['../class_color_to_vegetation.html',1,'']]],
   ['colortovegetation_2ecs_22',['ColorToVegetation.cs',['../_color_to_vegetation_8cs.html',1,'']]],
   ['colortovegetationlistwrapper_23',['ColorToVegetationListWrapper',['../class_color_to_vegetation_list_wrapper.html',1,'ColorToVegetationListWrapper'],['../class_color_to_vegetation_list_wrapper.html#af90060d9b7de32e6bfd615f73cbee1e7',1,'ColorToVegetationListWrapper.ColorToVegetationListWrapper()']]],
-  ['colortovegmapper_24',['colorToVegMapper',['../class_vegetation_generator.html#a18ee5712edd787bf35173ad2526aeb28',1,'VegetationGenerator']]],
-  ['colorvegetationmapper_25',['ColorVegetationMapper',['../class_color_vegetation_mapper.html',1,'']]],
-  ['colorvegetationmapper_2ecs_26',['ColorVegetationMapper.cs',['../_color_vegetation_mapper_8cs.html',1,'']]],
-  ['comparepoints_27',['comparePoints',['../class_drawer.html#af0966975c3247adfa44a3da2a6a981bc',1,'Drawer']]],
-  ['comparetocolor_28',['CompareToColor',['../class_color_to_vegetation.html#ab4e805538a6a6f69f385144a5fb876e6',1,'ColorToVegetation']]],
-  ['contains_29',['Contains',['../class_color_to_vegetation.html#ac1c3b54e22503f2d9e3a99caff0c9e74',1,'ColorToVegetation']]]
+  ['colorvegetationmapper_24',['ColorVegetationMapper',['../class_color_vegetation_mapper.html',1,'']]],
+  ['colorvegetationmapper_2ecs_25',['ColorVegetationMapper.cs',['../_color_vegetation_mapper_8cs.html',1,'']]],
+  ['comparepoints_26',['comparePoints',['../class_drawer.html#af0966975c3247adfa44a3da2a6a981bc',1,'Drawer']]],
+  ['comparetocolor_27',['CompareToColor',['../class_color_to_vegetation.html#ab4e805538a6a6f69f385144a5fb876e6',1,'ColorToVegetation']]],
+  ['contains_28',['Contains',['../class_color_to_vegetation.html#ac1c3b54e22503f2d9e3a99caff0c9e74',1,'ColorToVegetation']]]
 ];

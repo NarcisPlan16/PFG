@@ -16,6 +16,7 @@ var class_fire_mitigation =
     [ "_enviroment_manager", "class_fire_mitigation.html#aa968814d81613a2ecd53769b7e0caabc", null ],
     [ "_fire_sim", "class_fire_mitigation.html#ae5bc46c8a451b05989420f06fc65f506", null ],
     [ "_firetrench_points", "class_fire_mitigation.html#a67c8e3922241ad928fbff81d442d85a7", null ],
+    [ "_Firetrench_width", "class_fire_mitigation.html#ac45c69ff5325d26e68e6eb6ca5b2cc8a", null ],
     [ "_humidity", "class_fire_mitigation.html#a68b7b70f8a507ba42d8a27ff6141e100", null ],
     [ "_init_x", "class_fire_mitigation.html#ae34d571ee0050a0d412cdfb404368432", null ],
     [ "_init_y", "class_fire_mitigation.html#ae221f1075e535cb307e659334697fdc9", null ],

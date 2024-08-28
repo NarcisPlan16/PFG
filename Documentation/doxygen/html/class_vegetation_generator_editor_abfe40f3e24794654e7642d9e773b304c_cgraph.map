@@ -6,10 +6,10 @@
 <area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="184,112,216,112,216,117,184,117"/>
 <area shape="rect" id="Node000009" href="$class_vegetation_generator.html#a7907d63d1ef2697b2466fcf6e1646905" title=" " alt="" coords="244,248,416,291"/>
 <area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="130,134,285,237,282,241,127,139"/>
-<area shape="rect" id="Node000003" href="$class_vegetation_generator.html#a35bf5f267b4b32515b252825a125bfd0" title=" " alt="" coords="749,31,911,73"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="667,33,734,40,734,45,667,38"/>
+<area shape="rect" id="Node000003" href="$class_vegetation_generator.html#a35228a07bfa3093ee7fe69c1265dbccd" title=" " alt="" coords="733,31,927,73"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="667,33,718,38,718,43,667,38"/>
 <area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="392,90,502,51,503,56,394,95"/>
-<area shape="poly" id="edge7_Node000004_Node000003" title=" " alt="" coords="429,100,734,61,735,67,430,105"/>
+<area shape="poly" id="edge7_Node000004_Node000003" title=" " alt="" coords="429,100,717,63,718,69,430,105"/>
 <area shape="rect" id="Node000005" href="$class_color_vegetation_mapper.html#aa14df469450548cf27d0d1a90f6c72f0" title=" " alt="" coords="486,123,672,165"/>
 <area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="430,124,472,129,471,134,429,129"/>
 <area shape="rect" id="Node000007" href="$class_vegetation_generator.html#acf685dbf2613a5b95437639b180b5b35" title=" " alt="" coords="477,189,681,232"/>

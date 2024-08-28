@@ -1,0 +1,13 @@
+<map id="VegetationGenerator.Initentity_positions" name="VegetationGenerator.Initentity_positions">
+<area shape="rect" id="Node000001" title=" " alt="" coords="699,35,893,77"/>
+<area shape="rect" id="Node000002" href="$class_vegetation_generator.html#af83f704f917a064883fab0c0c0e2b4a2" title=" " alt="" coords="477,64,651,107"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="684,73,652,77,652,72,683,68"/>
+<area shape="rect" id="Node000003" href="$class_vegetation_generator.html#a68228048c914076cc1a0cbd0c6b4a1e6" title=" " alt="" coords="232,5,429,48"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="683,52,429,36,430,30,684,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="462,62,418,51,419,46,463,57"/>
+<area shape="rect" id="Node000004" href="$class_vegetation_generator_editor.html#abfe40f3e24794654e7642d9e773b304c" title=" " alt="" coords="5,64,184,107"/>
+<area shape="poly" id="edge5_Node000002_Node000004" title=" " alt="" coords="462,88,184,88,184,83,462,83"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="228,55,184,66,182,61,227,50"/>
+<area shape="rect" id="Node000005" href="$class_vegetation_generator.html#a5c7e497cbd87ae74ee12c87608de1744" title=" " alt="" coords="8,13,181,40"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="216,29,181,29,181,24,216,24"/>
+</map>

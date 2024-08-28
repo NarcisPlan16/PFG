@@ -28,11 +28,11 @@
 <area shape="poly" id="edge14_Node000011_Node000006" title=" " alt="" coords="454,306,532,292,787,252,788,258,532,297,455,311"/>
 <area shape="rect" id="Node000012" href="$class_vegetation_generator.html#af83f704f917a064883fab0c0c0e2b4a2" title=" " alt="" coords="549,307,723,349"/>
 <area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="454,325,533,325,533,331,454,331"/>
-<area shape="rect" id="Node000013" href="$class_vegetation_generator.html#a35bf5f267b4b32515b252825a125bfd0" title=" " alt="" coords="815,332,976,375"/>
-<area shape="poly" id="edge15_Node000011_Node000013" title=" " alt="" coords="454,347,532,359,636,363,740,359,799,356,800,362,740,364,636,368,532,364,453,353"/>
+<area shape="rect" id="Node000013" href="$class_vegetation_generator.html#a35228a07bfa3093ee7fe69c1265dbccd" title=" " alt="" coords="799,332,992,375"/>
+<area shape="poly" id="edge15_Node000011_Node000013" title=" " alt="" coords="454,347,532,359,636,363,740,359,783,357,783,362,740,364,636,368,532,364,453,353"/>
 <area shape="rect" id="Node000014" href="$class_vegetation_generator.html#acf685dbf2613a5b95437639b180b5b35" title=" " alt="" coords="534,424,738,467"/>
 <area shape="poly" id="edge16_Node000011_Node000014" title=" " alt="" coords="455,346,485,359,501,370,510,381,520,392,533,403,555,415,553,420,531,408,516,396,506,385,497,374,483,364,453,351"/>
-<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="724,334,799,341,799,347,723,339"/>
+<area shape="poly" id="edge13_Node000012_Node000013" title=" " alt="" coords="724,334,784,340,783,345,723,339"/>
 <area shape="rect" id="Node000015" href="$class_vegetation_generator.html#a3f607439ed1125c8cec59d08f3b50a25" title=" " alt="" coords="795,424,996,467"/>
 <area shape="poly" id="edge17_Node000014_Node000015" title=" " alt="" coords="739,443,779,443,779,448,739,448"/>
 </map>

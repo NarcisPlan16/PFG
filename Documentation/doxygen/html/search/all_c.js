@@ -18,6 +18,6 @@ var searchData=
   ['max_5fburn_5fprio_15',['MAX_BURN_PRIO',['../class_agent1.html#a563893312f302acc9db27df40edc0888',1,'Agent1.MAX_BURN_PRIO'],['../class_fire_maps_preparation.html#a968ce4ba5db835a2849232578e1d8ebf',1,'FireMapsPreparation.MAX_BURN_PRIO']]],
   ['max_5ffire_5fspan_16',['MAX_FIRE_SPAN',['../class_fire_maps_preparation.html#abf34bae3c023690b27953376688f0352',1,'FireMapsPreparation.MAX_FIRE_SPAN'],['../class_fire_mitigation.html#aae7ed4d17106063bbdf1358eba85ab03',1,'FireMitigation.MAX_FIRE_SPAN']]],
   ['max_5fspan_17',['max_span',['../struct_fire_maps_preparation_1_1_fire_data.html#a488bc461e9de43bddd3ec69a1989d34f',1,'FireMapsPreparation::FireData']]],
-  ['minseparation_18',['minSeparation',['../class_vegetation_generator.html#a83ce83e423564babdd514af034aa19c1',1,'VegetationGenerator']]],
+  ['min_5fseparation_18',['min_separation',['../class_vegetation_generator.html#ada49550154278539126e1b5061727135',1,'VegetationGenerator']]],
   ['mitigació_20d_20incendis_19',['PFG: Agents per la prevenció i mitigació d&apos;incendis',['../md__d_1_2_unity_projects_2_p_f_g___incendis__old_2_assets_2_scripts_2_p_f_g_2_r_e_a_d_m_e.html',1,'']]]
 ];

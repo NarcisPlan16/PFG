@@ -11,5 +11,5 @@ var files_dup =
     [ "MapManager.cs", "_map_manager_8cs.html", "_map_manager_8cs" ],
     [ "MapPreprocessing.cs", "_map_preprocessing_8cs.html", "_map_preprocessing_8cs" ],
     [ "Utils.cs", "_utils_8cs.html", null ],
-    [ "Vegetation Processing.cs", "_vegetation_01_processing_8cs.html", "_vegetation_01_processing_8cs" ]
+    [ "Vegetation Generator.cs", "_vegetation_01_generator_8cs.html", "_vegetation_01_generator_8cs" ]
 ];
